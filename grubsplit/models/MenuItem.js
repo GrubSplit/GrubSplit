@@ -4,6 +4,7 @@
  *   name
  *   description
  *   price
+ *   id
  *   optionGroup - list of options (size, toppings)
  *     option - prince
  *
