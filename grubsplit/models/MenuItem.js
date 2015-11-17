@@ -6,6 +6,8 @@
  *   price
  *   optionGroup - list of options (size, toppings)
  *     option - prince
+ *
+ * Author: mattmik
  */
 var MenuItem = function () {
   var that = Object.create(MenuItem.prototype);

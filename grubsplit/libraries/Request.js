@@ -7,12 +7,13 @@
  *
  * TODO: Add listeners to check if reqeust was successful
  *       Store response
+ *
+ * Author: mattmik
  */
 var Request = function (method, url, params, callback) {
   var that = Object.create(Request.prototype);
 
   var request = new XMLHttpRequest();
-  request.open(method, url);
 
   /**
    * [send description]
@@ -23,6 +24,7 @@ var Request = function (method, url, params, callback) {
     params.forEach(function (param) {
       form.append(param[0], param[1]);
     });
+    request.open(method, url);
     req.send(form);
   };
 

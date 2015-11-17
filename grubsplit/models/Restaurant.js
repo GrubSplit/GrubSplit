@@ -5,6 +5,8 @@
  *   address - street, city, state, zip
  *   phoneNumber - (123) 456-7890
  *   menu - List of MenuItems
+ *
+ * Author: mattmik
  */
 var Restaurant = function (name, address, phoneNumber, menu) {
   var that = Object.create(Restaurant.prototype);
