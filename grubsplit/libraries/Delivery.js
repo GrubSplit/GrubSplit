@@ -40,6 +40,15 @@ var Delivery = function () {
 
   };
 
+  /**
+   * Authenticate a user
+   * @param  {[type]} user [description]
+   * @return {[type]}      [description]
+   */
+  that.authenticate = function (user) {
+
+  };
+
   Object.freeze(that);
   return that;
 };
