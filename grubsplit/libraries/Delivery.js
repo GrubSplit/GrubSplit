@@ -8,6 +8,8 @@ var request = require('request');
 var Delivery = function() {
   var that = Object.create(Delivery.prototype);
 
+  var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
+
   /**
    * Get restaurant info and parse response
    * @param  {int} restaurantId     Id for restaurant
@@ -17,8 +19,23 @@ var Delivery = function() {
    *     address
    *     phoneNumber
    */
-  that.getRestaurant = function(restaurantId) {
-
+  that.getRestaurant = function(restaurantId, callback) {
+    var url = ('https://api.delivery.com/merchant/%?', restaurantId);
+    url += 'client_id=' + CLIENT_ID;
+    request(url, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var location = response.location;
+        var summary = response.summary;
+        callback({
+          'name'    : summary.name,
+          'phone'   : summary.phone,
+          'street'  : location.street,
+          'city'    : location.city,
+          'state'   : location.state,
+          'zip_code': location.zip_code
+        });
+      }
+    });
   };
 
   /**
@@ -53,3 +70,5 @@ var Delivery = function() {
   Object.freeze(that);
   return that;
 };
+
+module.exports = Delivery();

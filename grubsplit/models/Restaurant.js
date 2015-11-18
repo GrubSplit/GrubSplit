@@ -1,3 +1,4 @@
+var Delivery = require('../libaries/Delivery');
 /**
  * Represents a restaurant where a food order can be placed.
  * Attributes include:
