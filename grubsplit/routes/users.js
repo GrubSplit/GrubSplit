@@ -65,7 +65,7 @@ router.post('/signup', function(req, res, next) {
     return res.redirect('/users/signup');
   }
 
-  User.register(new User({ email : req.body.email }), req.body.password, function(err, user) {
+  User.register(new User({ email : req.body.email, name : req.body.name }), req.body.password, function(err, user) {
       if (err) {
           console.log(err);
           req.flash('errors', { msg: err.message });

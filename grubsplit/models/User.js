@@ -9,6 +9,7 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true, required: true },
+  name: { type: String, required: true }
   // tokens: Array,
   // profile: {
   //   name: { type: String, default: '' },

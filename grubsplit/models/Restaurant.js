@@ -1,4 +1,4 @@
-var Delivery = require('../libaries/Delivery');
+var Delivery = require('../libraries/Delivery');
 
 /**
  * Represents a restaurant where a food order can be placed.

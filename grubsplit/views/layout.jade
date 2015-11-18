@@ -14,7 +14,7 @@ html
     script(src='/javascripts/lib/bootstrap.min.js')
     +nav('GrubSplit', 'Navigation Bar')
       if (user)
-        +nav_item('/order', 'order') Order
+        +nav_item('/profile', 'profile') #{user.name}
         +nav_item('/users/logout', 'logout') Logout
   body
     .container
