@@ -1,3 +1,4 @@
+var request = require('request');
 /**
  * Library for retrieving data from Delivery.com's API by
  *   parsing information from responses
