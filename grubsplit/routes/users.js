@@ -1,7 +1,7 @@
 /**
 * Boilerplate code from https://github.com/sahat/hackathon-starter/blob/master/controllers/user.js
 */
-
+var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var User = require('../models/User');
@@ -15,7 +15,7 @@ router.get('/login', function(req, res) {
   res.render('users/login', {
     title: 'Login'
   });
-};
+});
 
 /**
  * POST /users/login
@@ -44,7 +44,7 @@ router.post('/login', function(req, res, next) {
       res.redirect(req.session.returnTo || '/');
     });
   })(req, res, next);
-};
+});
 
 /**
  * GET /users/logout
@@ -53,7 +53,7 @@ router.post('/login', function(req, res, next) {
 router.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/');
-};
+});
 
 /**
  * GET /users/signup
@@ -64,7 +64,7 @@ router.get('/signup', function(req, res) {
   res.render('users/signup', {
     title: 'Create Account'
   });
-};
+});
 
 /**
  * POST /users/signup
@@ -100,4 +100,6 @@ router.post('/signup', function(req, res, next) {
       });
     });
   });
-};
+});
+
+module.exports = router;
