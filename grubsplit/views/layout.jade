@@ -13,7 +13,9 @@ html
     script(src='/javascripts/lib/jquery-1.11.3.min.js')
     script(src='/javascripts/lib/bootstrap.min.js')
     +nav('GrubSplit', 'Navigation Bar')
-      +nav_item('/order', 'order') Order
+      if (user)
+        +nav_item('/order', 'order') Order
+        +nav_item('/users/logout', 'logout') Logout
   body
     .container
       include partials/flash

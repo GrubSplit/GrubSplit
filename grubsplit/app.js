@@ -54,6 +54,12 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
+// Allow current user to be accessed from templates
+app.use(function(req, res, next){
+  res.locals.user = req.user;
+  next();
+});
+
 // Map paths to imported route handlers
 app.use('/', index);
 app.use('/users', users);
