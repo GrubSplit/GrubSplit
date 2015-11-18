@@ -1,14 +1,19 @@
 doctype html
+include mixins/mixins
 html
   head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     meta(name='csrf-token', content=_csrf)
+    link(href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', rel='stylesheet', media='screen')
+    link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css", rel="stylesheet")
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='/javascripts/lib/jquery-1.11.3.min.js')
     script(src='/javascripts/lib/bootstrap.min.js')
+    +nav('GrubSplit', 'Navigation Bar')
+      +nav_item('/order', 'order') Order
   body
     .container
       include partials/flash
