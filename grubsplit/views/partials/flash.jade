@@ -1,3 +1,9 @@
+if messages.error
+  // passport failureFlash messages show up here
+  .alert.alert-danger.fade.in
+    button.close(type='button', data-dismiss='alert')
+      i.fa.fa-times-circle-o
+    div=messages.error
 if messages.errors
   .alert.alert-danger.fade.in
     button.close(type='button', data-dismiss='alert')
