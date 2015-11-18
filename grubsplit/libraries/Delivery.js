@@ -1,4 +1,9 @@
 var request = require('request');
+
+var RESTAURANT_IDS = {
+  'Cafe 472' : 70706
+};
+
 /**
  * Library for retrieving data from Delivery.com's API by
  *   parsing information from responses
@@ -19,7 +24,8 @@ var Delivery = function() {
    *     address
    *     phoneNumber
    */
-  that.getRestaurant = function(restaurantId, callback) {
+  that.getRestaurant = function(restaurant, callback) {
+    var restaurantId = RESTAURANT_IDS[restaurant];
     var url = ('https://api.delivery.com/merchant/%?', restaurantId);
     url += 'client_id=' + CLIENT_ID;
     request(url, function (error, response, body) {
@@ -28,6 +34,7 @@ var Delivery = function() {
         var summary = response.summary;
         callback({
           'name'    : summary.name,
+          'id'      : restaurantId,
           'phone'   : summary.phone,
           'street'  : location.street,
           'city'    : location.city,
@@ -45,7 +52,7 @@ var Delivery = function() {
    *   attributes in response:
    *     menuItems
    */
-  that.getMenu = function(restaurantId) {
+  that.getMenu = function(restaurantId, callback) {
 
   };
 
