@@ -10,9 +10,8 @@
  *
  * Author: mattmik
  */
-var MenuItem = function () {
+var MenuItem = function() {
   var that = Object.create(MenuItem.prototype);
-
 
 
   Object.freeze(that);

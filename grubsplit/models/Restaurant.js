@@ -9,30 +9,30 @@
  *
  * Author: mattmik
  */
-var Restaurant = function (name, id, address, phoneNumber, menu) {
+var Restaurant = function(name, id, address, phoneNumber, menu) {
   var that = Object.create(Restaurant.prototype);
 
-  that.getName = function () {
+  that.getName = function() {
     return name;
   };
 
-  that.getId = function () {
+  that.getId = function() {
     return id;
   };
 
-  that.getAddress = function () {
+  that.getAddress = function() {
     return address;
   };
 
-  that.getPhoneNumber = function () {
+  that.getPhoneNumber = function() {
     return phoneNumber;
   };
 
-  that.getMenu = function () {
+  that.getMenu = function() {
     return menu;
   };
 
-  that.toString = function () {
+  that.toString = function() {
     return ('% - %', name, address);
   };
 
@@ -40,33 +40,26 @@ var Restaurant = function (name, id, address, phoneNumber, menu) {
   return that;
 };
 
-var Address = function (location) {
+var Address = function(street, city, state, zipCode) {
   var that = Object.create(Address.prototype);
 
-  var street, city, state, zipCode;
-
-  street = location.street;
-  city = location.city;
-  state = location.state;
-  zipCode = location.zipCode;
-
-  that.getStreet = function () {
+  that.getStreet = function() {
     return street;
   };
 
-  that.getCity = function () {
+  that.getCity = function() {
     return city;
   };
 
-  that.getState = function () {
+  that.getState = function() {
     return state;
   };
 
-  that.getZipCode = function () {
+  that.getZipCode = function() {
     return zipCode;
   };
 
-  that.toString = function () {
+  that.toString = function() {
     return ('% %, % %', street, city, state, zipCode);
   };
 
@@ -74,19 +67,19 @@ var Address = function (location) {
   return that;
 };
 
-var PhoneNumber = function (location) {
+var PhoneNumber = function(location) {
   var that = Object.create(PhoneNumber.prototype);
 
   var phoneNumber = location.phone;
 
-  that.getPhoneNumber = function () {
+  that.getPhoneNumber = function() {
     return phoneNumber;
   };
 
-  that.toString = function () {
+  that.toString = function() {
     return phoneNumber;
   };
 
   Object.freeze(that);
   return that;
-}
+};

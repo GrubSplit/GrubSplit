@@ -7,7 +7,7 @@
  *
  * Author: mattmik
  */
-var Request = function (method, url, params, callback) {
+var Request = function(method, url, params, callback) {
   var that = Object.create(Request.prototype);
 
   /**
@@ -15,14 +15,14 @@ var Request = function (method, url, params, callback) {
    * @param  {XMLHttpRequest} request  To be sent
    * @param  {boolean} async           True if request is async
    */
-  var send = function (request, async) {
+  var send = function(request, async) {
     var form = new FormData();
-    params.forEach(function (param) {
+    params.forEach(function(param) {
       form.append(param[0], param[1]);
     });
 
     // Send response to callback when request is successful
-    request.onreadystatechange = function () {
+    request.onreadystatechange = function() {
       if (request.readyState == 4 && request.status == 200) {
         callback(request.responseText);
       }

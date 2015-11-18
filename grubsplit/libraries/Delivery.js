@@ -4,7 +4,7 @@
  *
  * Author: mattmik
  */
-var Delivery = function () {
+var Delivery = function() {
   var that = Object.create(Delivery.prototype);
 
   /**
@@ -16,7 +16,7 @@ var Delivery = function () {
    *     address
    *     phoneNumber
    */
-  that.getRestaurant = function (restaurantId) {
+  that.getRestaurant = function(restaurantId) {
 
   };
 
@@ -27,7 +27,7 @@ var Delivery = function () {
    *   attributes in response:
    *     menuItems
    */
-  that.getMenu = function (restaurantId) {
+  that.getMenu = function(restaurantId) {
 
   };
 
@@ -36,7 +36,7 @@ var Delivery = function () {
    * @param  {[type]} order [description]
    * @return {[type]}       [description]
    */
-  that.placeOrder = function (order) {
+  that.placeOrder = function(order) {
 
   };
 
@@ -45,7 +45,7 @@ var Delivery = function () {
    * @param  {[type]} user [description]
    * @return {[type]}      [description]
    */
-  that.authenticate = function (user) {
+  that.authenticate = function(user) {
 
   };
 
