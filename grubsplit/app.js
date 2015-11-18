@@ -1,11 +1,28 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
+var session = require('express-session');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+var flash = require('express-flash');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var expressValidator = require('express-validator');
+
+// Database set up
+var mongoose = require('mongoose');
+// Connect to either the MONGOLAB_URI or to the local database.
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/test');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function (callback) {
+    console.log("database connected");
+});
+
+// Import route handlers
+var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
@@ -20,9 +37,16 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+// FIXME: Is this secure?
+app.use(session({ secret : '6170', resave : true, saveUninitialized : true }));
+app.use(expressValidator());
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+// Map paths to imported route handlers
+app.use('/', index);
 app.use('/users', users);
 
 // catch 404 and forward to error handler

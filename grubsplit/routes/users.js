@@ -2,25 +2,26 @@
 * Boilerplate code from https://github.com/sahat/hackathon-starter/blob/master/controllers/user.js
 */
 
+var router = express.Router();
 var passport = require('passport');
 var User = require('../models/User');
 
 /**
- * GET /login
+ * GET /users/login
  * Login page.
  */
-exports.getLogin = function(req, res) {
+router.get('/login', function(req, res) {
   if (req.user) return res.redirect('/');
-  res.render('account/login', {
+  res.render('users/login', {
     title: 'Login'
   });
 };
 
 /**
- * POST /login
+ * POST /users/login
  * Sign in using email and password.
  */
-exports.postLogin = function(req, res, next) {
+router.post('/login', function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password cannot be blank').notEmpty();
 
@@ -28,14 +29,14 @@ exports.postLogin = function(req, res, next) {
 
   if (errors) {
     req.flash('errors', errors);
-    return res.redirect('/login');
+    return res.redirect('users/login');
   }
 
   passport.authenticate('local', function(err, user, info) {
     if (err) return next(err);
     if (!user) {
       req.flash('errors', { msg: info.message });
-      return res.redirect('/login');
+      return res.redirect('users/login');
     }
     req.logIn(user, function(err) {
       if (err) return next(err);
@@ -46,30 +47,30 @@ exports.postLogin = function(req, res, next) {
 };
 
 /**
- * GET /logout
+ * GET /users/logout
  * Log out.
  */
-exports.logout = function(req, res) {
+router.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/');
 };
 
 /**
- * GET /signup
+ * GET /users/signup
  * Signup page.
  */
-exports.getSignup = function(req, res) {
+router.get('/signup', function(req, res) {
   if (req.user) return res.redirect('/');
-  res.render('account/signup', {
+  res.render('users/signup', {
     title: 'Create Account'
   });
 };
 
 /**
- * POST /signup
+ * POST /users/signup
  * Create a new local account.
  */
-exports.postSignup = function(req, res, next) {
+router.post('/signup', function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
@@ -78,7 +79,7 @@ exports.postSignup = function(req, res, next) {
 
   if (errors) {
     req.flash('errors', errors);
-    return res.redirect('/signup');
+    return res.redirect('/users/signup');
   }
 
   var user = new User({
@@ -89,7 +90,7 @@ exports.postSignup = function(req, res, next) {
   User.findOne({ email: req.body.email }, function(err, existingUser) {
     if (existingUser) {
       req.flash('errors', { msg: 'Account with that email address already exists.' });
-      return res.redirect('/signup');
+      return res.redirect('/users/signup');
     }
     user.save(function(err) {
       if (err) return next(err);
