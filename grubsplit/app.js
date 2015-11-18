@@ -25,6 +25,9 @@ db.once('open', function (callback) {
 var index = require('./routes/index');
 var users = require('./routes/users');
 
+// Import User model
+var User = require('./models/User')
+
 var app = express();
 
 // view engine setup
@@ -44,6 +47,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// passport config
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 // Map paths to imported route handlers
 app.use('/', index);
