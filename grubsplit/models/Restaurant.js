@@ -1,17 +1,26 @@
 var Delivery = require('../libaries/Delivery');
+
 /**
  * Represents a restaurant where a food order can be placed.
  * Attributes include:
  *   name
  *   id
  *   address - street, city, state, zip
- *   phoneNumber - (123) 456-7890
+ *   phone - 123-456-7890
  *   menu - List of MenuItems
  *
  * Author: mattmik
  */
-var Restaurant = function(name, id, address, phoneNumber, menu) {
+var Restaurant = function(name) {
   var that = Object.create(Restaurant.prototype);
+
+  var id, address, phone, menu;
+
+  Delivery.getRestaurant(name, function(info) {
+    id = info.id;
+    address = Address(info.street, info.city, info.state, info.zip);
+    phone = info.phone;
+  });
 
   that.getName = function() {
     return name;
@@ -25,8 +34,8 @@ var Restaurant = function(name, id, address, phoneNumber, menu) {
     return address;
   };
 
-  that.getPhoneNumber = function() {
-    return phoneNumber;
+  that.getPhone = function() {
+    return phone;
   };
 
   that.getMenu = function() {
@@ -68,19 +77,19 @@ var Address = function(street, city, state, zipCode) {
   return that;
 };
 
-var PhoneNumber = function(location) {
-  var that = Object.create(PhoneNumber.prototype);
+// var PhoneNumber = function(location) {
+//   var that = Object.create(PhoneNumber.prototype);
 
-  var phoneNumber = location.phone;
+//   var phoneNumber = location.phone;
 
-  that.getPhoneNumber = function() {
-    return phoneNumber;
-  };
+//   that.getPhoneNumber = function() {
+//     return phoneNumber;
+//   };
 
-  that.toString = function() {
-    return phoneNumber;
-  };
+//   that.toString = function() {
+//     return phoneNumber;
+//   };
 
-  Object.freeze(that);
-  return that;
-};
+//   Object.freeze(that);
+//   return that;
+// };
