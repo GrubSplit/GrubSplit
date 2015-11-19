@@ -24,7 +24,6 @@ db.once('open', function (callback) {
 // Import route handlers
 var index = require('./routes/index');
 var users = require('./routes/users');
-var profile = require('./routes/profile');
 var grubs = require('./routes/grubs');
 var restaurant = require('./routes/restaurant');
 
@@ -73,7 +72,6 @@ var loggedIn = function(req, res, next) {
 // Map paths to imported route handlers
 app.use('/$', loggedIn, index);
 app.use('/users', users);
-app.use('/profile', loggedIn, profile);
 app.use('/grubs', loggedIn, grubs);
 app.use('/restaurant', loggedIn, restaurant);
 

@@ -85,4 +85,13 @@ router.post('/signup', function(req, res, next) {
   });
 });
 
+/**
+ * GET /profile
+ * Profile page.
+ */
+router.get('/profile', function(req, res) {
+  if (!req.user) return res.redirect('/users/login');
+  res.render('users/profile');
+});
+
 module.exports = router;
