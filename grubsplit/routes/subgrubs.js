@@ -1,12 +1,51 @@
 var express = require('express');
 var router = express.Router();
 var SubGrub = require('../models/SubGrub');
+var utils = require('../utils/utils');
+
+/*
+  Require ownership whenever accessing a particular subgrub
+  This means that the client accessing the resource must be logged in
+  as the user that originally created the subgrub. Clients who are not owners 
+  of this particular resource will receive a 404.
+  Why 404? We don't want to distinguish between grubs that don't exist at all
+  and grubs that exist but don't belong to the client. This way a malicious client
+  that is brute-forcing urls should not gain any information.
+*/
+var requireOwnership = function(req, res, next) {
+  // TODO: Does user need to be pulled from db (refreshed?)
+  if ( req.user.subgrubs.indexOf(req.subgrub._id) === -1) {
+    utils.sendErrResponse(res, 404, 'Resource not found.');
+  } else {
+    next();
+  }
+};
+
+/*
+  Grab subgrub from the store whenever one is referenced with an ID in the
+  request path (any routes defined with :subgrub as a paramter).
+*/
+router.param('subgrub', function(req, res, next, subgrubIdStr) {
+  var subgrubId = new ObjectID(subgrubIdStr);
+  // TODO: Implement this
+  Subgrub.getSubgrub(subgrubId, function(err, subgrub) {
+    if (subgrub) {
+      req.subgrub = subgrub;
+      next();
+    } else {
+      utils.sendErrResponse(res, 404, 'Resource not found.');
+    }
+  });
+});
+
+// Require ownership
+router.all('/:subgrub', requireOwnership);
 
 /**
- * GET /grubs/:id
+ * GET /subgrubs/:id
  * SubGrub page.
  */
-router.get('/:id', function(req, res) {
+router.get('/:subgrub', function(req, res) {
   if (!req.user) return res.redirect('/login');
   // TODO pull subgrub from db
   // get user from session -> pass to db
@@ -26,7 +65,7 @@ router.get('/:id', function(req, res) {
     - success: true if the server succeeded in recording the user's freet
     - err: on failure, an error message
  */
-router.post('/:id', function(req, res) {
+router.post('/:subgrub', function(req, res) {
   if (!req.user) return res.redirect('/login');
 
   // TODO add subgrub to grub 
