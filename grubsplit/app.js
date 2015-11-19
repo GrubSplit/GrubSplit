@@ -71,7 +71,7 @@ var loggedIn = function(req, res, next) {
 }
 
 // Map paths to imported route handlers
-app.use('/', index);
+app.use('/', loggedIn, index);
 app.use('/users', users);
 app.use('/profile', loggedIn, profile);
 app.use('/grubs', loggedIn, grubs);
