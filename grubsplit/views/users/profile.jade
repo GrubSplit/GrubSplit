@@ -3,4 +3,27 @@ extends ../layout
 block content
   .page-header
     h1 Welcome, #{user.name}
+  div
+    h3 Invitations
+    if grub_invites.length == 0
+      p <i>No current invitations!</i>
+    for grub in grub_invites
+      div
+        p #{grub.leader} invited you to order from #{grub.restaurant}
+        a Accept
+        a Decline
+  div
+    h3 Open Grubs
+    if open_grubs.length == 0
+      p <i>No open grubs!</i>
+    for grub in open_grubs
+      div
+        a(href='/grubs/' + grub._id) #{grub.leader} is ordering from #{grub.restaurant}
+  div
+    h3 Past Grubs
+    if past_grubs.length == 0
+      p <i>No past grubs!</i>
+    for grub in past_grubs
+      div
+        a(href='/grubs/' + grub._id) You ordered from #{grub.restaurant}
 
