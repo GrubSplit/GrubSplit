@@ -25,6 +25,7 @@ db.once('open', function (callback) {
 var index = require('./routes/index');
 var users = require('./routes/users');
 var grubs = require('./routes/grubs');
+var subgrubs = require('./routes/subgrubs');
 var restaurant = require('./routes/restaurant');
 
 // Import User model
@@ -73,6 +74,7 @@ var loggedIn = function(req, res, next) {
 app.use('/$', loggedIn, index);
 app.use('/users', users);
 app.use('/grubs', loggedIn, grubs);
+app.use('/subgrubs', loggedIn, subgrubs);
 app.use('/restaurant', loggedIn, restaurant);
 
 // catch 404 and forward to error handler
