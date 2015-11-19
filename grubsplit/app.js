@@ -64,14 +64,14 @@ app.use(function(req, res, next){
 });
 
 var loggedIn = function(req, res, next) {
-  if (req.user) {
+  if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/');
+  res.redirect('/users/login');
 }
 
 // Map paths to imported route handlers
-app.use('/', loggedIn, index);
+app.use('/$', loggedIn, index);
 app.use('/users', users);
 app.use('/profile', loggedIn, profile);
 app.use('/grubs', loggedIn, grubs);
