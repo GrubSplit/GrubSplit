@@ -24,7 +24,6 @@ db.once('open', function (callback) {
 // Import route handlers
 var index = require('./routes/index');
 var users = require('./routes/users');
-var profile = require('./routes/profile');
 var grubs = require('./routes/grubs');
 var restaurant = require('./routes/restaurant');
 
@@ -64,16 +63,15 @@ app.use(function(req, res, next){
 });
 
 var loggedIn = function(req, res, next) {
-  if (req.user) {
+  if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/');
+  res.redirect('/users/login');
 }
 
 // Map paths to imported route handlers
-app.use('/', index);
+app.use('/$', loggedIn, index);
 app.use('/users', users);
-app.use('/profile', loggedIn, profile);
 app.use('/grubs', loggedIn, grubs);
 app.use('/restaurant', loggedIn, restaurant);
 

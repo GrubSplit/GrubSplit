@@ -35,7 +35,7 @@ router.post('/login', passport.authenticate('local', { successRedirect: '/',
  */
 router.get('/logout', function(req, res) {
   req.logout();
-  res.redirect('/');
+  res.redirect('/users/login');
 });
 
 /**
@@ -55,6 +55,7 @@ router.get('/signup', function(req, res) {
  */
 router.post('/signup', function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
+  req.assert('name', 'Name is required').len(1);
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
 
@@ -82,6 +83,46 @@ router.post('/signup', function(req, res, next) {
             res.redirect('/');
       });
     });
+  });
+});
+
+/**
+ * GET /profile
+ * Profile page.
+ */
+router.get('/profile', function(req, res) {
+  if (!req.user) return res.redirect('/users/login');
+  // TODO: verify this will work once we have docs in Grub model
+  // var populateQuery = [
+  //   {
+  //     path:'grub_invites',
+  //     select:'leader restaurant'
+  //   },
+  //   {
+  //     path:'open_grubs',
+  //     select:'leader restaurant'
+  //   },
+  //   {
+  //     path:'past_grubs',
+  //     select:'restaurant'
+  //   }
+  // ];
+  // User.find({ _id: req.user._id })
+  //     .populate(populateQuery)
+  //     .exec(function (err, results) {
+  //       res.render('users/profile', {
+  //         'grub_invites' : results.grub_invites,
+  //         'open_grubs' : results.open_grubs,
+  //         'past_grubs' : results.past_grubs
+  //       });
+  //     });
+  var grub_invites = [];
+  var open_grubs = [];
+  var past_grubs = [];
+  res.render('users/profile', {
+    'grub_invites' : grub_invites,
+    'open_grubs' : open_grubs,
+    'past_grubs' : past_grubs
   });
 });
 

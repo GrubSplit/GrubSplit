@@ -1,5 +1,25 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .page-header
+    h1 Welcome to GrubSplit!
+    h3 Search for nearby restaurants
+  form.form-horizontal(method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group
+      label.col-sm-3.control-label(for='address')
+      .col-sm-7
+        .input-group
+          input.form-control(type='address', name='address', id='address', placeholder='Restaurants near this location', autofocus=true)
+          span.input-group-btn
+            button.btn.btn-primary(type='submit') Search
+  div(style='text-align: center')
+    - if (typeof (restaurants) === 'undefined')
+      p <i>Try it! ;)</i>
+    - else if (restaurants.length === 0)
+      p <i>No restaurants nearby :(</i>
+    - else
+      p <i>#{restaurants.length} restaurants found! :D</i>
+      for restaurant in restaurants
+          div
+            p #{restaurant}
