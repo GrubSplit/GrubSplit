@@ -74,6 +74,7 @@ app.use('/$', loggedIn, index);
 app.use('/users', users);
 app.use('/grubs', loggedIn, grubs);
 app.use('/restaurant', loggedIn, restaurant);
+app.use('/auth', loggedIn, index);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
