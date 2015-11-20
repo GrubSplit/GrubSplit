@@ -1,15 +1,35 @@
 var express = require('express');
 var router = express.Router();
 var Restaurant = require('../models/Restaurant');
+var utils = require('../utils/utils');
+
+/*
+  Grab a restaurant from the store whenever one is referenced with an ID in the
+  request path (any routes defined with :restaurant as a paramter).
+*/
+router.param('restaurant', function(req, res, next, restaurantIdStr) {
+  var restaurantId = new ObjectID(restaurantIdStr);
+  // TODO: Implement this function
+  Restaurant.getRestaurant(restaurantId, function(err, restaurant) {
+    if (restaurant) {
+      req.restaurant = restaurant;
+      next();
+    } else {
+      utils.sendErrResponse(res, 404, 'Resource not found.');
+    }
+  });
+});
+
+// Require ownership
+// router.all('/:restaurant', requireOwnership);
 
 /**
- * GET /restaurant/:id
- * Profile page.
+ * GET /restaurant/:restaurant
+ * Restaurant page.
  */
-router.get('/:id', function(req, res) {
+router.get('/:restaurant', function(req, res) {
   if (!req.user) return res.redirect('/login');
-  // TODO pull restaurant info
-  res.render('restaurant', { restaurant: restaurant });
+  res.render('restaurant', { restaurant: req.restaurant });
 });
 
 
