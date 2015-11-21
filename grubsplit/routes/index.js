@@ -4,6 +4,7 @@ var Delivery = require('../libraries/Delivery');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  // console.log(res);
 	res.render('index');
 });
 
@@ -11,7 +12,6 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
 	req.assert('address', 'Address must not be empty.').len(1);
   	var errors = req.validationErrors();
-  	
   	if (errors) {
   		req.flash('errors', errors);
   		return res.redirect('/');
