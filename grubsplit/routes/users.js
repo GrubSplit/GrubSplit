@@ -27,7 +27,7 @@ router.get('/login', function(req, res) {
  * Sign in using email and password.
  */
 router.post('/login', passport.authenticate('local', {
-  successRedirect: Delivery.authorizeAccount(),
+  successRedirect: Delivery.authorizeAccountURL(),
   failureRedirect: '/users/login',
   failureFlash: true
 }));
@@ -90,7 +90,7 @@ router.post('/signup', function(req, res, next) {
           });
           return next(err);
         }
-        res.redirect(Delivery.createAccount());
+        res.redirect(Delivery.createAccountURL());
       });
     });
   });

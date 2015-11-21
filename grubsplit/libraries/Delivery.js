@@ -14,6 +14,7 @@ var Delivery = function() {
   var that = Object.create(Delivery.prototype);
 
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
+  var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
   var REDIRECT_URI = 'https://localhost:3000/auth';
   var RESPONSE_TYPE = 'code';
 
@@ -22,7 +23,8 @@ var Delivery = function() {
   };
 
 
-  that.createAccount = function (callback) {
+
+  that.createAccountURL = function(callback) {
     var url = 'https://api.delivery.com/third_party/account/create?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
@@ -32,7 +34,8 @@ var Delivery = function() {
     return url;
   };
 
-  that.authorizeAccount = function (callback) {
+
+  that.authorizeAccountURL = function(callback) {
     var url = 'https://api.delivery.com/third_party/authorize?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
@@ -40,6 +43,32 @@ var Delivery = function() {
     url += '&scope=' + 'global';
     url += '&state=';
     return url;
+  };
+
+  that.requestTokenURL = function(code, callback) {
+    var url = 'https://api.delivery.com/third_party/access_token?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&client_secret=' + CLIENT_SECRET;
+    url += '&redirect_uri=' + REDIRECT_URI;
+    url += '&grant_type=' + 'authorization+code';
+    url += '&code=' + code;
+
+    request(url, function(error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var access_token = body.access_token;
+        var refresh_token = body.refresh_token;
+        var token_type = body.token_type;
+        var expires = body.expires;
+        var expires_in = body.expires_in;
+        callback({
+          'access_token': access_token,
+          'refresh_token': refresh_token,
+          'token_type': token_type,
+          'expires': expires,
+          'expires_in': expires_in
+        });
+      }
+    });
   };
 
   /**
@@ -99,15 +128,6 @@ var Delivery = function() {
    * @return {[type]}       [description]
    */
   that.placeOrder = function(order) {
-
-  };
-
-  /**
-   * Authenticate a user
-   * @param  {[type]} user [description]
-   * @return {[type]}      [description]
-   */
-  that.authenticate = function(user) {
 
   };
 
