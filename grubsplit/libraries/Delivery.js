@@ -16,12 +16,10 @@ var Delivery = function() {
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
   var REDIRECT_URI = 'https://localhost:3000/auth';
-  var RESPONSE_TYPE = 'code';
 
   var RESTAURANT_IDS = {
     'Cafe 472': 70706
   };
-
 
   that.createAccountURL = function(callback) {
     var url = 'https://api.delivery.com/third_party/account/create?';
@@ -37,7 +35,7 @@ var Delivery = function() {
     var url = 'https://api.delivery.com/third_party/authorize?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
-    url += '&response_type=' + RESPONSE_TYPE;
+    url += '&response_type=' + 'code';
     url += '&scope=' + 'global';
     url += '&state=';
     return url;
