@@ -46,10 +46,11 @@ var Delivery = function() {
     url += 'client_id=' + CLIENT_ID;
     url += '&client_secret=' + CLIENT_SECRET;
     url += '&redirect_uri=' + REDIRECT_URI;
-    url += '&grant_type=' + 'authorization+code';
+    url += '&grant_type=' + 'authorization_code';
     url += '&code=' + code;
 
-    request(url, function(error, response, body) {
+    request.post(url, function(error, response, body) {
+      body = JSON.parse(body);
       if (!error && response.statusCode == 200) {
         var access_token = body.access_token;
         var refresh_token = body.refresh_token;
@@ -63,6 +64,9 @@ var Delivery = function() {
           'expires': expires,
           'expires_in': expires_in
         });
+      } else {
+        console.log(error);
+        console.log(JSON.stringify(response));
       }
     });
   };
