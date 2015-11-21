@@ -14,11 +14,11 @@ var utils = require('../utils/utils');
 */
 var requireOwnership = function(req, res, next) {
   // TODO: Does user need to be pulled from db (refreshed?)
-  if ( req.user.open_grubs.indexOf(req.grub._id) === -1  || req.user.past_grubs.indexOf(req.grub._id) === -1) {
-    utils.sendErrResponse(res, 404, 'Resource not found.');
-  } else {
+  // if ( req.user.open_grubs.indexOf(req.grub._id) === -1  || req.user.past_grubs.indexOf(req.grub._id) === -1) {
+  //   utils.sendErrResponse(res, 404, 'Resource not found.');
+  // } else {
     next();
-  }
+  // }
 };
 
 /*
@@ -26,6 +26,10 @@ var requireOwnership = function(req, res, next) {
   request path (any routes defined with :grub as a paramter).
 */
 router.param('grub', function(req, res, next, grubIdStr) {
+  if (grubIdStr === "0") { // temporary bypass logic -> remove this when grub id's are real
+    req.grub = [];
+    next();
+  } else {
   var grubId = new ObjectID(grubIdStr);
   // TODO: Implement this
   Grub.getGrub(grubId, function(err, grub) {
@@ -36,6 +40,7 @@ router.param('grub', function(req, res, next, grubIdStr) {
       utils.sendErrResponse(res, 404, 'Resource not found.');
     }
   });
+}
 });
 
 // Require ownership
@@ -47,7 +52,7 @@ router.all('/:grub', requireOwnership);
  */
 router.get('/:grub', function(req, res) {
   if (!req.user) return res.redirect('/login');
-  res.render('/grubs', { grub: req.grub});
+  res.render('grubs', { grub: req.grub});
 });
 
 /**
