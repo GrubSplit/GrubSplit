@@ -23,9 +23,4 @@ router.post('/', function(req, res, next) {
 	res.render('index', { 'restaurants': restaurants });
 });
 
-router.get('/auth', function(req, res, next) {
-  var query = req.query;
-  res.render('index');
-});
-
 module.exports = router;
