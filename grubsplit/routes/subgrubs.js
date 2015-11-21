@@ -14,11 +14,11 @@ var utils = require('../utils/utils');
 */
 var requireOwnership = function(req, res, next) {
   // TODO: Does user need to be pulled from db (refreshed?)
-  if ( req.user.subgrubs.indexOf(req.subgrub._id) === -1) {
-    utils.sendErrResponse(res, 404, 'Resource not found.');
-  } else {
+  // if ( req.user.subgrubs.indexOf(req.subgrub._id) === -1) {
+  //   utils.sendErrResponse(res, 404, 'Resource not found.');
+  // } else {
     next();
-  }
+  // }
 };
 
 /*
@@ -26,6 +26,10 @@ var requireOwnership = function(req, res, next) {
   request path (any routes defined with :subgrub as a paramter).
 */
 router.param('subgrub', function(req, res, next, subgrubIdStr) {
+  if (subgrubIdStr === "0") {
+    req.subgrub = [];
+    next();
+  } else {
   var subgrubId = new ObjectID(subgrubIdStr);
   // TODO: Implement this
   Subgrub.getSubgrub(subgrubId, function(err, subgrub) {
@@ -36,6 +40,7 @@ router.param('subgrub', function(req, res, next, subgrubIdStr) {
       utils.sendErrResponse(res, 404, 'Resource not found.');
     }
   });
+}
 });
 
 // Require ownership
@@ -51,11 +56,11 @@ router.get('/:subgrub', function(req, res) {
   // get user from session -> pass to db
 
   // create the subgrub in the database
-  res.render('/subgrubs', { subgrub: subgrub});
+  res.render('subgrubs', { subgrub: req.subgrub});
 });
 
 /**
- * POST /grubs/:id
+ * POST /subgrubs/:id
  * SubGrub page.
   Request body:
   	- grubID: id of the current grub
@@ -76,7 +81,7 @@ router.post('/:subgrub', function(req, res) {
 
   // TODO pull grub from db
 
-  // res.render('/grubs', { grub: res.grub});
+  // res.render('subgrubs', { subgrub: res.subgrub});
 });
 
 
