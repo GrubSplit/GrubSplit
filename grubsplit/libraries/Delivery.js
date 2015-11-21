@@ -73,6 +73,14 @@ var Delivery = function() {
     });
   };
 
+  that.searchNearbyRestaurants = function (address, callback) {
+    var url = 'https://api.delivery.com/merchant/search/delivery?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&address=' + address;
+
+    callback(null, [that.getRestaurant('Cafe 472')]);
+  };
+
   /**
    * Get restaurant info and parse response
    * @param  {int} restaurantId     Id for restaurant
