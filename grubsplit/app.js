@@ -31,8 +31,9 @@ var subgrubs = require('./routes/subgrubs');
 var restaurant = require('./routes/restaurant');
 var auth = require('./routes/auth');
 
-// Import User model
+// Import models
 var User = require('./models/User');
+var Grub = require('./models/Grub');
 
 var app = express();
 
