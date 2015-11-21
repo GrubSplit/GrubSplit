@@ -4,7 +4,7 @@ var Delivery = require('../libraries/Delivery');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log(res);
+  // console.log(res);
 	res.render('index');
 });
 

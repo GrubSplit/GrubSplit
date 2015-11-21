@@ -10,7 +10,7 @@ var Delivery = function() {
   var that = Object.create(Delivery.prototype);
 
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
-  var REDIRECT_URI = 'http://localhost:3000/profile';
+  var REDIRECT_URI = 'https://localhost:3000/auth';
   var RESPONSE_TYPE = 'code';
 
   var RESTAURANT_IDS = {
@@ -25,11 +25,23 @@ var Delivery = function() {
     url += '&scope=' + 'global';
     url += '&state=';
 
-    request(url, function(error, response, body) {
-      callback({
-        'redirect_uri' : response.redirect_uri
-      });
-    });
+    return url;
+    // request(url, function(error, response, body) {
+    //   callback({
+    //     'redirect_uri' : response.redirect_uri
+    //   });
+    // });
+  };
+
+  that.authorizeAccount = function (callback) {
+    var url = 'https://api.delivery.com/third_party/authorize?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&redirect_uri=' + REDIRECT_URI;
+    url += '&response_type=' + RESPONSE_TYPE;
+    url += '&scope=' + 'global';
+    url += '&state=';
+
+    return url;
   };
 
   /**
