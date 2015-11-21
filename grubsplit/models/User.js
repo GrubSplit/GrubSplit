@@ -11,6 +11,7 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true, required: true },
   name: { type: String, required: true },
+  token: { type: String },
   subgrubs: { type: [ObjectID], default: []},
   grub_invites: { type: [ObjectID], default: []},
   open_grubs: { type: [ObjectID], default: []},
