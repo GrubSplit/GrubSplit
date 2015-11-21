@@ -1,13 +1,14 @@
 /**
-* Routes for user login/signup/logout 
-*
-* Author: marcosp
-*         Also, used some boilerplate code from 
-*         https://github.com/sahat/hackathon-starter/blob/master/controllers/user.js
-*/
+ * Routes for user login/signup/logout 
+ *
+ * Author: marcosp
+ *         Also, used some boilerplate code from 
+ *         https://github.com/sahat/hackathon-starter/blob/master/controllers/user.js
+ */
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var Delivery = require('../libraries/Delivery');
 var User = require('../models/User');
 
 /**
@@ -25,9 +26,11 @@ router.get('/login', function(req, res) {
  * POST /users/login
  * Sign in using email and password.
  */
-router.post('/login', passport.authenticate('local', { successRedirect: '/',
-                                   failureRedirect: '/users/login',
-                                   failureFlash: true }));
+router.post('/login', passport.authenticate('local', {
+  successRedirect: Delivery.authorizeAccount(),
+  failureRedirect: '/users/login',
+  failureFlash: true
+}));
 
 /**
  * GET /users/logout
@@ -66,21 +69,28 @@ router.post('/signup', function(req, res, next) {
     return res.redirect('/users/signup');
   }
 
-  User.register(new User({ email : req.body.email, name : req.body.name }), req.body.password, function(err, user) {
-      if (err) {
-          console.log(err);
-          req.flash('errors', { msg: err.message });
-          return res.redirect('/users/signup');
-      }
+  User.register(new User({
+    email: req.body.email,
+    name: req.body.name
+  }), req.body.password, function(err, user) {
+    if (err) {
+      console.log(err);
+      req.flash('errors', {
+        msg: err.message
+      });
+      return res.redirect('/users/signup');
+    }
 
-      passport.authenticate('local')(req, res, function () {
-        req.session.save(function (err) {
-            if (err) {
-                console.log(err);
-                req.flash('errors', { msg: err.message });
-                return next(err);
-            }
-            res.redirect('/');
+    passport.authenticate('local')(req, res, function() {
+      req.session.save(function(err) {
+        if (err) {
+          console.log(err);
+          req.flash('errors', {
+            msg: err.message
+          });
+          return next(err);
+        }
+        res.redirect(Delivery.createAccount());
       });
     });
   });
@@ -120,9 +130,9 @@ router.get('/profile', function(req, res) {
   var open_grubs = [];
   var past_grubs = [];
   res.render('users/profile', {
-    'grub_invites' : grub_invites,
-    'open_grubs' : open_grubs,
-    'past_grubs' : past_grubs
+    'grub_invites': grub_invites,
+    'open_grubs': open_grubs,
+    'past_grubs': past_grubs
   });
 });
 
