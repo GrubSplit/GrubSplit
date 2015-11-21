@@ -21,7 +21,7 @@ var Delivery = function() {
     'Cafe 472': 70706
   };
 
-  that.createAccountURL = function(callback) {
+  that.createAccountURL = function() {
     var url = 'https://api.delivery.com/third_party/account/create?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
@@ -31,7 +31,7 @@ var Delivery = function() {
     return url;
   };
 
-  that.authorizeAccountURL = function(callback) {
+  that.authorizeAccountURL = function() {
     var url = 'https://api.delivery.com/third_party/authorize?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
