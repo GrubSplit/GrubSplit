@@ -8,19 +8,14 @@ var utils = require('../utils/utils');
   request path (any routes defined with :restaurant as a paramter).
 */
 router.param('restaurant', function(req, res, next, restaurantIdStr) {
-  if (restaurantIdStr === "70706") { //temporary bypass of not having a real restaurant ID
-    req.restaurant = [];
-    next();
-  } else {
-    Delivery.getRestaurant(restaurantIdStr, function(err, restaurant) {
-      if (restaurant) {
-        req.restaurant = restaurant;
-        next();
-      } else {
-        utils.sendErrResponse(res, 404, 'Resource not found.');
-      }
-    });
-  }
+  Delivery.getRestaurant(restaurantIdStr, function(err, restaurant) {
+    if (restaurant) {
+      req.restaurant = restaurant;
+      next();
+    } else {
+      utils.sendErrResponse(res, 404, 'Resource not found.');
+    }
+  });
 });
 
 // Require ownership
