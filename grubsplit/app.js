@@ -88,14 +88,13 @@ var isLoggedIn = function(req, res, next) {
     return next();
   }
   res.redirect('/users/login');
-}
+};
 
 var isAuthenticated = function(req, res, next) {
   if (req.user) {
     if (req.user.token && req.user.refresh_token) {
       return next();
     }
-    console.log(req.user);
     return res.redirect(Delivery.authorizeAccountURL());
   }
   return res.redirect('/users/login');
