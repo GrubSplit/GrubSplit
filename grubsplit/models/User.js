@@ -13,17 +13,7 @@ var userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   token: { type: String },
   refresh_token: { type: String},
-  subgrubs: { type: [ObjectID], default: []},
-  grub_invites: { type: [ObjectID], default: []},
-  open_grubs: { type: [ObjectID], default: []},
-  past_grubs: { type: [ObjectID], default: []}
-  // tokens: Array,
-  // profile: {
-  //   name: { type: String, default: '' },
-  //   picture: { type: String, default: '' }
-  // }
-  // resetPasswordToken: String,
-  // resetPasswordExpires: Date
+  grub_invites: { type: [ObjectID], default: []}
 });
 
 userSchema.plugin(passportLocalMongoose, {

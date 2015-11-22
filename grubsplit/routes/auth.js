@@ -9,8 +9,7 @@ router.get('/', function(req, res, next) {
   console.log('QUERY: ' + query.code);
   console.log(req.user.id);
 
-  Delivery.requestTokenURL(query.code, function(response) {
-    console.log('RESPONSE: ' + JSON.stringify(response));
+  Delivery.requestTokenURL(query.code, function(error, response) {
     User.update({
       _id: req.user.id
     }, {
@@ -20,7 +19,6 @@ router.get('/', function(req, res, next) {
       },
     }, function(err) {
       if (!err) {
-        console.log('UPDATED TOKEN: ' + response.access_token);
         res.redirect('/');
       } else {
         console.log(err);
