@@ -77,8 +77,9 @@ var Delivery = function() {
     var url = 'https://api.delivery.com/merchant/search/delivery?';
     url += 'client_id=' + CLIENT_ID;
     url += '&address=' + address;
-
-    callback(null, [that.getRestaurant('Cafe 472')]);
+    that.getRestaurant('Cafe 472', function (err, restaurant) {
+      callback(err, [restaurant]);
+    });
   };
 
   /**
@@ -92,22 +93,29 @@ var Delivery = function() {
    */
   that.getRestaurant = function(restaurant, callback) {
     var restaurantId = RESTAURANT_IDS[restaurant];
-    var url = ('https://api.delivery.com/merchant/%?', restaurantId);
-    url += 'client_id=' + CLIENT_ID;
+    var url = 'https://api.delivery.com/merchant/' + restaurantId;
+    url += '?client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var location = response.location;
-        var summary = response.summary;
-        callback({
-          'name': summary.name,
-          'id': restaurantId,
-          'phone': summary.phone,
-          'street': location.street,
-          'city': location.city,
-          'state': location.state,
-          'zip_code': location.zip_code
-        });
+      if (error || response.statusCode != 200) {
+        error = error || response.statusCode;
+        return callback(error);
       }
+      body = JSON.parse(body);
+      var location = body.merchant.location;
+      var summary = body.merchant.summary;
+      console.log(body);
+      console.log(location);
+      console.log(summary);
+      callback(null, {
+        'name': summary.name,
+        'id': restaurantId,
+        'phone': summary.phone,
+        'merchant_logo': summary.merchant_logo,
+        'street': location.street,
+        'city': location.city,
+        'state': location.state,
+        'zip_code': location.zip,
+      });
     });
   };
 
