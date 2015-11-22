@@ -49,6 +49,8 @@ grubSchema.statics.createNewGrub = function(currentUserEmail, restaurantID, call
         owner: user._id,
         restaurantID: restaurantID,
         time_created: now
+      }, function(err, grub) {
+        callback(err, grub);
       });
     } else {
       callback({msg: 'could not find user'});
@@ -58,11 +60,11 @@ grubSchema.statics.createNewGrub = function(currentUserEmail, restaurantID, call
 
 /*
   given a grubID, return the grub, with all subgrubs populated
-  @param: grubID = mongo ObjectID of grub
+  @param: grubID = string of grub id
   @param: callback(err, grub)
 */
 grubSchema.statics.getGrub = function(grubID, callback) {
-  Grub.findOne({_id: mongoose.Schema.Types.ObjectId(grubID)}).populate(['subGrubs']).exec(function(err, grub) {
+  Grub.findOne({_id: grubID}).populate(['subGrubs']).exec(function(err, grub) {
     if (grub) {
         callback(null, grub);
     } else {

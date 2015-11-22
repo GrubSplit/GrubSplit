@@ -25,10 +25,6 @@ var requireOwnership = function(req, res, next) {
   request path (any routes defined with :grub as a paramter).
 */
 router.param('grub', function(req, res, next, grubIdStr) {
-  // if (grubIdStr === "0") { // temporary bypass logic -> remove this when grub id's are real
-  //   req.grub = [];
-  //   next();
-  // } else {
   Grub.getGrub(grubIdStr, function(err, grub) {
     if (grub) {
       req.grub = grub;
@@ -37,7 +33,6 @@ router.param('grub', function(req, res, next, grubIdStr) {
       utils.sendErrResponse(res, 404, 'Resource not found.');
     }
   });
-// }
 });
 
 // Require ownership
@@ -53,9 +48,9 @@ router.post('/', function(req, res) {
   req.restaurantID = '70706' //TODO FIX THIS SO IT'S REAL PLEASE
   Grub.createNewGrub(req.session.passport.user, req.restaurantID, function(err, grub) {
     if (err) {
-      //TODO
+      req.flash('errors', { msg: err.msg });
     } else {
-      // GET /grubs/grub._Id
+      res.redirect('/grubs/' + grub._id);
     }
   });
 });
