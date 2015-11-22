@@ -1,19 +1,30 @@
 extends layout
 
 block content
-  .page-header
-    h1 Welcome to GrubSplit!
-    h3 This is a subgrub's page
-    //include all restaurant's info at top of page
-    //display menu
+	.page-header
+		h1 Welcome to GrubSplit!
+		h3 This is a subgrub's page
 
-    //display order panel on the right side - that's where the submit grub button shows.
-    //	The panel moves with the scrolling of the page
-  a(href="/grubs/0")
-    button Add items to Grub
+		+restaurantheader(subgrub.id)
+		+menu(subgrub.menu)
+		//display menu
+	div.cart
+		h3 Items
+		#subgrub
+			if subgrub.items
+				p Cart is empty
+			else
+				p Display all items here
+				//iterate through cart, displaying each
+		h3 Cost
+			p $#{subgrub.cost.toFixed(2)}
+		button Submit
+
+	a(href="/grubs/0")
+	button Add items to Grub
 
 //- TODO: make the get request into a post
 //-   form.form-horizontal(method='POST')
 //-     a(href="/grubs/0")
 //-       button.btn.btn-primary(type='submit') Add items to Grub
-    
+	

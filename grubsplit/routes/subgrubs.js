@@ -55,9 +55,9 @@ router.get('/:subgrub', function(req, res) {
   // TODO pull grub from db
   // give subgrub restaurant (including restaurant info and menu)
   // get user from session -> pass to db
-
+    var tempSubGrub = {user:"Jorrie", items:[], id:33, cost:6.90, menu:{children:[{type:"menu"}]}}
   // create the subgrub in the database
-  res.render('subgrubs', { subgrub: req.subgrub});
+  res.render('subgrubs', { subgrub: tempSubGrub});
 });
 
 /**
@@ -98,7 +98,7 @@ router.post('/:subgrub', function(req, res) {
   if (!req.user) return res.redirect('/login');
  
   // TODO: find user from session
-  // TODO: remove grub from db
+  // TODO: remove subgrub from db
 
   // res.render('grubs', { grubID: req.grubID});
 });
