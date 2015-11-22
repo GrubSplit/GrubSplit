@@ -8,11 +8,11 @@ var utils = require('../utils/utils');
   request path (any routes defined with :restaurant as a paramter).
 */
 router.param('restaurant', function(req, res, next, restaurantIdStr) {    
-  if (restaurantIdStr === "0") { //temporary bypass of not having a real restaurant ID
+  if (restaurantIdStr === "70706") { //temporary bypass of not having a real restaurant ID
       req.restaurant = [];
       next();
   } else {
-  var restaurantId = new ObjectID(restaurantIdStr);
+  // var restaurantId = new ObjectID(restaurantIdStr);
   // TODO: Implement this function
   Restaurant.getRestaurant(restaurantId, function(err, restaurant) {
     if (restaurant) {
@@ -34,6 +34,15 @@ router.param('restaurant', function(req, res, next, restaurantIdStr) {
  */
 router.get('/:restaurant', function(req, res) {
   res.render('restaurant', { restaurant: req.restaurant });
+});
+
+/**
+ * POST /restaurant/:restaurant
+ * Starts a grub
+ */
+router.post('/:restaurant', function(req, res) {
+  //Create grub
+  res.render('grubs', { grub: req.restaurant });
 });
 
 
