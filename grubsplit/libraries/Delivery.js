@@ -85,7 +85,7 @@ var Delivery = function() {
     var url = 'https://api.delivery.com/merchant/search/delivery?';
     url += 'client_id=' + CLIENT_ID;
     url += '&address=' + address;
-    that.getRestaurant('Cafe 472', function (err, restaurant) {
+    that.getRestaurant('70706', function (err, restaurant) {
       callback(err, [restaurant]);
     });
   };
