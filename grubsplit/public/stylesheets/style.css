@@ -16,3 +16,13 @@ body {
 a {
   color: #00B7FF;
 }
+
+.cart{
+	color:orange;
+	border: 1px solid orange;
+	position: fixed;
+}
+
+/*.submitOrder{
+	bottom: 10px;
+}*/

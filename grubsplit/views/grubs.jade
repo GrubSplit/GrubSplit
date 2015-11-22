@@ -16,8 +16,10 @@ block content
   for subgrub in grub.subGrubs
     +subgrub(subgrub, user)
 
-  a(href="/subgrubs/0")
-    button Add items to grub
+  form.form-horizontal(method="POST")
+		button.createSubGrub Create SubGrub
+	a(href="/subgrubs/0")
+		button To Subgrub page
 
   // for each subgrub, display Name, then subgrub contents
   // if no subgrubs, just display owner's name 

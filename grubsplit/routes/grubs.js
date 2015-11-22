@@ -73,6 +73,9 @@ router.get('/:grub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:grub', function(req, res) {
+  console.log(req.session.passport.user)
+  console.log(req.grubID)
+  // subgrub = SubGrub(req.session.passport.user, )
   // TODO add subgrub to grub 
   // Grub.addSubgrub(req.grubID, req.subgrub, function(grub) {
   // 	res.render('/grubs', { grub: grub});

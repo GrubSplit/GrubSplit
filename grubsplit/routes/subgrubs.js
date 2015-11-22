@@ -53,9 +53,9 @@ router.all('/:subgrub', requireOwnership);
 router.get('/:subgrub', function(req, res) {
   // TODO pull subgrub from db
   // get user from session -> pass to db
-
+  var tempSubGrub = {user:"Jorrie", items:[], id:33, cost:6.90, menu:{children:[{type:"menu"}]}}
   // create the subgrub in the database
-  res.render('subgrubs', { subgrub: req.subgrub});
+  res.render('subgrubs', { subgrub: tempSubGrub});
 });
 
 /**
@@ -66,11 +66,12 @@ router.get('/:subgrub', function(req, res) {
     - item: the item to be added
     - quantity: how many items to be added
   Response:
-    - success: true if the server succeeded in recording the user's freet
+    - success: true if the server succeeded adding item to subgrub
     - err: on failure, an error message
  */
 router.post('/:subgrub', function(req, res) {
-
+  console.log('in subgrub route')
+  // console.log('the id of the grub is: ', req.body)
   // TODO add subgrub to grub 
   // TODO: find user from session
   // SubGrub.addItem(user, req.grubID, req.item, req.quantity, function(subgrub) {
@@ -80,6 +81,24 @@ router.post('/:subgrub', function(req, res) {
   // TODO pull grub from db
 
   // res.render('subgrubs', { subgrub: res.subgrub});
+});
+
+/**
+ * DELETE /subgrubs/:id
+ * SubGrub page.
+  Request body:
+    - grubID: id of the current grub
+  Response:
+    - success: true if the server succeeded in deleting subgrub
+    - err: on failure, an error message
+ */
+ router.delete('/:subgrub', function(req, res) {
+  if (!req.user) return res.redirect('/login');
+ 
+  // TODO: find user from session
+  // TODO: remove subgrub from db
+
+  // res.render('grubs', { grubID: req.grubID});
 });
 
 

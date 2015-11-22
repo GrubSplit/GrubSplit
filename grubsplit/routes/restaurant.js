@@ -7,6 +7,7 @@ var Delivery = require('../libraries/Delivery');
   Grab a restaurant from the store whenever one is referenced with an ID in the
   request path (any routes defined with :restaurant as a paramter).
 */
+
 router.param('restaurant', function(req, res, next, restaurantIdStr) {
   Delivery.getRestaurant(restaurantIdStr, function(err, restaurant) {
     if (restaurant) {
@@ -30,6 +31,7 @@ router.get('/:restaurant', function(req, res) {
     restaurant: req.restaurant
   });
 });
+
 
 
 module.exports = router;

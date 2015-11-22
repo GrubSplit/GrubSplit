@@ -1,0 +1,15 @@
+// recursively creates new menus for display on pages
+// Requirement:
+//		menu = menu entity from delivery.com API
+//		menuLevel = level at which the level is being added
+//					i.e. Lunch menu = level 1, Salads = level 2
+mixin menu(menu)
+	h2 menu id #{menu}
+//	each child in menu.children
+//		case child.type
+//			when 'menu'
+//				p menu
+//				//+menu(child)
+//			when 'item'
+//				p item
+//				//+menuItem(child)
