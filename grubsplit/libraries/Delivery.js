@@ -1,9 +1,5 @@
 var request = require('request');
 
-var RESTAURANT_IDS = {
-  'Cafe 472': 70706
-};
-
 /**
  * Library for retrieving data from Delivery.com's API by
  *   parsing information from responses
@@ -25,7 +21,7 @@ var Delivery = function() {
     var url = 'https://api.delivery.com/third_party/account/create?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
-    url += '&response_type=' + RESPONSE_TYPE;
+    url += '&response_type=' + 'code';
     url += '&scope=' + 'global';
     url += '&state=';
     return url;
@@ -81,48 +77,12 @@ var Delivery = function() {
     });
   };
 
-  that.searchNearbyRestaurants = function (address, callback) {
+  that.searchNearbyRestaurants = function(address, callback) {
     var url = 'https://api.delivery.com/merchant/search/delivery?';
     url += 'client_id=' + CLIENT_ID;
     url += '&address=' + address;
-    that.getRestaurant('70706', function (err, restaurant) {
+    that.getRestaurant('70706', function(err, restaurant) {
       callback(err, [restaurant]);
-    });
-  };
-
-  /**
-   * Get restaurant info and parse response
-   * @param  {int} restaurantId     Id for restaurant
-   * @return {JSON}                 Restaurant info
-   *   attributes in response:
-   *     name
-   *     address
-   *     phoneNumber
-   */
-  that.getRestaurant = function(restaurantId, callback) {
-    var url = 'https://api.delivery.com/merchant/' + restaurantId;
-    url += '?client_id=' + CLIENT_ID;
-    request(url, function(error, response, body) {
-      if (error || response.statusCode != 200) {
-        error = error || {'message': [{'user_msg': response.statusCode}]};
-        return callback(error);
-      }
-      body = JSON.parse(body);
-      var location = body.merchant.location;
-      var summary = body.merchant.summary;
-      console.log(body);
-      console.log(location);
-      console.log(summary);
-      callback(null, {
-        'name': summary.name,
-        'id': restaurantId,
-        'phone': summary.phone,
-        'merchant_logo': summary.merchant_logo,
-        'street': location.street,
-        'city': location.city,
-        'state': location.state,
-        'zip_code': location.zip,
-      });
     });
   };
 
@@ -133,17 +93,71 @@ var Delivery = function() {
    *   attributes in response:
    *     menuItems
    */
-  that.getMenu = function(restaurantId, callback) {
+  var getMenu = function(restaurantId, callback) {
     var url = 'https://api.delivery.com/merchant/' + restaurantId + '/menu?';
     url += 'client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
       if (error || response.statusCode != 200) {
-        error = error || {'message': [{'user_msg': response.statusCode}]};
+        error = error || {
+          'message': [{
+            'user_msg': response.statusCode
+          }]
+        };
         return callback(error);
       }
       var menu = response.menu;
       callback(null, {
         'menu': menu
+      });
+    });
+  };
+
+  /**
+   * Get restaurant info and parse response
+   * @param  {int} restaurantId     Id for restaurant
+   * @return {JSON}                 Restaurant info
+   *   attributes in response:
+   *     name
+   *     id
+   *     phone
+   *     merchant_logo
+   *     street
+   *     city
+   *     state
+   *     zip_code
+   *     menu
+   */
+  that.getRestaurant = function(restaurantId, callback) {
+    var url = 'https://api.delivery.com/merchant/' + restaurantId;
+    url += '?client_id=' + CLIENT_ID;
+    request(url, function(error, response, body) {
+      if (error || response.statusCode != 200) {
+        error = error || {
+          'message': [{
+            'user_msg': response.statusCode
+          }]
+        };
+        return callback(error);
+      }
+      body = JSON.parse(body);
+      var location = body.merchant.location;
+      var summary = body.merchant.summary;
+      getMenu(retaurant_id, function(error, menu) {
+        if (error) {
+          callback(error);
+        } else {
+          callback(null, {
+            'name': summary.name,
+            'id': restaurantId,
+            'phone': summary.phone,
+            'merchant_logo': summary.merchant_logo,
+            'street': location.street,
+            'city': location.city,
+            'state': location.state,
+            'zip_code': location.zip,
+            'menu': menu
+          });
+        }
       });
     });
   };
