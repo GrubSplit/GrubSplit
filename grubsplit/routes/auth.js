@@ -4,6 +4,7 @@ var User = require('../models/User');
 var Delivery = require('../libraries/Delivery');
 
 router.get('/', function(req, res, next) {
+  if (req.user.token && req.user.refresh_token) return res.redirect('/');
   var query = req.query;
   console.log('QUERY: ' + query.code);
   console.log(req.user.id);
@@ -20,12 +21,13 @@ router.get('/', function(req, res, next) {
     }, function(err) {
       if (!err) {
         console.log('UPDATED TOKEN: ' + response.access_token);
+        res.redirect('/');
       } else {
         console.log(err);
+        res.redirect(Delivery.authorizeAccountURL());
       }
     });
   });
-  res.redirect('/');
 });
 
 module.exports = router;

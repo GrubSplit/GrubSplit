@@ -23,6 +23,9 @@ db.once('open', function(callback) {
   console.log("database connected");
 });
 
+// Import Delivery library
+var Delivery = require('./libraries/Delivery');
+
 // Import route handlers
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -78,20 +81,30 @@ app.use(function(req, res, next) {
   next();
 });
 
-var loggedIn = function(req, res, next) {
-  if (req.isAuthenticated()) {
+var isLoggedIn = function(req, res, next) {
+  if (req.user) {
     return next();
   }
   res.redirect('/users/login');
+}
+
+var isAuthenticated = function(req, res, next) {
+  if (req.user) {
+    if (req.user.token && req.user.refresh_token) {
+      return next();
+    }
+    return res.redirect(Delivery.authorizeAccountURL());
+  }
+  return res.redirect('/users/login');
 };
 
 // Map paths to imported route handlers
-app.use('/$', loggedIn, index);
+app.use('/$', isAuthenticated, index);
 app.use('/users', users);
-app.use('/grubs', loggedIn, grubs);
-app.use('/subgrubs', loggedIn, subgrubs);
-app.use('/restaurant', loggedIn, restaurant);
-app.use('/auth', loggedIn, auth);
+app.use('/grubs', isAuthenticated, grubs);
+app.use('/subgrubs', isAuthenticated, subgrubs);
+app.use('/restaurant', isAuthenticated, restaurant);
+app.use('/auth', isLoggedIn, auth);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
