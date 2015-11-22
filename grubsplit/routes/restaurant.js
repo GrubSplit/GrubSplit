@@ -36,14 +36,6 @@ router.get('/:restaurant', function(req, res) {
   res.render('restaurant', { restaurant: req.restaurant });
 });
 
-/**
- * POST /restaurant/:restaurant
- * Starts a grub
- */
-router.post('/:restaurant', function(req, res) {
-  //Create grub
-  res.render('grubs', { grub: req.restaurant });
-});
 
 
 module.exports = router;
