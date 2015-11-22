@@ -45,8 +45,7 @@ router.all('/:grub', requireOwnership);
   Response:
 */
 router.post('/', function(req, res) {
-  req.restaurantID = '70706' //TODO FIX THIS SO IT'S REAL PLEASE
-  Grub.createNewGrub(req.user, req.restaurantID, function(err, grub) {
+  Grub.createNewGrub(req.user._id, req.query.restaurantID, req.query.restaurantName, function(err, grub) {
     if (err) {
       req.flash('errors', { msg: err.msg });
     } else {
