@@ -10,6 +10,7 @@ var router = express.Router();
 var passport = require('passport');
 var Delivery = require('../libraries/Delivery');
 var User = require('../models/User');
+var Grub = require('../models/Grub');
 var SubGrub = require('../models/SubGrub');
 
 
@@ -133,32 +134,42 @@ router.get('/profile', function(req, res) {
   } else {
     return res.redirect('/users/login');
   }
-  // SubGrub.find({ owner: req.user._id }).populate('grubID').select('-subGrubs').exec(function (err, grubs) {
-  //   var open_grubs = [];
-  //   var past_grubs = [];
-  //   grubs.forEach(function (grub) {
-  //     if (grub.time_ordered) {
-  //       past_grubs.push(grub);
-  //     } else {
-  //       open_grubs.push(grub);
-  //     }
-  //   });
-  //   Grub.find({ _id: {$in: req.user.grub_invites } }).select('-subGrubs').exec(function (err, grub_invites) {
-  //       res.render('users/profile', {
-  //         'grub_invites': grub_invites,
-  //         'open_grubs': open_grubs,
-  //         'past_grubs': past_grubs
-  //       });
-  //   });
-  // });
-  var grub_invites = [];
-  var open_grubs = [];
-  var past_grubs = [];
-  res.render('users/profile', {
-    'grub_invites': grub_invites,
-    'open_grubs': open_grubs,
-    'past_grubs': past_grubs
+  // FIXME: A user can be an owner of a grub and not have any subgrubs...
+  // This grub would not show up in the user's profile using this query.
+  SubGrub.find({ owner: req.user._id }).populate('grubID').select('-subGrubs').exec(function (err, grubs) {
+    if (err) {
+      req.flash('errors', err);
+      return res.redirect('/');
+    }
+    var open_grubs = [];
+    var past_grubs = [];
+    grubs.forEach(function (grub) {
+      if (grub.time_ordered) {
+        past_grubs.push(grub);
+      } else {
+        open_grubs.push(grub);
+      }
+    });
+    Grub.find({ _id: {$in: req.user.grub_invites } }).select('-subGrubs').exec(function (err, grub_invites) {
+      if (err) {
+        req.flash('errors', err);
+        return res.redirect('/');
+      }
+      res.render('users/profile', {
+        'grub_invites': grub_invites,
+        'open_grubs': open_grubs,
+        'past_grubs': past_grubs
+      });
+    });
   });
+  // var grub_invites = [];
+  // var open_grubs = [];
+  // var past_grubs = [];
+  // res.render('users/profile', {
+  //   'grub_invites': grub_invites,
+  //   'open_grubs': open_grubs,
+  //   'past_grubs': past_grubs
+  // });
 });
 
 module.exports = router;
