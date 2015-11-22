@@ -11,21 +11,37 @@
  */
 
  var mongoose = require('mongoose');
- var subGrubSchema = new mongoose.Schema({
+ var ObjectID = mongoose.Schema.Types.ObjectId;
 
+ var itemSchema = new mongoose.Schema({
+ 	price: Number,
+ 	id: String,
+ 	quantity: Number,
+ 	instructions: String
  });
+
+ var subGrubSchema = new mongoose.Schema({
+ 	owner:{ 
+    	type: ObjectID, 
+    	ref: "User", 
+    	required: true 
+  	},
+ 	grubID: String,
+ 	items: [itemSchema]
+ });
+
 
 
 module.exports = mongoose.model('SubGrub', subGrubSchema);
 
- var SubGrub = function (user, restaurant, id) {
+ var SubGrub = function (user, grubID) {
  	var that = Object.create(SubGrub.prototype)
 
- 	var user = user;
- 	var restaurant = restaurant;
- 	var items = [];
- 	var grubID = id;
- 	var price = price;
+ 	var data = {'owner' : user,
+                'grubID' : grubID,
+                'items' : [] };
+    var subgrub = new model(data);
+    subgrub.save();
  	
  	that.getUser = function(){
  		return user;
@@ -49,13 +65,15 @@ module.exports = mongoose.model('SubGrub', subGrubSchema);
 
  	/**
  		Adds quantity a given item to the SubGrub
+ 		Params:
  	*/
- 	that.addItem = function(item, quantity){
+ 	that.addItem = function(itemID, quantity, description, price){
  		
  	}
 
  	/**
 		Removes quantity of a given item up to the number that exist in the subgrub
+
  	*/
  	that.removeItem = function(item, quantity){
 

@@ -51,10 +51,9 @@ router.all('/:subgrub', requireOwnership);
  * SubGrub page.
  */
 router.get('/:subgrub', function(req, res) {
-
   // TODO pull subgrub from db
   // get user from session -> pass to db
-    var tempSubGrub = {user:"Jorrie", items:[], id:33, cost:6.90, menu:{children:[{type:"menu"}]}}
+  var tempSubGrub = {user:"Jorrie", items:[], id:33, cost:6.90, menu:{children:[{type:"menu"}]}}
   // create the subgrub in the database
   res.render('subgrubs', { subgrub: tempSubGrub});
 });
@@ -71,8 +70,8 @@ router.get('/:subgrub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:subgrub', function(req, res) {
-
-  console.log('the id of the grub is: ', req.body)
+  console.log('in subgrub route')
+  // console.log('the id of the grub is: ', req.body)
   // TODO add subgrub to grub 
   // TODO: find user from session
   // SubGrub.addItem(user, req.grubID, req.item, req.quantity, function(subgrub) {
