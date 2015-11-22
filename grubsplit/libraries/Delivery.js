@@ -1,7 +1,7 @@
 var request = require('request');
 
 var RESTAURANT_IDS = {
-  'Cafe 472' : 70706
+  'Cafe 472': 70706
 };
 
 /**
@@ -14,6 +14,73 @@ var Delivery = function() {
   var that = Object.create(Delivery.prototype);
 
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
+  var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
+  var REDIRECT_URI = 'https://localhost:3000/auth';
+
+  var RESTAURANT_IDS = {
+    'Cafe 472': 70706
+  };
+
+
+  that.createAccountURL = function() {
+    var url = 'https://api.delivery.com/third_party/account/create?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&redirect_uri=' + REDIRECT_URI;
+    url += '&response_type=' + RESPONSE_TYPE;
+    url += '&scope=' + 'global';
+    url += '&state=';
+    return url;
+  };
+
+
+  that.authorizeAccountURL = function() {
+    var url = 'https://api.delivery.com/third_party/authorize?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&redirect_uri=' + REDIRECT_URI;
+    url += '&response_type=' + 'code';
+    url += '&scope=' + 'global';
+    url += '&state=';
+    return url;
+  };
+
+  that.requestTokenURL = function(code, callback) {
+    var url = 'https://api.delivery.com/third_party/access_token?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&client_secret=' + CLIENT_SECRET;
+    url += '&redirect_uri=' + REDIRECT_URI;
+    url += '&grant_type=' + 'authorization_code';
+    url += '&code=' + code;
+
+    request.post(url, function(error, response, body) {
+      body = JSON.parse(body);
+      if (!error && response.statusCode == 200) {
+        var access_token = body.access_token;
+        var refresh_token = body.refresh_token;
+        var token_type = body.token_type;
+        var expires = body.expires;
+        var expires_in = body.expires_in;
+        callback({
+          'access_token': access_token,
+          'refresh_token': refresh_token,
+          'token_type': token_type,
+          'expires': expires,
+          'expires_in': expires_in
+        });
+      } else {
+        console.log(error);
+        console.log(JSON.stringify(response));
+      }
+    });
+  };
+
+  that.searchNearbyRestaurants = function (address, callback) {
+    var url = 'https://api.delivery.com/merchant/search/delivery?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&address=' + address;
+    that.getRestaurant('Cafe 472', function (err, restaurant) {
+      callback(err, [restaurant]);
+    });
+  };
 
   /**
    * Get restaurant info and parse response
@@ -26,22 +93,29 @@ var Delivery = function() {
    */
   that.getRestaurant = function(restaurant, callback) {
     var restaurantId = RESTAURANT_IDS[restaurant];
-    var url = ('https://api.delivery.com/merchant/%?', restaurantId);
-    url += 'client_id=' + CLIENT_ID;
-    request(url, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var location = response.location;
-        var summary = response.summary;
-        callback({
-          'name'    : summary.name,
-          'id'      : restaurantId,
-          'phone'   : summary.phone,
-          'street'  : location.street,
-          'city'    : location.city,
-          'state'   : location.state,
-          'zip_code': location.zip_code
-        });
+    var url = 'https://api.delivery.com/merchant/' + restaurantId;
+    url += '?client_id=' + CLIENT_ID;
+    request(url, function(error, response, body) {
+      if (error || response.statusCode != 200) {
+        error = error || {'message': [{'user_msg': response.statusCode}]};
+        return callback(error);
       }
+      body = JSON.parse(body);
+      var location = body.merchant.location;
+      var summary = body.merchant.summary;
+      console.log(body);
+      console.log(location);
+      console.log(summary);
+      callback(null, {
+        'name': summary.name,
+        'id': restaurantId,
+        'phone': summary.phone,
+        'merchant_logo': summary.merchant_logo,
+        'street': location.street,
+        'city': location.city,
+        'state': location.state,
+        'zip_code': location.zip,
+      });
     });
   };
 
@@ -52,8 +126,20 @@ var Delivery = function() {
    *   attributes in response:
    *     menuItems
    */
-  that.getMenu = function(restaurantId, callback) {
-
+  that.getMenu = function(restaurant, callback) {
+    var restaurantId = RESTAURANT_IDS[restaurant];
+    var url = ('https://api.delivery.com/merchant/%/menu?', restaurantId);
+    url += 'client_id=' + CLIENT_ID;
+    request(url, function(error, response, body) {
+      if (error || response.statusCode != 200) {
+        error = error || {'message': [{'user_msg': response.statusCode}]};
+        return callback(error);
+      }
+      var menu = response.menu;
+      callback(null, {
+        'menu': menu
+      });
+    });
   };
 
   /**
@@ -62,15 +148,6 @@ var Delivery = function() {
    * @return {[type]}       [description]
    */
   that.placeOrder = function(order) {
-
-  };
-
-  /**
-   * Authenticate a user
-   * @param  {[type]} user [description]
-   * @return {[type]}      [description]
-   */
-  that.authenticate = function(user) {
 
   };
 
