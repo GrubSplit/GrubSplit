@@ -14,7 +14,7 @@ block content
         button.btn(type='submit') Cancel Grub
 
   for subgrub in grub.subGrubs
-    // use mixin
+  	+subgrub(subgrub, user)
 
   a(href="/subgrubs/0")
     button Add items to grub
