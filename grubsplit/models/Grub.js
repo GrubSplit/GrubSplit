@@ -97,7 +97,7 @@ grubSchema.statics.updateTax = function(grubID, tax, callback) {
   @param: callback(err, grub)
 */
 grubSchema.statics.updateDelivery = function(grubID, delivery, callback) {
-  Grub.findOneAndUpdate({_id: grubID}, {$set: {delivery: delivery}}, {new: true}, function(err, grub) {
+  Grub.findOneAndUpdate({_id: grubID}, {$set: {delivery_fee: delivery}}, {new: true}, function(err, grub) {
     if (grub) {
       callback(null, grub);
     } else {
