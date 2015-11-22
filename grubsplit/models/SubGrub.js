@@ -10,6 +10,14 @@
  * Author: jorrieb
  */
 
+ var mongoose = require('mongoose');
+ var subGrubSchema = new mongoose.Schema({
+
+ });
+
+
+module.exports = mongoose.model('SubGrub', subGrubSchema);
+
  var SubGrub = function (user, restaurant, id) {
  	var that = Object.create(SubGrub.prototype)
 

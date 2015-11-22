@@ -37,6 +37,7 @@ var auth = require('./routes/auth');
 // Import models
 var User = require('./models/User');
 var Grub = require('./models/Grub');
+var SubGrub = require('./models/SubGrub');
 
 var app = express();
 
