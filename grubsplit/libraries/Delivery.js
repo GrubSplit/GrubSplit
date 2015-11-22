@@ -56,14 +56,14 @@ var Delivery = function() {
     url += '&code=' + code;
 
     request.post(url, function(error, response, body) {
-      body = JSON.parse(body);
       if (!error && response.statusCode == 200) {
+        body = JSON.parse(body);
         var access_token = body.access_token;
         var refresh_token = body.refresh_token;
         var token_type = body.token_type;
         var expires = body.expires;
         var expires_in = body.expires_in;
-        callback({
+        callback(null, {
           'access_token': access_token,
           'refresh_token': refresh_token,
           'token_type': token_type,
@@ -71,8 +71,7 @@ var Delivery = function() {
           'expires_in': expires_in
         });
       } else {
-        console.log(error);
-        console.log(JSON.stringify(response));
+        callback(error);
       }
     });
   };
@@ -105,10 +104,9 @@ var Delivery = function() {
         };
         return callback(error);
       }
-      var menu = response.menu;
-      callback(null, {
-        'menu': menu
-      });
+      body = JSON.parse(body);
+      var menu = body.menu;
+      callback(null, menu);
     });
   };
 
@@ -142,7 +140,7 @@ var Delivery = function() {
       body = JSON.parse(body);
       var location = body.merchant.location;
       var summary = body.merchant.summary;
-      getMenu(retaurant_id, function(error, menu) {
+      getMenu(restaurantId, function(error, menu) {
         if (error) {
           callback(error);
         } else {

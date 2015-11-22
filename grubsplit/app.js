@@ -95,6 +95,7 @@ var isAuthenticated = function(req, res, next) {
     if (req.user.token && req.user.refresh_token) {
       return next();
     }
+    console.log(req.user);
     return res.redirect(Delivery.authorizeAccountURL());
   }
   return res.redirect('/users/login');

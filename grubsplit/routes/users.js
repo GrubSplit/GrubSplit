@@ -1,8 +1,8 @@
 /**
- * Routes for user login/signup/logout 
+ * Routes for user login/signup/logout
  *
  * Author: marcosp
- *         Also, used some boilerplate code from 
+ *         Also, used some boilerplate code from
  *         https://github.com/sahat/hackathon-starter/blob/master/controllers/user.js
  */
 var express = require('express');
