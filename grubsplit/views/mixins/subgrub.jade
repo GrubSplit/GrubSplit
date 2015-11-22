@@ -1,0 +1,44 @@
+mixin subgrub(subgrub, user)
+    - if (user._id === subgrub.owner)
+        //- TODO Implement this route
+        a(href='subgrub/'+subgrub._id+'/delete') Delete
+    +listGroup('list')
+        for item in subgrub.items  
+            +listItem
+                +listHeading #{item.name}
+                    +listText Price #{item.price}
+                    +listText Quantity #{item.quantity}
+
+//- List group mixins
+- var groupType
+ 
+mixin listGroup(type)
+    - groupType = type
+    case groupType
+        when 'list'
+            ul.list-group
+                block
+        default
+            .list-group
+                block
+ 
+mixin listItem(arg1, arg2)
+    case groupType
+        when 'list'
+            li( class=["list-group-item", arg1] )
+                block
+        when 'links'
+            a( href=arg1, class=["list-group-item", arg2] )
+                block
+        default
+            .list-group-item( class=["list-group-item", arg1] )
+                block
+ 
+mixin listHeading
+    h4.list-group-item-heading
+        block
+ 
+mixin listText
+    .list-group-item-text
+        block
+

@@ -1,10 +1,27 @@
 extends layout
 
 block content
-	.page-header
-	h1 Welcome to GrubSplit!
-	h3 This is a grub's page
-	form.form-horizontal(method="POST")
+  .page-header
+    .row
+      h1 #{grub.owner.name}'s order for #{grub.restaurant_name}
+      button.btn Order Grub
+    .row
+      if grub.time_ordered
+        h3 This was orderd on #{grub.time_ordered}
+      else
+        h3 This order is still open!
+      form.form-horizontal(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
+        button.btn(type='submit') Cancel Grub
+
+  for subgrub in grub.subGrubs
+    +subgrub(subgrub, user)
+
+  form.form-horizontal(method="POST")
 		button.createSubGrub Create SubGrub
 	a(href="/subgrubs/0")
 		button To Subgrub page
+
+  // for each subgrub, display Name, then subgrub contents
+  // if no subgrubs, just display owner's name 
+  //    if no items, show add button if user is owner
+  // next to subgrub of currently logged in, display edit/delete buttons 
