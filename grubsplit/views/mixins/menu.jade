@@ -3,11 +3,13 @@
 //		menu = menu entity from delivery.com API
 //		menuLevel = level at which the level is being added
 //					i.e. Lunch menu = level 1, Salads = level 2
-mixin menu(menu,menuLevel)
-	p THE MENU IS APPEARING
-	if menu.children.length > 0
-		case menu.children[0].type
+mixin menu(menu)
+	h2 menu.name
+	each child in menu.children
+		case child.type
 			when 'menu'
-				p it's a menu!
+				p menu
+				//+menu(child)
 			when 'item'
-				p it's an item
+				p item
+				//+menuItem(child)

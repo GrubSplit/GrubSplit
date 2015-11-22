@@ -3,5 +3,8 @@
 //	  take place in the subgrub itself (query its restaurant) and then
 //	  that info will need to be passed here and formatted accordingly
 
-mixin restaurantheader(id)
-	p Restaurant info = #{id}
+mixin restaurantheader(restaurant)
+	h2 restaurant.getName()
+	p restaurant.getAddress()
+	p restaurant.getPhone()
+	
