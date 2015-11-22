@@ -14,12 +14,12 @@ block content
         button.btn(type='submit') Cancel Grub
 
   for subgrub in grub.subGrubs
-  	+subgrub(subgrub, user)
+    +subgrub(subgrub, user)
 
   a(href="/subgrubs/0")
     button Add items to grub
 
   // for each subgrub, display Name, then subgrub contents
   // if no subgrubs, just display owner's name 
-  //	if no items, show add button if user is owner
+  //    if no items, show add button if user is owner
   // next to subgrub of currently logged in, display edit/delete buttons 
