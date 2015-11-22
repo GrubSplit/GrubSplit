@@ -16,14 +16,13 @@ var Delivery = function() {
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
   var REDIRECT_URI = 'https://localhost:3000/auth';
-  var RESPONSE_TYPE = 'code';
 
   var RESTAURANT_IDS = {
     'Cafe 472': 70706
   };
 
 
-  that.createAccountURL = function(callback) {
+  that.createAccountURL = function() {
     var url = 'https://api.delivery.com/third_party/account/create?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
@@ -33,11 +32,12 @@ var Delivery = function() {
     return url;
   };
 
-  that.authorizeAccountURL = function(callback) {
+
+  that.authorizeAccountURL = function() {
     var url = 'https://api.delivery.com/third_party/authorize?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
-    url += '&response_type=' + RESPONSE_TYPE;
+    url += '&response_type=' + 'code';
     url += '&scope=' + 'global';
     url += '&state=';
     return url;
@@ -48,10 +48,11 @@ var Delivery = function() {
     url += 'client_id=' + CLIENT_ID;
     url += '&client_secret=' + CLIENT_SECRET;
     url += '&redirect_uri=' + REDIRECT_URI;
-    url += '&grant_type=' + 'authorization+code';
+    url += '&grant_type=' + 'authorization_code';
     url += '&code=' + code;
 
-    request(url, function(error, response, body) {
+    request.post(url, function(error, response, body) {
+      body = JSON.parse(body);
       if (!error && response.statusCode == 200) {
         var access_token = body.access_token;
         var refresh_token = body.refresh_token;
@@ -65,7 +66,19 @@ var Delivery = function() {
           'expires': expires,
           'expires_in': expires_in
         });
+      } else {
+        console.log(error);
+        console.log(JSON.stringify(response));
       }
+    });
+  };
+
+  that.searchNearbyRestaurants = function (address, callback) {
+    var url = 'https://api.delivery.com/merchant/search/delivery?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&address=' + address;
+    that.getRestaurant('Cafe 472', function (err, restaurant) {
+      callback(err, [restaurant]);
     });
   };
 
@@ -80,22 +93,29 @@ var Delivery = function() {
    */
   that.getRestaurant = function(restaurant, callback) {
     var restaurantId = RESTAURANT_IDS[restaurant];
-    var url = ('https://api.delivery.com/merchant/%?', restaurantId);
-    url += 'client_id=' + CLIENT_ID;
+    var url = 'https://api.delivery.com/merchant/' + restaurantId;
+    url += '?client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var location = response.location;
-        var summary = response.summary;
-        callback({
-          'name': summary.name,
-          'id': restaurantId,
-          'phone': summary.phone,
-          'street': location.street,
-          'city': location.city,
-          'state': location.state,
-          'zip_code': location.zip_code
-        });
+      if (error || response.statusCode != 200) {
+        error = error || {'message': [{'user_msg': response.statusCode}]};
+        return callback(error);
       }
+      body = JSON.parse(body);
+      var location = body.merchant.location;
+      var summary = body.merchant.summary;
+      console.log(body);
+      console.log(location);
+      console.log(summary);
+      callback(null, {
+        'name': summary.name,
+        'id': restaurantId,
+        'phone': summary.phone,
+        'merchant_logo': summary.merchant_logo,
+        'street': location.street,
+        'city': location.city,
+        'state': location.state,
+        'zip_code': location.zip,
+      });
     });
   };
 
@@ -111,12 +131,14 @@ var Delivery = function() {
     var url = ('https://api.delivery.com/merchant/%/menu?', restaurantId);
     url += 'client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var menu = response.menu;
-        callback({
-          'menu': menu
-        });
+      if (error || response.statusCode != 200) {
+        error = error || {'message': [{'user_msg': response.statusCode}]};
+        return callback(error);
       }
+      var menu = response.menu;
+      callback(null, {
+        'menu': menu
+      });
     });
   };
 

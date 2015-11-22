@@ -18,9 +18,10 @@ block content
       p <i>Try it! ;)</i>
     - else if (restaurants.length === 0)
       p <i>No restaurants nearby :(</i>
-      a(href="/restaurant/0") Link to restaurant page 
     - else
       p <i>#{restaurants.length} restaurants found! :D</i>
       for restaurant in restaurants
-          div
-            p #{restaurant}
+          div.img-thumbnail.square(style={ 'background-image': "url("+restaurant.merchant_logo+")" })
+            a(href="/restaurant/" + restaurant.id)
+              p #{restaurant.name}
+              

@@ -51,7 +51,6 @@ router.all('/:grub', requireOwnership);
  * Grub page.
  */
 router.get('/:grub', function(req, res) {
-  if (!req.user) return res.redirect('/login');
   res.render('grubs', { grub: req.grub});
 });
 
@@ -66,8 +65,6 @@ router.get('/:grub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:grub', function(req, res) {
-  if (!req.user) return res.redirect('/login');
-
   // TODO add subgrub to grub 
   // Grub.addSubgrub(req.grubID, req.subgrub, function(grub) {
   // 	res.render('/grubs', { grub: grub});

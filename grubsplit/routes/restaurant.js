@@ -33,7 +33,6 @@ router.param('restaurant', function(req, res, next, restaurantIdStr) {
  * Restaurant page.
  */
 router.get('/:restaurant', function(req, res) {
-  if (!req.user) return res.redirect('/login');
   res.render('restaurant', { restaurant: req.restaurant });
 });
 

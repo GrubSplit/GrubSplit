@@ -17,10 +17,16 @@ router.post('/', function(req, res, next) {
   		return res.redirect('/');
   	}
 
-  	// TODO: Implement this
-	// var restaurants = Delivery.nearbyRestaurants(req.body.address);
-	var restaurants = [];
-	res.render('index', { 'restaurants': restaurants });
+    Delivery.searchNearbyRestaurants(req.body.address, function(err, restaurants) {
+      if (err) {
+        console.log(err);
+        req.flash('dcomerrors', err.message);
+        return res.redirect('/');
+      }
+      restaurants = restaurants || [];
+      console.log(restaurants);
+      res.render('index', { 'restaurants': restaurants });
+    });
 });
 
 module.exports = router;

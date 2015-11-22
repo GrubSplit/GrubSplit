@@ -51,7 +51,6 @@ router.all('/:subgrub', requireOwnership);
  * SubGrub page.
  */
 router.get('/:subgrub', function(req, res) {
-  if (!req.user) return res.redirect('/login');
   // TODO pull subgrub from db
   // get user from session -> pass to db
 
@@ -71,7 +70,6 @@ router.get('/:subgrub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:subgrub', function(req, res) {
-  if (!req.user) return res.redirect('/login');
 
   // TODO add subgrub to grub 
   // TODO: find user from session
