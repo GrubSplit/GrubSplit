@@ -17,11 +17,10 @@ var Delivery = function() {
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
   var REDIRECT_URI = 'https://localhost:3000/auth';
 
-  var RESTAURANT_IDS = {
-    'Cafe 472': 70706
-  };
-
-
+  /**
+   * Delivery.com API endpoint for creating a new account
+   * @return {String} URL
+   */
   that.createAccountURL = function() {
     var url = 'https://api.delivery.com/third_party/account/create?';
     url += 'client_id=' + CLIENT_ID;
@@ -32,7 +31,10 @@ var Delivery = function() {
     return url;
   };
 
-
+  /**
+   * Delivery.com API endpoint for authorizing an existing account
+   * @return {String} URL
+   */
   that.authorizeAccountURL = function() {
     var url = 'https://api.delivery.com/third_party/authorize?';
     url += 'client_id=' + CLIENT_ID;
@@ -43,6 +45,12 @@ var Delivery = function() {
     return url;
   };
 
+  /**
+   * Delivery.com API endpoint for getting a user's access token
+   * @param  {String}   code     Access code from /third_party/authorize endpoint
+   * @param  {Function} callback returns {err, info about token}
+   * @return {[type]}            [description]
+   */
   that.requestTokenURL = function(code, callback) {
     var url = 'https://api.delivery.com/third_party/access_token?';
     url += 'client_id=' + CLIENT_ID;
@@ -91,8 +99,7 @@ var Delivery = function() {
    *     address
    *     phoneNumber
    */
-  that.getRestaurant = function(restaurant, callback) {
-    var restaurantId = RESTAURANT_IDS[restaurant];
+  that.getRestaurant = function(restaurantId, callback) {
     var url = 'https://api.delivery.com/merchant/' + restaurantId;
     url += '?client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
@@ -126,9 +133,8 @@ var Delivery = function() {
    *   attributes in response:
    *     menuItems
    */
-  that.getMenu = function(restaurant, callback) {
-    var restaurantId = RESTAURANT_IDS[restaurant];
-    var url = ('https://api.delivery.com/merchant/%/menu?', restaurantId);
+  that.getMenu = function(restaurantId, callback) {
+    var url = 'https://api.delivery.com/merchant/' + restaurantId + '/menu?';
     url += 'client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
       if (error || response.statusCode != 200) {

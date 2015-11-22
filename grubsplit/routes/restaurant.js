@@ -8,13 +8,20 @@ var utils = require('../utils/utils');
   request path (any routes defined with :restaurant as a paramter).
 */
 router.param('restaurant', function(req, res, next, restaurantIdStr) {    
-  if (restaurantIdStr === "0") { //temporary bypass of not having a real restaurant ID
+  if (restaurantIdStr === "70706") { //temporary bypass of not having a real restaurant ID
       req.restaurant = [];
       next();
   } else {
+<<<<<<< Updated upstream
   var restaurantId = new ObjectID(restaurantIdStr);
   // TODO: Implement this function
   Restaurant.getRestaurant(restaurantId, function(err, restaurant) {
+=======
+  // var restaurantId = new ObjectID(restaurantIdStr);
+  var restaurantId = restaurantIdStr;
+
+  Delivery.getRestaurant(restaurantId, function(err, restaurant) {
+>>>>>>> Stashed changes
     if (restaurant) {
       req.restaurant = restaurant;
       next();
