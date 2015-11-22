@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var Restaurant = require('../models/Restaurant');
 var utils = require('../utils/utils');
+var Delivery = require('../libraries/Delivery');
 
 /*
   Grab a restaurant from the store whenever one is referenced with an ID in the
