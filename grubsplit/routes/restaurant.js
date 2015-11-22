@@ -7,14 +7,8 @@ var utils = require('../utils/utils');
   Grab a restaurant from the store whenever one is referenced with an ID in the
   request path (any routes defined with :restaurant as a paramter).
 */
-router.param('restaurant', function(req, res, next, restaurantIdStr) {    
-  if (restaurantIdStr === "70706") { //temporary bypass of not having a real restaurant ID
-      req.restaurant = [];
-      next();
-  } else {
-  var restaurantId = new ObjectID(restaurantIdStr);
-  // TODO: Implement this function
-  Restaurant.getRestaurant(restaurantId, function(err, restaurant) {
+router.param('restaurant', function(req, res, next, restaurantIdStr) {
+  Delivery.getRestaurant(restaurantIdStr, function(err, restaurant) {
     if (restaurant) {
       req.restaurant = restaurant;
       next();
@@ -22,7 +16,6 @@ router.param('restaurant', function(req, res, next, restaurantIdStr) {
       utils.sendErrResponse(res, 404, 'Resource not found.');
     }
   });
-}
 });
 
 // Require ownership
@@ -33,7 +26,9 @@ router.param('restaurant', function(req, res, next, restaurantIdStr) {
  * Restaurant page.
  */
 router.get('/:restaurant', function(req, res) {
-  res.render('restaurant', { restaurant: req.restaurant });
+  res.render('restaurant', {
+    restaurant: req.restaurant
+  });
 });
 
 
