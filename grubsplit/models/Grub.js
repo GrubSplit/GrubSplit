@@ -14,6 +14,7 @@
 
 var mongoose = require('mongoose');
 var ObjectID = mongoose.Schema.Types.ObjectId;
+var User = require('../models/User');
 
 var grubSchema = new mongoose.Schema({
   owner: { 
@@ -25,15 +26,35 @@ var grubSchema = new mongoose.Schema({
     type: ObjectID,
     ref: "SubGrub"
   }],
-  order_Open: {
-    type:Boolean,
-    default: true
-  },
   restaurantID: Number,
   tax: Number,
   tip: Number,
-  delivery_fee: Number
+  delivery_fee: Number,
+  time_created: Date,
+  time_ordered: Date // if no time_ordered... then order is still open
 });
+
+
+/*
+  given a grubID, return the grub, with all subgrubs populated
+  @param: currentUserEmail = email of currently logged in user (aka grubLeader)
+  @param: restaurantID = mongo ObjectID of restaurant
+  @param: callback(err, grub)
+*/
+grubSchema.statics.createNewGrub = function(currentUserEmail, restaurantID, callback) {
+  var now = new Date();
+  User.findOne({email: currentUserEmail}, function(err, user) {
+    if (user) {
+      Grub.create({
+        owner: user._id,
+        restaurantID: restaurantID,
+        time_created: now
+      });
+    } else {
+      callback({msg: 'could not find user'});
+    }
+  });
+}
 
 /*
   given a grubID, return the grub, with all subgrubs populated
@@ -41,9 +62,9 @@ var grubSchema = new mongoose.Schema({
   @param: callback(err, grub)
 */
 grubSchema.statics.getGrub = function(grubID, callback) {
-  Grub.find({_id: grubID}).populate(['subGrubs']).exec(function(err, grub) {
+  Grub.findOne({_id: mongoose.Schema.Types.ObjectId(grubID)}).populate(['subGrubs']).exec(function(err, grub) {
     if (grub) {
-      callback(null, grub);
+        callback(null, grub);
     } else {
       callback({msg: 'could not find grub'});
     }
@@ -99,6 +120,7 @@ grubSchema.statics.updateTip = function(grubID, tip, callback) {
   });
 };
 
+var Grub = mongoose.model('Grub', grubSchema);
 module.exports = mongoose.model('Grub', grubSchema);
 
 // var Grub = function (user, restaurant) {
