@@ -25,7 +25,7 @@ var Delivery = function() {
     var url = 'https://api.delivery.com/third_party/account/create?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
-    url += '&response_type=' + RESPONSE_TYPE;
+    url += '&response_type=' + 'code';
     url += '&scope=' + 'global';
     url += '&state=';
     return url;
