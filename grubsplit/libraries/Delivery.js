@@ -97,7 +97,7 @@ var Delivery = function() {
     url += '?client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
       if (error || response.statusCode != 200) {
-        error = error || response.statusCode;
+        error = error || {'message': [{'user_msg': response.statusCode}]};
         return callback(error);
       }
       body = JSON.parse(body);
@@ -131,12 +131,14 @@ var Delivery = function() {
     var url = ('https://api.delivery.com/merchant/%/menu?', restaurantId);
     url += 'client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var menu = response.menu;
-        callback({
-          'menu': menu
-        });
+      if (error || response.statusCode != 200) {
+        error = error || {'message': [{'user_msg': response.statusCode}]};
+        return callback(error);
       }
+      var menu = response.menu;
+      callback(null, {
+        'menu': menu
+      });
     });
   };
 

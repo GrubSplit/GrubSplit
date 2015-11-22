@@ -16,7 +16,10 @@ var Restaurant = function(name) {
 
   var id, address, phone, menu;
 
-  Delivery.getRestaurant(name, function(info) {
+  Delivery.getRestaurant(name, function(error, info) {
+    if (error) {
+      throw error;
+    }
     id = info.id;
     address = Address(info.street, info.city, info.state, info.zip);
     phone = info.phone;
