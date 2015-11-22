@@ -9,17 +9,18 @@ block content
 		//+menu(subgrub.menu)
 		+menu(subgrub.id)
 		//display menu
-	div.cart
+	//display cart
+	div.cart.col-md-3.col-md-offset-7
 		h3 Items
 		#subgrub
 			if subgrub.items
 				p Cart is empty
 			else
 				p Display all items here
-				//iterate through cart, displaying each
 		h3 Cost
 			p $#{subgrub.cost.toFixed(2)}
-		button Submit
+//		form.form-horizontal(method="POST", action="/subgrubs/0")
+		button(type="submit") Submit
 
 	a(href="/grubs/0")
 	button Add items to Grub

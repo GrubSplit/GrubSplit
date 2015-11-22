@@ -73,7 +73,7 @@ router.get('/:subgrub', function(req, res) {
  */
 router.post('/:subgrub', function(req, res) {
   if (!req.user) return res.redirect('/login');
-
+  console.log('the id of the grub is: ', req.body)
   // TODO add subgrub to grub 
   // TODO: find user from session
   // SubGrub.addItem(user, req.grubID, req.item, req.quantity, function(subgrub) {

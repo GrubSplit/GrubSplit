@@ -11,11 +11,6 @@ a {
 	color:orange;
 	border: 1px solid orange;
 	position: fixed;
-	right: 40px;
-	top: 150px;
-	/* need to be made flexible*/
-	width: 200px;
-	height: 400px;
 }
 
 /*.submitOrder{
