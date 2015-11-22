@@ -8,7 +8,7 @@ var utils = require('../utils/utils');
   request path (any routes defined with :restaurant as a paramter).
 */
 router.param('restaurant', function(req, res, next, restaurantIdStr) {    
-  if (restaurantIdStr === "0") { //temporary bypass of not having a real restaurant ID
+  if (restaurantIdStr === "70706") { //temporary bypass of not having a real restaurant ID
       req.restaurant = [];
       next();
   } else {
