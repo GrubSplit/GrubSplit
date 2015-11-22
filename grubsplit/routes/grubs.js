@@ -83,5 +83,15 @@ router.post('/:grub', function(req, res) {
   // res.render('/grubs', { grub: res.grub});
 });
 
+router.delete('/:grub', function(req, res) {
+  Grub.deleteGrub(req.params.grub, function(err) {
+    if (err) {
+      req.flash('errors', {msg: err.msg});
+    } else {
+      res.redirect('/');
+    }
+  });
+});
+
 
 module.exports = router;

@@ -12,6 +12,7 @@ var flash = require('express-flash');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var expressValidator = require('express-validator');
+var methodOverride = require('method-override')
 
 // Database set up
 var mongoose = require('mongoose');
@@ -70,6 +71,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(methodOverride('_method'));
 
 // passport config
 passport.use(User.createStrategy());

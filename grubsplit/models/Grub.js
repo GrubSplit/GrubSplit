@@ -60,7 +60,7 @@ grubSchema.statics.createNewGrub = function(userID, restaurantID, restaurantName
   @param: callback(err, grub)
 */
 grubSchema.statics.getGrub = function(grubID, callback) {
-  Grub.findOne({_id: grubID}).populate(['subGrubs']).exec(function(err, grub) {
+  Grub.findOne({_id: grubID}).populate(['owner', 'subGrubs']).exec(function(err, grub) {
     if (grub) {
         callback(null, grub);
     } else {
@@ -83,7 +83,7 @@ grubSchema.statics.updateTax = function(grubID, tax, callback) {
       callback({msg: "could not find grub to update tax"});
     }
   });
-};
+}
 
 
 /*
@@ -100,7 +100,7 @@ grubSchema.statics.updateDelivery = function(grubID, delivery, callback) {
       callback({msg: "could not find grub to update delivery fee"});
     }
   });
-};
+}
 
 /*
   given a grub ID, update the tip, and return the grub or error message
@@ -116,7 +116,23 @@ grubSchema.statics.updateTip = function(grubID, tip, callback) {
       callback({msg: "could not find grub to update tip"});
     }
   });
-};
+}
+
+/*
+  given a grub ID, delete it
+  @param: grubID = id of the grub
+  @param: callback(err)
+*/
+grubSchema.statics.deleteGrub = function(grubID, callback) {
+  Grub.remove({_id: grubID}, function(err, grub) {
+    if (err) {
+      callback({msg: 'could not delete grub'});
+    } else {
+      callback(null);
+    }
+  });
+}
+
 
 var Grub = mongoose.model('Grub', grubSchema);
 module.exports = mongoose.model('Grub', grubSchema);
