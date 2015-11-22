@@ -10,6 +10,7 @@ var router = express.Router();
 var passport = require('passport');
 var Delivery = require('../libraries/Delivery');
 var User = require('../models/User');
+var SubGrub = require('../models/SubGrub');
 
 
 /**
@@ -132,30 +133,24 @@ router.get('/profile', function(req, res) {
   } else {
     return res.redirect('/users/login');
   }
-  // TODO: verify this will work once we have docs in Grub model
-  // var populateQuery = [
-  //   {
-  //     path:'grub_invites',
-  //     select:'leader restaurant'
-  //   },
-  //   {
-  //     path:'open_grubs',
-  //     select:'leader restaurant'
-  //   },
-  //   {
-  //     path:'past_grubs',
-  //     select:'restaurant'
-  //   }
-  // ];
-  // User.find({ _id: req.user._id })
-  //     .populate(populateQuery)
-  //     .exec(function (err, results) {
+  // SubGrub.find({ owner: req.user._id }).populate('grubID').select('-subGrubs').exec(function (err, grubs) {
+  //   var open_grubs = [];
+  //   var past_grubs = [];
+  //   grubs.forEach(function (grub) {
+  //     if (grub.time_ordered) {
+  //       past_grubs.push(grub);
+  //     } else {
+  //       open_grubs.push(grub);
+  //     }
+  //   });
+  //   Grub.find({ _id: {$in: req.user.grub_invites } }).select('-subGrubs').exec(function (err, grub_invites) {
   //       res.render('users/profile', {
-  //         'grub_invites' : results.grub_invites,
-  //         'open_grubs' : results.open_grubs,
-  //         'past_grubs' : results.past_grubs
+  //         'grub_invites': grub_invites,
+  //         'open_grubs': open_grubs,
+  //         'past_grubs': past_grubs
   //       });
-  //     });
+  //   });
+  // });
   var grub_invites = [];
   var open_grubs = [];
   var past_grubs = [];
