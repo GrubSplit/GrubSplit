@@ -88,7 +88,7 @@ var isLoggedIn = function(req, res, next) {
     return next();
   }
   res.redirect('/users/login');
-}
+};
 
 var isAuthenticated = function(req, res, next) {
   if (req.user) {

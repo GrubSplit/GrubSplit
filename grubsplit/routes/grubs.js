@@ -46,7 +46,7 @@ router.all('/:grub', requireOwnership);
 */
 router.post('/', function(req, res) {
   req.restaurantID = '70706' //TODO FIX THIS SO IT'S REAL PLEASE
-  Grub.createNewGrub(req.session.passport.user, req.restaurantID, function(err, grub) {
+  Grub.createNewGrub(req.user, req.restaurantID, function(err, grub) {
     if (err) {
       req.flash('errors', { msg: err.msg });
     } else {
@@ -60,7 +60,7 @@ router.post('/', function(req, res) {
  * Grub page.
  */
 router.get('/:grub', function(req, res) {
-  res.render('grubs', { currentUser: req.session.passport.user, grub: req.grub});
+  res.render('grubs', { currentUser: req.user, grub: req.grub});
 });
 
 /**
