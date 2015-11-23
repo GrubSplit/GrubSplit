@@ -33,7 +33,11 @@ author: jorrieb
 	//	-quantity
 	//	-comments/instructions
 	//	-submit to cart button
-	$(document).on('click', '.menuItem', function(evt) {
+	$(document).on('click', '.item', function(evt) {
+		console.log('clicked an item')
+		console.log(evt)
+		console.log(evt.currentTarget)
+		// console.log(evt.currentTarget)
 		//get id of clicked element
 		//item = item from menu using id
 		//displayMenuItem(item)

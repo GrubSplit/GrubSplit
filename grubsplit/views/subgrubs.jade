@@ -24,10 +24,9 @@ block content
             p <i>Your order is empty</i>
         
     h3 Cost
-      script.
-        var cost = 0;
-        cart.forEach(function (item) {cost += item.cost});
-      p cost
+        - var cost = 0;
+        - cart.forEach(function (item) {cost += item.cost});
+      p #{cost}
 
     form.form-horizontal(method='POST')
       button.btn.btn-primary(type='submit') Add items to Grub

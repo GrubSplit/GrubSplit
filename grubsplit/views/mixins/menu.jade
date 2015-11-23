@@ -12,7 +12,8 @@ mixin menu(menu)
                     +menuItem(child)
 
 mixin menuItem(item)
-    div=item.name
+    a(itemid=item.id).item
+        p #{item.name}
         if item.children
             for child in item.children
                 if (child.type === 'option group')
