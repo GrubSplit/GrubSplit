@@ -23,6 +23,7 @@ block content
   else
     p <i>No SubGrubs in this Grub!</i>
 
-  form.form-horizontal(method="POST")
-    button.createSubGrub Create SubGrub
+  if !grub.time_ordered
+    form.form-horizontal(method="POST")
+      button.createSubGrub Create SubGrub
     
