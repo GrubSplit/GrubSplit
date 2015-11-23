@@ -12,7 +12,7 @@ mixin menu(menu)
                     +menuItem(child)
 
 mixin menuItem(item)
-    a(itemid=item.id).item
+    a(itemid=item.id name=item.name price=item.price).item
         p #{item.name}
         if item.children
             for child in item.children

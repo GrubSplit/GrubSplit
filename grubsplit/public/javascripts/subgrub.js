@@ -26,6 +26,11 @@ author: jorrieb
 	};
 
 	var redisplayCart = function(){
+
+		var subgrubButton = document.getElementById('submitSubGrub')
+		var subgrubid = subgrubButton.getAttribute('subgrubid')
+		subgrubButton.parentNode.removeChild(subgrubButton);
+
 		var cart = document.getElementById('cart')
 		if (cart){
 			cart.parentNode.removeChild(cart);
@@ -39,7 +44,7 @@ author: jorrieb
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = 'place item info here'
+			displayedItem.innerHTML = cartArray[item].name
 			items.appendChild(displayedItem)
 		}
 
@@ -50,7 +55,7 @@ author: jorrieb
 
 		var price = 0
 		for (var item in cartArray){
-			// price += item.cost
+			 price += parseFloat(cartArray[item].price)
 		}
 		var orderPrice = document.createElement('p');
 		orderPrice.innerHTML = '$'.concat(price.toFixed(2).toString())
@@ -61,18 +66,20 @@ author: jorrieb
 		var submit = document.createElement('button');
 		submit.innerHTML = "Submit"
 		submit.setAttribute('id','submitSubGrub')
+		submit.setAttribute('subgrubid', subgrubid)
 		newCart.appendChild(submit)
 
 		document.body.appendChild(newCart)
-
 	}
 
 	// Submit SubGrub to Grub
 	$(document).on('click', '#submitSubGrub', function(evt) {
-		if (cart.length === 0) {
+		if (cartArray.length === 0) {
 			alert('Cart is empty! Add some items to the cart first.');
 			return;
 		}
+		console.log(evt)
+		console.log(evt.subGrubId)
 		$.post(
 			'/subgrubs/'+evt.subGrubId,
 			{ items: cart }
@@ -91,8 +98,15 @@ author: jorrieb
 	//	-submit to cart button
 	$(document).on('click', '.item', function(evt) {
 		console.log(evt.currentTarget.getAttribute('itemid'))
-		cartArray.push(evt.currentTarget.getAttribute('itemid'))
+		var item = evt.currentTarget
+		var cartObject = {
+			id: item.getAttribute('itemid'),
+			name: item.getAttribute('name'),
+			price: item.getAttribute('price')
+		}
+		cartArray.push(cartObject)
 		redisplayCart()
+		console.log(cartArray)
 	});
 
 	// Remove item from cart
