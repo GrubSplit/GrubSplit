@@ -12,6 +12,7 @@
 
  var mongoose = require('mongoose');
  var ObjectID = mongoose.Schema.Types.ObjectId;
+ var Grub = require('./Grub');
 
  var itemSchema = new mongoose.Schema({
  	price: Number,
@@ -34,4 +35,21 @@
  	items: [itemSchema]
  });
 
+subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
+	var subgrubID = subgrub._id
+	var grubID = subgrub.grubID;
+	SubGrub.remove({_id: subgrubID}, function(err) {
+		if (err) {
+			callback({msg: 'could not delete subgrub'});
+		} else {
+			Grub.findOneAndUpdate({ _id: grubID }, {$pull: { subGrubs: subgrubID }}, function(err){
+		        if (err) {
+		        	callback({msg: 'could not delete subgrub ref from grub'});
+		        }
+		    });
+		}
+	});
+}
+
+var SubGrub = mongoose.model('SubGrub', subGrubSchema);
 module.exports = mongoose.model('SubGrub', subGrubSchema);

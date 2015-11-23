@@ -1,26 +1,29 @@
 extends layout
 
 block content
-	.page-header
-		h1 Welcome to GrubSplit!
-		h3 This is a subgrub's page
+  .page-header
+    h1 Welcome to GrubSplit!
+    h3 Your orde
+    h3 This is a subgrub's page
 
-		//+restaurantheader(subgrub.getRestaurant())
-		//+menu(subgrub.menu)
-		+menu(subgrub.id)
-		//display menu
-	//display cart
-	div.cart.col-md-3.col-md-offset-7
-		h3 Items
-		#subgrub
-			if subgrub.items
-				p Cart is empty
-			else
-				p Display all items here
-		h3 Cost
-			p $#{subgrub.cost.toFixed(2)}
-		button(type="submit") Submit
+      //+menu(subgrub.menu)
+      +menu(subgrub.id)
+      //display menu
+  //display cart
+  div.cart.col-md-3.col-md-offset-7
+      h3 Items
+      #subgrub
+          if subgrub.items
+              for item in subgrub.items
+                p item.name
+                p item.price
+          else
+              p <i>Your order is empty</i>
+          
+      h3 Cost
+          p $#{subgrub.cost.toFixed(2)}
+      button(type="submit") Submit
 
 
-	a(href="/grubs/0")
-		button Add items to Grub
+  a(href="/grubs/0")
+      button Add items to Grub
