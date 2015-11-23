@@ -17,6 +17,7 @@
     "fs": "0.0.2",
     "https": "^1.0.0",
     "jade": "~1.11.0",
+    "method-override": "^2.3.5",
     "mocha": "^2.3.4",
     "mongoose": "^4.2.6",
     "morgan": "~1.6.1",

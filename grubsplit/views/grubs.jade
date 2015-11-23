@@ -1,8 +1,29 @@
 extends layout
 
+append head
+  script(src='/javascripts/grub.js')
+
 block content
   .page-header
-    h1 Welcome to GrubSplit!
-    h3 This is a grub's page
-  a(href="/subgrubs/0")
-    button Add items to subgrub
+    .row
+      h1 #{grub.owner.name}'s order for #{grub.restaurant_name}
+    .row
+      if grub.time_ordered
+        h3 This was orderd on #{grub.time_ordered}
+      else
+        h3 This order is still open!
+        if isOwner
+          button.btn Order Grub
+          form.form-horizontal(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
+            button.btn(type='submit') Cancel Grub
+
+  if grub.subGrubs
+    for subgrub in grub.subGrubs
+      +subgrub(subgrub, user, grub.time_ordered)
+  else
+    p <i>No SubGrubs in this Grub!</i>
+
+  if !grub.time_ordered
+    form.form-horizontal(method="POST")
+      button.createSubGrub Create SubGrub
+    

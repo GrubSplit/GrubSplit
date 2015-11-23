@@ -1,0 +1,47 @@
+// recursively creates new menus for display on pages
+// Requirement:
+//      menu = menu entity from delivery.com API
+
+mixin menu(menu)
+    div=menu.name
+        if menu.children
+            for child in menu.children
+                if (child.type === 'menu')
+                    +menu(child)
+                if (child.type === 'item')
+                    +menuItem(child)
+
+mixin menuItem(item)
+    div.row
+        div.col-md-6
+            a(itemid=item.id name=item.name price=item.price).item
+                p #{item.name}
+        div.col-md-6
+            p #{item.price}
+    if item.children
+        for child in item.children
+            if (child.type === 'option group')
+                //+optionGroup(child)
+            if (child.type === 'price group')
+                //+priceGroup(child)
+    
+mixin optionGroup(group)
+    div=group.name
+        if group.children
+            for child in group.children
+                +option(child)
+
+mixin priceGroup(group)
+    div=group.name
+        if group.children
+            for child in group.children
+                +option(child)
+
+mixin option(opt)
+    div=opt.name
+        if opt.children
+            for child in opt.children
+                if (child.type === 'option group')
+                    +optionGroup(child)
+                if (child.type === 'price group')
+                    +priceGroup(child)

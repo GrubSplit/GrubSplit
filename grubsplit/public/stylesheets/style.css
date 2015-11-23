@@ -1,3 +1,4 @@
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -7,12 +8,23 @@ body {
     float:left;
     position: relative;
     width: 30%;
-    padding-bottom : 30%; /* = width for a 1:1 aspect ratio */
+    padding-bottom : 30%;  /*= width for a 1:1 aspect ratio */
     margin:1.66%;
     background-position:center center;
     background-repeat:no-repeat;
     background-size: cover;
+}
 
 a {
   color: #00B7FF;
 }
+
+#cart{
+	/*color:orange;*/
+	border: 2px solid orange;
+	/*position: fixed;*/
+}
+
+/*.submitOrder{
+	bottom: 10px;
+}*/

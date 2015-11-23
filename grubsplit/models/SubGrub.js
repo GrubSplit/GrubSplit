@@ -11,63 +11,110 @@
  */
 
  var mongoose = require('mongoose');
- var subGrubSchema = new mongoose.Schema({
+ var ObjectID = mongoose.Schema.Types.ObjectId;
+ var ObjectId = mongoose.Types.ObjectId;
+ var Grub = require('./Grub');
 
+ var itemSchema = new mongoose.Schema({
+  id: String,
+  name: String,
+ 	price: Number,
+ 	quantity: {type: Number, default: 1},
+ 	instructions: {type: String, default: ''}
+ });
+
+ var subGrubSchema = new mongoose.Schema({
+ 	owner:{ 
+    	type: ObjectID, 
+    	ref: "User", 
+    	required: true 
+  	},
+ 	grubID: {
+ 		type: ObjectID,
+ 		ref: "Grub",
+ 		required: true
+ 	},
+ 	items: [itemSchema]
  });
 
 
+ /*
+  create SubGrub and add reference to its parent Grub
+  @param: userID = ObjectId of User doc
+  @param: grubID = ObjectId of Grub doc
+  @param: callback(err, subGrub)
+*/
+subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
+  SubGrub.create({
+    owner: userID,
+    grubID: grubID
+}, function(err, subGrub) {
+  	if (err) {
+  		callback({msg: 'could not create subgrub'});
+  	} else {
+  		Grub.findOneAndUpdate({_id: grubID},  { $addToSet: { subGrubs: subGrub._id } }, function(err) {
+  			if (err) {
+  				callback({msg: 'could add subgrub id to grub'});
+  			} else {
+  				callback(null, subGrub);
+  			}
+  		});
+  	}
+  });
+}
+
+ /*
+  Add items to subgrub with given id
+  @param: grubID = ObjectId of Grub doc
+  @param: callback(err, subGrub)
+*/
+subGrubSchema.statics.addItems = function(subgrubID, newItems, callback) {
+  SubGrub.findOneAndUpdate({ _id: subgrubID }, { $addToSet: { items: { $each: newItems } } }, function(err, subGrub) {
+  	if (err) {
+  		callback({msg: 'could not update subgrub with given items'});
+  	} else {
+  		callback(null, subGrub)
+  	}
+  });
+}
+
+/*
+  given a subGrubID, return the subGrub, with the user and grub populated
+  @param: subGrubID = string of subGrub id
+  @param: callback(err, subGrub)
+*/
+subGrubSchema.statics.getSubGrub = function(subGrubID, callback) {
+  SubGrub.findOne({_id: subGrubID}).populate(['owner', 'grubID']).exec(function(err, subGrub) {
+    if (subGrub) {
+        callback(null, subGrub);
+    } else {
+      callback({msg: 'could not find subGrub'});
+    }
+  });
+}
+
+
+ /*
+  RemoveSubGrub doc, remove it from SubGrub collection and 
+  remove reference from parent Grub
+  @param: subgrub
+  @param: callback(err)
+*/
+subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
+	var subgrubID = subgrub._id
+	var grubID = subgrub.grubID;
+	SubGrub.remove({_id: subgrubID}, function(err) {
+		if (err) {
+			callback({msg: 'could not delete subgrub'});
+		} else {
+			Grub.findOneAndUpdate({ _id: grubID }, {$pull: { subGrubs: subgrubID }}, function(err){
+		        if (err) {
+		        	callback({msg: 'could not delete subgrub ref from grub'});
+		        }
+		    });
+		}
+	});
+}
+
+var SubGrub = mongoose.model('SubGrub', subGrubSchema);
 module.exports = mongoose.model('SubGrub', subGrubSchema);
-
- var SubGrub = function (user, restaurant, id) {
- 	var that = Object.create(SubGrub.prototype)
-
- 	var user = user;
- 	var restaurant = restaurant;
- 	var items = [];
- 	var grubID = id;
- 	var price = price;
- 	
- 	that.getUser = function(){
- 		return user;
- 	}
-
- 	that.getRestaurant = function(){
- 		return restaurant;
- 	}
-
- 	that.getItems = function(){
- 		return items;
- 	}
-
- 	that.getID = function(){
- 		return grubID;
- 	}
-
- 	that.getPrice = function(){
- 		return price;
- 	}
-
- 	/**
- 		Adds quantity a given item to the SubGrub
- 	*/
- 	that.addItem = function(item, quantity){
- 		
- 	}
-
- 	/**
-		Removes quantity of a given item up to the number that exist in the subgrub
- 	*/
- 	that.removeItem = function(item, quantity){
-
- 	}
-
- 	/**
-		Allows user to submit their subgrub to the main grub
- 	*/
- 	that.submitSubGrub = function() {
-
- 	}
-
-	Object.freeze(that);
-	return that;
- };

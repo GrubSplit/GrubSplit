@@ -1,61 +1,40 @@
 var express = require('express');
 var router = express.Router();
+var Delivery = require('../libraries/Delivery');
+var Grub = require('../models/Grub');
 var SubGrub = require('../models/SubGrub');
 var utils = require('../utils/utils');
 
-/*
-  Require ownership whenever accessing a particular subgrub
-  This means that the client accessing the resource must be logged in
-  as the user that originally created the subgrub. Clients who are not owners 
-  of this particular resource will receive a 404.
-  Why 404? We don't want to distinguish between grubs that don't exist at all
-  and grubs that exist but don't belong to the client. This way a malicious client
-  that is brute-forcing urls should not gain any information.
-*/
-var requireOwnership = function(req, res, next) {
-  // TODO: Does user need to be pulled from db (refreshed?)
-  // if ( req.user.subgrubs.indexOf(req.subgrub._id) === -1) {
-  //   utils.sendErrResponse(res, 404, 'Resource not found.');
-  // } else {
-    next();
-  // }
-};
+
 
 /*
   Grab subgrub from the store whenever one is referenced with an ID in the
   request path (any routes defined with :subgrub as a paramter).
 */
-router.param('subgrub', function(req, res, next, subgrubIdStr) {
-  if (subgrubIdStr === "0") {
-    req.subgrub = [];
-    next();
-  } else {
-  var subgrubId = new ObjectID(subgrubIdStr);
-  // TODO: Implement this
-  Subgrub.getSubgrub(subgrubId, function(err, subgrub) {
-    if (subgrub) {
+router.param('subgrub', function(req, res, next, subGrubIdStr) {
+  SubGrub.getSubGrub(subGrubIdStr, function(err, subgrub) {
+    if (subgrub && subgrub.owner._id.equals(req.user._id)) {
       req.subgrub = subgrub;
       next();
     } else {
       utils.sendErrResponse(res, 404, 'Resource not found.');
     }
   });
-}
 });
-
-// Require ownership
-router.all('/:subgrub', requireOwnership);
 
 /**
  * GET /subgrubs/:id
  * SubGrub page.
  */
 router.get('/:subgrub', function(req, res) {
-  // TODO pull subgrub from db
-  // get user from session -> pass to db
-
-  // create the subgrub in the database
-  res.render('subgrubs', { subgrub: req.subgrub});
+  var restaurantID = req.subgrub.grubID.restaurantID;
+  Delivery.getRestaurant(restaurantID, function(err, restaurant) {
+    if (err) {
+      req.flash('errors', err);
+      return res.redirect('/grubs/'+req.subgrub.grubID._id);      
+    }
+    res.render('subgrubs', { 'subgrub': req.subgrub, 'restaurant' : restaurant });
+  });
 });
 
 /**
@@ -66,20 +45,37 @@ router.get('/:subgrub', function(req, res) {
     - item: the item to be added
     - quantity: how many items to be added
   Response:
-    - success: true if the server succeeded in recording the user's freet
+    - success: true if the server succeeded adding item to subgrub
     - err: on failure, an error message
  */
 router.post('/:subgrub', function(req, res) {
+  var items = JSON.parse(req.body.items) || [];
+  SubGrub.addItems(req.subgrub._id, items, function (err, subgrub) {
+    if (err) {
+      req.flash('errors', err);
+      return;
+    }
+    var redirect_url = req.protocol + '://' + req.get('host') + '/grubs/' + req.subgrub.grubID._id;
+    res.send(redirect_url);
+  });
+});
 
-  // TODO add subgrub to grub 
-  // TODO: find user from session
-  // SubGrub.addItem(user, req.grubID, req.item, req.quantity, function(subgrub) {
-  // 	res.render('/subgrubs', { subgrub: subgrub});
-  // })
-
-  // TODO pull grub from db
-
-  // res.render('subgrubs', { subgrub: res.subgrub});
+/**
+ * DELETE /subgrubs/:id
+ * SubGrub page.
+  Request body:
+    - grubID: id of the current grub
+  Response:
+    - success: true if the server succeeded in deleting subgrub
+    - err: on failure, an error message
+ */
+ router.delete('/:subgrub', function(req, res) { 
+  SubGrub.deleteSubGrub(req.subgrub, function (err) {
+    if (err) {
+      req.flash('errors', err);
+    }
+    res.redirect('/grubs/'+req.subgrub.grubID._id);
+  });
 });
 
 

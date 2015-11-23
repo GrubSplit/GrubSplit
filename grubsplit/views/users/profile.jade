@@ -5,25 +5,30 @@ block content
     h1 Welcome, #{user.name}
   div
     h3 Invitations
-    if grub_invites.length === 0
+    if (grub_invites.length != 0)
+      for grub in grub_invites
+        div
+          p #{grub.owner.name} invited you to order from #{grub.restaurant_name}
+          a Accept
+          a Decline
+    else
       p <i>No current invitations!</i>
-    for grub in grub_invites
-      div
-        p #{grub.leader} invited you to order from #{grub.restaurant}
-        a Accept
-        a Decline
   div
     h3 Open Grubs
-    if open_grubs.length === 0
+    if (open_grubs.length != 0)
+      for grub in open_grubs
+        div
+          a(href='/grubs/' + grub._id) #{grub.owner.name} is ordering from #{grub.restaurant_name}
+    else
       p <i>No open grubs!</i>
-    for grub in open_grubs
-      div
-        a(href='/grubs/' + grub._id) #{grub.leader} is ordering from #{grub.restaurant}
+
   div
     h3 Past Grubs
-    if past_grubs.length === 0
+    if (past_grubs.length != 0)
+      for grub in past_grubs
+        div
+          a(href='/grubs/' + grub._id) #{grub.owner.name} ordered from #{grub.restaurant_name}
+    else
       p <i>No past grubs!</i>
-    for grub in past_grubs
-      div
-        a(href='/grubs/' + grub._id) You ordered from #{grub.restaurant}
+
 
