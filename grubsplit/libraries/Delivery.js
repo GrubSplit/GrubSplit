@@ -173,7 +173,7 @@ var Delivery = function() {
     var options = {
       url: url,
       headers: {
-        'authorization': token
+        'Authorization': token
       },
       formData: {
         'street': address.street,
@@ -189,10 +189,7 @@ var Delivery = function() {
       } else {
         body = JSON.parse(body);
         var location = body.location;
-        callback(null, {
-          'location_id': location.location_id,
-          'location': location
-        });
+        callback(null, location.location_id);
       }
     });
   };

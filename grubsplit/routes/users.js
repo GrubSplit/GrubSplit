@@ -132,6 +132,20 @@ router.get('/profile', function(req, res) {
   } else {
     return res.redirect('/users/login');
   }
+  var address = {
+    'street': '407 Memorial Drive',
+    'city': 'Cambridge',
+    'state': 'MA',
+    'zip_code': '02139',
+    'phone': '412-667-2529'
+  };
+  Delivery.addAddress(address, req.user.token, function(error, location_id) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log(location_id);
+    }
+  });
   // TODO: Make this less ugly?
   SubGrub.find({ owner: req.user._id })
          .select('-_id grubID')
