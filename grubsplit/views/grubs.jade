@@ -15,10 +15,10 @@ block content
           h3 This order is still open!
         if isOwner
           .col-md-2
-            button.btn.btn-primary Order Grub
+            button.btn.btn-success Order Grub
           .col-md-2
             form(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
-              button.btn(type='submit') Cancel Grub
+              button.btn.btn-danger(type='submit') Cancel Grub
 
   - var alreadyHaveSubGrub = false;
   if (grub.subGrubs.length != 0)

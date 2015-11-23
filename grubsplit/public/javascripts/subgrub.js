@@ -65,9 +65,10 @@ author: jorrieb
 		newCart.appendChild(cost)
 
 		var submit = document.createElement('button');
-		submit.innerHTML = "Submit"
+		submit.innerHTML = "Submit SubGrub"
 		submit.setAttribute('id','submitSubGrub')
 		submit.setAttribute('subgrubid', subgrubid)
+		submit.setAttribute('class', 'btn btn-primary')
 		newCart.appendChild(submit)
 
 		document.body.appendChild(newCart)

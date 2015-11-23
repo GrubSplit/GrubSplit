@@ -9,7 +9,7 @@ block content
     .row
       h1.col-sm-10 Create your subgrub! 
       form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
-        button.btn.col-sm-2(subGrubId=subgrub._id) Cancel Subgrub
+        button.btn.btn-danger.col-sm-2(subGrubId=subgrub._id) Cancel Subgrub
     h3 #{restaurant.name}
     +restaurantHeader(restaurant)
 
