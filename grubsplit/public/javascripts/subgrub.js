@@ -6,7 +6,7 @@ The controller for the subgrub page
 author: jorrieb	
 */
 (function() {
-	var cart = []
+	var cartArray = []
 
 	$(function() {
     	redisplayCart()
@@ -37,7 +37,7 @@ author: jorrieb
 		var items = document.createElement('h4');
 		items.innerHTML = "Items"
 
-		for (var item in cart){
+		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
 			displayedItem.innerHTML = 'place item info here'
 			items.appendChild(displayedItem)
@@ -49,7 +49,7 @@ author: jorrieb
 		cost.innerHTML = "Cost"
 
 		var price = 0
-		for (var item in cart){
+		for (var item in cartArray){
 			// price += item.cost
 		}
 		var orderPrice = document.createElement('p');
@@ -91,7 +91,7 @@ author: jorrieb
 	//	-submit to cart button
 	$(document).on('click', '.item', function(evt) {
 		console.log(evt.currentTarget.getAttribute('itemid'))
-		cart.push(evt.currentTarget.getAttribute('itemid'))
+		cartArray.push(evt.currentTarget.getAttribute('itemid'))
 		redisplayCart()
 	});
 
