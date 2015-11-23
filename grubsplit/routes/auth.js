@@ -16,6 +16,7 @@ router.get('/', function(req, res, next) {
       },
     }, function(err) {
       if (!err) {
+        console.log('TOKEN: ' + response.access_token);
         res.redirect('/');
       } else {
         res.redirect(Delivery.authorizeAccountURL());

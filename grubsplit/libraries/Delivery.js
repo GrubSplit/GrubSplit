@@ -194,9 +194,25 @@ var Delivery = function() {
     });
   };
 
-  that.updateAddress = function(locationId, address, callback) {
-    var url = 'https://api.delivery.com/customer/location?';
+  that.updateAddress = function(locationId, update, token, callback) {
+    var url = 'https://api.delivery.com/customer/location/' + locationId + '?';
     url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      },
+      formData: update
+    };
+    request.put(options, function(error, response, body) {
+      if (error) {
+        return callback(error);
+      } else {
+        body = JSON.parse(body);
+        var location = body.location;
+        callback(null, location.location_id);
+      }
+    });
   };
 
   /**
