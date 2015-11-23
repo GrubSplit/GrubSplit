@@ -6,6 +6,7 @@ The controller for the subgrub page
 author: jorrieb	
 */
 (function() {
+	//db pull from the cart
 	var cartArray = []
 
 	$(function() {
