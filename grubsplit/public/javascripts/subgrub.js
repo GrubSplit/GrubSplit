@@ -6,7 +6,11 @@ The controller for the subgrub page
 author: jorrieb	
 */
 (function() {
+	var cart = []
 
+	$(function() {
+    	redisplayCart()
+	});
 	// Helper to display the alert view for the subgrubs
 	// params:
 	//	-item = the item to be displayed. 
@@ -21,6 +25,31 @@ author: jorrieb
 		//toss up a jade template
 	};
 
+	var redisplayCart = function(){
+		var cart = document.getElementById('cart')
+		if (cart){
+			element.parentNode.removeChild(cart);
+		}
+		var newCart = document.createElement("div");
+		newCart.setAttribute('class', 'col-md-3 col-md-offset-7');
+		newCart.setAttribute('id', 'cart');
+
+		var items = document.createElement('h5');
+		items.innerHTML = "Items"
+		newCart.appendChild(items)
+
+		var cost = document.createElement('h5');
+		cost.innerHTML = "Cost"
+		newCart.appendChild(cost)
+		
+		var submit = document.createElement('button');
+		submit.innerHTML = "Submit"
+		newCart.appendChild(submit)
+
+		document.body.appendChild(newCart)
+
+	}
+
 	// Submit SubGrub to Grub
 	// 
 	$(document).on('click', '#submitSubGrub', function(evt) {
@@ -34,13 +63,9 @@ author: jorrieb
 	//	-comments/instructions
 	//	-submit to cart button
 	$(document).on('click', '.item', function(evt) {
-		console.log('clicked an item')
-		console.log(evt)
-		console.log(evt.currentTarget)
-		// console.log(evt.currentTarget)
-		//get id of clicked element
-		//item = item from menu using id
-		//displayMenuItem(item)
+		console.log(evt.currentTarget.getAttribute('itemid'))
+		cart.push(evt.currentTarget.getAttribute('itemid'))
+		redisplayCart()
 	});
 
 	// Remove item from cart

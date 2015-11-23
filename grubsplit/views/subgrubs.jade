@@ -12,21 +12,5 @@ block content
         if submenu.name == "Frappes"
           +menu(submenu)
 
-  //display cart
-  - var cart = [];
-  div.cart.col-md-3.col-md-offset-7
-    h3 Items
-        if cart
-            for item in cart
-              p item.name
-              p item.price
-        else
-            p <i>Your order is empty</i>
-        
-    h3 Cost
-        - var cost = 0;
-        - cart.forEach(function (item) {cost += item.cost});
-      p #{cost}
-
     form.form-horizontal(method='POST')
       button.btn.btn-primary(type='submit') Add items to Grub
