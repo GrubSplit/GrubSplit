@@ -78,14 +78,16 @@ author: jorrieb
 			alert('Cart is empty! Add some items to the cart first.');
 			return;
 		}
-		console.log(evt)
-		console.log(evt.subGrubId)
+		var url = '/subgrubs/'+$('#submitSubGrub').attr('subgrubid');
+		console.log(cartArray);
 		$.post(
-			'/subgrubs/'+evt.subGrubId,
-			{ items: cart }
+			url,
+			{ items: JSON.stringify(cartArray) }
 		).done(function(res) {
+			window.location.replace(res);
 			return;
 		}).fail(function(resObj) {
+			// TODO: What to do here?
 			return;
 		});
 	});

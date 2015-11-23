@@ -18,8 +18,8 @@
  var itemSchema = new mongoose.Schema({
  	price: Number,
  	id: String,
- 	quantity: Number,
- 	instructions: String
+ 	quantity: {type: Number, default: 1},
+ 	instructions: {type: String, default: ''}
  });
 
  var subGrubSchema = new mongoose.Schema({
@@ -48,7 +48,6 @@ subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
     owner: userID,
     grubID: grubID
 }, function(err, subGrub) {
-	console.log(subGrub);
   	if (err) {
   		callback({msg: 'could not create subgrub'});
   	} else {

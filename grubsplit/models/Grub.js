@@ -62,7 +62,16 @@ grubSchema.statics.createNewGrub = function(userID, restaurantID, restaurantName
 grubSchema.statics.getGrub = function(grubID, callback) {
   Grub.findOne({_id: grubID}).populate(['owner', 'subGrubs']).exec(function(err, grub) {
     if (grub) {
-        callback(null, grub);
+      Grub.populate(grub, {
+        path: 'subGrubs.owner',
+        model: 'User'
+      }, function (err, grub) {
+        if (grub) {
+          callback(null, grub);
+        } else {
+          callback(err);
+        }
+      });
     } else {
       callback({msg: 'could not find grub'});
     }

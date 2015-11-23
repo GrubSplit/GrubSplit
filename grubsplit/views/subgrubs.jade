@@ -1,6 +1,9 @@
 extends layout
 include mixins/restaurantHeader
 
+append head
+  script(src='/javascripts/subgrub.js')
+
 block content
   .page-header
     h1 Welcome to GrubSplit!

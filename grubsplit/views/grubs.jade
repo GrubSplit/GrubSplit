@@ -1,5 +1,8 @@
 extends layout
 
+append head
+  script(src='/javascripts/grub.js')
+
 block content
   .page-header
     .row
@@ -9,9 +12,10 @@ block content
         h3 This was orderd on #{grub.time_ordered}
       else
         h3 This order is still open!
-        button.btn Order Grub
-        form.form-horizontal(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
-          button.btn(type='submit') Cancel Grub
+        if isOwner
+          button.btn Order Grub
+          form.form-horizontal(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
+            button.btn(type='submit') Cancel Grub
 
   if grub.subGrubs
     for subgrub in grub.subGrubs
@@ -21,8 +25,4 @@ block content
 
   form.form-horizontal(method="POST")
     button.createSubGrub Create SubGrub
-
-  // for each subgrub, display Name, then subgrub contents
-  // if no subgrubs, just display owner's name 
-  //    if no items, show add button if user is owner
-  // next to subgrub of currently logged in, display edit/delete buttons 
+    

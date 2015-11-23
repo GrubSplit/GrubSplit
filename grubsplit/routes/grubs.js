@@ -40,7 +40,8 @@ router.post('/', function(req, res) {
  * Grub page.
  */
 router.get('/:grub', function(req, res) {
-  res.render('grubs', { grub: req.grub });
+  var isOwner = req.user._id.equals(req.grub.owner._id);
+  res.render('grubs', { grub: req.grub, isOwner: isOwner });
 });
 
 /**
