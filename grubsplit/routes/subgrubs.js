@@ -50,8 +50,7 @@ router.get('/:subgrub', function(req, res) {
  */
 router.post('/:subgrub', function(req, res) {
   var items = JSON.parse(req.body.items) || [];
-  // FIXME: Items are there, but they are not being added to subgrub
-  SubGrub.addItems(req.subgrub.grubID._id, items, function (err, subgrub) {
+  SubGrub.addItems(req.subgrub._id, items, function (err, subgrub) {
     if (err) {
       req.flash('errors', err);
       return;
