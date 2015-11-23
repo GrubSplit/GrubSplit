@@ -4,7 +4,8 @@ block content
   .page-header
     .row
       h1 #{grub.owner.name}'s order for #{grub.restaurant_name}
-      button.btn Order Grub
+      if !grub.time_ordered
+        button.btn Order Grub
     .row
       if grub.time_ordered
         h3 This was orderd on #{grub.time_ordered}
@@ -14,7 +15,7 @@ block content
         button.btn(type='submit') Cancel Grub
 
   for subgrub in grub.subGrubs
-    +subgrub(subgrub, user)
+    +subgrub(subgrub, user, grub.time_ordered)
 
   form.form-horizontal(method="POST")
         button.createSubGrub Create SubGrub

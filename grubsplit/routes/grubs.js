@@ -59,7 +59,7 @@ router.post('/', function(req, res) {
  * Grub page.
  */
 router.get('/:grub', function(req, res) {
-  res.render('grubs', { currentUser: req.user, grub: req.grub});
+  res.render('grubs', { grub: req.grub });
 });
 
 /**

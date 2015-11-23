@@ -1,15 +1,43 @@
 // recursively creates new menus for display on pages
 // Requirement:
-//		menu = menu entity from delivery.com API
-//		menuLevel = level at which the level is being added
-//					i.e. Lunch menu = level 1, Salads = level 2
+//      menu = menu entity from delivery.com API
+//      menuLevel = level at which the level is being added
+//                  i.e. Lunch menu = level 1, Salads = level 2
 mixin menu(menu)
-	h2 menu id #{menu}
-//	each child in menu.children
-//		case child.type
-//			when 'menu'
-//				p menu
-//				//+menu(child)
-//			when 'item'
-//				p item
-//				//+menuItem(child)
+    div=menu.name
+        if menu.children
+            for child in menu.children
+                if (child.type === 'menu')
+                    +menu(child)
+                if (child.type === 'item')
+                    +menuItem(child)
+
+mixin menuItem(item)
+    div=item.name
+        if item.children
+            for child in item.children
+                if (child.type === 'option group')
+                    +optionGroup(child)
+                if (child.type === 'price group')
+                    +priceGroup(child)
+    
+mixin optionGroup(group)
+    div=group.name
+        if group.children
+            for child in group.children
+                +option(child)
+
+mixin priceGroup(group)
+    div=group.name
+        if group.children
+            for child in group.children
+                +option(child)
+
+mixin option(opt)
+    div=opt.name
+        if opt.children
+            for child in opt.children
+                if (child.type === 'option group')
+                    +optionGroup(child)
+                if (child.type === 'price group')
+                    +priceGroup(child)

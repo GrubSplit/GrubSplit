@@ -136,6 +136,8 @@ router.get('/profile', function(req, res) {
   }
   // FIXME: A user can be an owner of a grub and not have any subgrubs...
   // This grub would not show up in the user's profile using this query.
+  // Solution 1: Automatically create empty subgrub for GrubLeader
+  // Solution 2: Add another query here
   SubGrub.find({ owner: req.user._id }).populate('grubID').select('-subGrubs').exec(function (err, grubs) {
     if (err) {
       req.flash('errors', err);
