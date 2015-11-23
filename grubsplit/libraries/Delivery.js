@@ -142,7 +142,7 @@ var Delivery = function() {
       var summary = body.merchant.summary;
       getMenu(restaurantId, function(error, menu) {
         if (error) {
-          callback(error);
+          return callback(error);
         } else {
           callback(null, {
             'name': summary.name,
@@ -158,6 +158,48 @@ var Delivery = function() {
         }
       });
     });
+  };
+
+  /**
+   * POST customer's address to Delivery.com API, r
+   *   returns location_id needed for order checkout
+   * @param {Object}   address  {street, city, state, zip_code, phone}
+   * @param {String}   token    access_token from user authorization
+   * @param {Function} callback {location_id} used to checkout
+   */
+  that.addAddress = function(address, token, callback) {
+    var url = 'https://api.delivery.com/customer/location?';
+    url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      headers: {
+        'authorization': token
+      },
+      formData: {
+        'street': address.street,
+        'city': address.city,
+        'state': address.state,
+        'zip_code': address.zip_code,
+        'phone': address.phone
+      }
+    };
+    request.post(options, function(error, response, body) {
+      if (error) {
+        return callback(error);
+      } else {
+        body = JSON.parse(body);
+        var location = body.location;
+        callback(null, {
+          'location_id': location.location_id,
+          'location': location
+        });
+      }
+    });
+  };
+
+  that.updateAddress = function(locationId, address, callback) {
+    var url = 'https://api.delivery.com/customer/location?';
+    url += 'client_id=' + CLIENT_ID;
   };
 
   /**
