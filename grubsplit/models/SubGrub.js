@@ -43,12 +43,11 @@
   @param: grubID = ObjectId of Grub doc
   @param: callback(err, subGrub)
 */
-subGrubSchema.statics.createNewSubGrub = function(userID, grubID, items, callback) {
+subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
   SubGrub.create({
     owner: userID,
-    grubID: grubID,
-    items: items
-  }, function(err, subGrub) {
+    grubID: grubID
+}, function(err, subGrub) {
   	if (err) {
   		callback({msg: 'could not create subgrub'});
   	} else {
@@ -59,6 +58,21 @@ subGrubSchema.statics.createNewSubGrub = function(userID, grubID, items, callbac
   				callback(null, subGrub);
   			}
   		}
+  	}
+  });
+}
+
+ /*
+  Add items to subgrub with given id
+  @param: grubID = ObjectId of Grub doc
+  @param: callback(err, subGrub)
+*/
+subGrubSchema.statics.addItems = function(subgrubID, newItems, callback) {
+  SubGrub.findOneAndUpdate({ _id: subgrubID }, { $addToSet: { items: newItems }}, function(err, subGrub) {
+  	if (err) {
+  		callback({msg: 'could not update subgrub with given items'});
+  	} else {
+  		callback(null, subGrub)
   	}
   });
 }

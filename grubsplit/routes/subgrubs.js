@@ -48,11 +48,10 @@ router.get('/:subgrub', function(req, res) {
 router.post('/:subgrub', function(req, res) {
   // TODO: Get selected items
   var items = [];
-  // FIXME: get Grub ID
-  SubGrub.createNewSubGrub(req.user._id, grubID, items, function (err, subgrub) {
+  SubGrub.addItems(req.subgrub.grubID, items, function (err, subgrub) {
     if (err) {
       req.flash('errors', err);
-      return res.redirect('/');
+      return;
     }
     res.redirect('/grubs/'+req.grub.grubID);
   });

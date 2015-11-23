@@ -50,23 +50,18 @@ router.get('/:grub', function(req, res) {
  * Grub page.
   Request body:
   	- grubID: id of the current grub
-    - subgrub: the subgrub to be added
   Response:
-    - success: true if the server succeeded in recording the user's freet
+    - success: true if the server succeeded in creating new subgrub and adding ref in grub
     - err: on failure, an error message
  */
 router.post('/:grub', function(req, res) {
-  console.log(req.session.passport.user)
-  console.log(req.grubID)
-  // subgrub = SubGrub(req.session.passport.user, )
-  // TODO add subgrub to grub 
-  // Grub.addSubgrub(req.grubID, req.subgrub, function(grub) {
-  // 	res.render('/grubs', { grub: grub});
-  // })
-
-  // TODO pull grub from db
-
-  // res.render('/grubs', { grub: res.grub});
+  SubGrub.createNewSubGrub(req.user._id, req.grubID, function (err, subgrub) {
+    if (err) {
+      req.flash('errors', err);
+      return;
+    }
+    res.redirect('/subgrubs/'+subgrub._id);
+  });
 });
 
 router.delete('/:grub', function(req, res) {
