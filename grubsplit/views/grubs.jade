@@ -7,14 +7,15 @@ block content
   .page-header
     .row
       h1 #{grub.owner.name}'s order for #{grub.restaurant_name}
+      if isOwner
+        button.btn.btn-primary Order Grub
     .row
       if grub.time_ordered
         h3 This was orderd on #{grub.time_ordered}
       else
         h3 This order is still open!
         if isOwner
-          button.btn Order Grub
-          form.form-horizontal(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
+          form(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
             button.btn(type='submit') Cancel Grub
 
   if grub.subGrubs
@@ -25,5 +26,5 @@ block content
 
   if !grub.time_ordered
     form.form-horizontal(method="POST")
-      button.createSubGrub Create SubGrub
+      button.btn.btn-primary.createSubGrub Create SubGrub
     

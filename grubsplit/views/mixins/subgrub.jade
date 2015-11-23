@@ -1,7 +1,4 @@
 mixin subgrub(subgrub, user, completed)
-    - if (user._id === subgrub.owner && !completed)
-        form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
-            button.btn(type='submit') Delete SubGrub
     h4 #{subgrub.owner.name}'s items
     +listGroup('list')
         for item in subgrub.items  
@@ -9,6 +6,9 @@ mixin subgrub(subgrub, user, completed)
                 +listHeading #{item.name}
                     +listText Price #{item.price}
                     +listText Quantity #{item.quantity}
+    - if (user._id.equals(subgrub.owner._id) && !completed)
+        form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
+            button.btn(type='submit') Delete SubGrub
 
 //- List group mixins
 - var groupType
