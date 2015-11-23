@@ -9,6 +9,7 @@ block content
 
     if restaurant.menu
       for submenu in restaurant.menu
+        if submenu.name == "Frappes"
           +menu(submenu)
 
   //display cart
