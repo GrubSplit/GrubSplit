@@ -68,9 +68,19 @@ author: jorrieb
 	}
 
 	// Submit SubGrub to Grub
-	// 
 	$(document).on('click', '#submitSubGrub', function(evt) {
-		//post submit to subgrub
+		if (cart.length === 0) {
+			alert('Cart is empty! Add some items to the cart first.');
+			return;
+		}
+		$.post(
+			'/subgrubs/'+evt.subGrubId,
+			{ items: cart }
+		).done(function(res) {
+			return;
+		}).fail(function(resObj) {
+			return;
+		});
 	});
 
 	// User selects a menu item

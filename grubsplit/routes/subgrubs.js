@@ -56,8 +56,7 @@ router.get('/:subgrub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:subgrub', function(req, res) {
-  // TODO: Get selected items
-  var items = [];
+  var items = req.body.items || [];
   SubGrub.addItems(req.subgrub.grubID, items, function (err, subgrub) {
     if (err) {
       req.flash('errors', err);
