@@ -46,14 +46,16 @@ router.get('/:subgrub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:subgrub', function(req, res) {
-  // TODO add subgrub to grub 
-  SubGrub.create({owner: user, grubID: req.subgrub.grubID, 
-
-  }user, req.grubID, req.item, req.quantity, function(subgrub) {
-  	res.render('/subgrubs', { subgrub: subgrub});
-  })
-
-  res.redirect('/grubs/'+req.grub.grubID);
+  // TODO: Get selected items
+  var items = [];
+  // FIXME: get Grub ID
+  SubGrub.createNewSubGrub(req.user._id, grubID, items, function (err, subgrub) {
+    if (err) {
+      req.flash('errors', err);
+      return res.redirect('/');
+    }
+    res.redirect('/grubs/'+req.grub.grubID);
+  });
 });
 
 /**
