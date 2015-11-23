@@ -4,23 +4,23 @@ block content
   .page-header
     .row
       h1 #{grub.owner.name}'s order for #{grub.restaurant_name}
-      if !grub.time_ordered
-        button.btn Order Grub
     .row
       if grub.time_ordered
         h3 This was orderd on #{grub.time_ordered}
       else
         h3 This order is still open!
-      form.form-horizontal(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
-        button.btn(type='submit') Cancel Grub
+        button.btn Order Grub
+        form.form-horizontal(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
+          button.btn(type='submit') Cancel Grub
 
-  for subgrub in grub.subGrubs
-    +subgrub(subgrub, user, grub.time_ordered)
+  if grub.subGrubs
+    for subgrub in grub.subGrubs
+      +subgrub(subgrub, user, grub.time_ordered)
+  else
+    p <i>No SubGrubs in this Grub!</i>
 
   form.form-horizontal(method="POST")
-        button.createSubGrub Create SubGrub
-    a(href="/subgrubs/0")
-        button To Subgrub page
+    button.createSubGrub Create SubGrub
 
   // for each subgrub, display Name, then subgrub contents
   // if no subgrubs, just display owner's name 
