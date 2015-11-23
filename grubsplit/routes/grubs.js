@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var SubGrub = require('../models/SubGrub');
 var Grub = require('../models/Grub');
 var utils = require('../utils/utils');
 
@@ -17,9 +18,6 @@ router.param('grub', function(req, res, next, grubIdStr) {
     }
   });
 });
-
-// Require ownership
-router.all('/:grub', requireOwnership);
 
 /*
   POST /grubs
@@ -55,7 +53,7 @@ router.get('/:grub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:grub', function(req, res) {
-  SubGrub.createNewSubGrub(req.user._id, req.grubID, function (err, subgrub) {
+  SubGrub.createNewSubGrub(req.user._id, req.grub._id, function (err, subgrub) {
     if (err) {
       req.flash('errors', err);
       return;

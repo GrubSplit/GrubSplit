@@ -1,29 +1,32 @@
 extends layout
+include mixins/restaurantHeader
 
 block content
   .page-header
     h1 Welcome to GrubSplit!
-    h3 Your orde
     h3 This is a subgrub's page
+    +restaurantHeader(restaurant)
 
-      //+menu(subgrub.menu)
-      +menu(subgrub.id)
-      //display menu
+    if restaurant.menu
+      for submenu in restaurant.menu
+          +menu(submenu)
+
   //display cart
+  - var cart = [];
   div.cart.col-md-3.col-md-offset-7
-      h3 Items
-      #subgrub
-          if subgrub.items
-              for item in subgrub.items
-                p item.name
-                p item.price
-          else
-              p <i>Your order is empty</i>
-          
-      h3 Cost
-          p $#{subgrub.cost.toFixed(2)}
-      button(type="submit") Submit
+    h3 Items
+        if cart
+            for item in cart
+              p item.name
+              p item.price
+        else
+            p <i>Your order is empty</i>
+        
+    h3 Cost
+      script.
+        var cost = 0;
+        cart.forEach(function (item) {cost += item.cost});
+      p cost
 
-
-  a(href="/grubs/0")
-      button Add items to Grub
+    form.form-horizontal(method='POST')
+      button.btn.btn-primary(type='submit') Add items to Grub

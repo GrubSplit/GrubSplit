@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var Delivery = require('../libraries/Delivery');
 var Grub = require('../models/Grub');
 var SubGrub = require('../models/SubGrub');
 var utils = require('../utils/utils');
+
 
 
 /*
@@ -10,20 +12,14 @@ var utils = require('../utils/utils');
   request path (any routes defined with :subgrub as a paramter).
 */
 router.param('subgrub', function(req, res, next, subGrubIdStr) {
-  if (subGrubIdStr === "0") {
-    req.subgrub = {user:"Jorrie", items:[], id:33, cost:6.90, menu:{children:[{type:"menu"};
-    next();
-  } else {
-    var subGrubId = new ObjectID(subGrubIdStr);
-    SubGrub.find({ _id: subGrubId}, function(err, subgrub) {
-      if (subgrub && subgrub.owner.equals(req.user._id)) {
-        req.subgrub = subgrub;
-        next();
-      } else {
-        utils.sendErrResponse(res, 404, 'Resource not found.');
-      }
-    });
-  }
+  SubGrub.getSubGrub(subGrubIdStr, function(err, subgrub) {
+    if (subgrub && subgrub.owner._id.equals(req.user._id)) {
+      req.subgrub = subgrub;
+      next();
+    } else {
+      utils.sendErrResponse(res, 404, 'Resource not found.');
+    }
+  });
 });
 
 /**
@@ -31,7 +27,21 @@ router.param('subgrub', function(req, res, next, subGrubIdStr) {
  * SubGrub page.
  */
 router.get('/:subgrub', function(req, res) {
-  res.render('subgrubs', { subgrub: req.subgrub });
+  var grubID = req.subgrub.grubID;
+  Grub.getGrub(grubID, function (err, grub) {
+    if (err) {
+      req.flash('errors', err);
+      return res.redirect('/grubs/'+grubID);
+    }
+    var restaurantID = grub.restaurantID;
+    Delivery.getRestaurant(restaurantID, function(err, restaurant) {
+      if (err) {
+        req.flash('errors', err);
+        return res.redirect('/grubs/'+grubID);      
+      }
+      res.render('subgrubs', { 'subgrub': req.subgrub, 'restaurant' : restaurant });
+    });
+  });
 });
 
 /**

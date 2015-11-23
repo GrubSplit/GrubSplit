@@ -48,16 +48,17 @@ subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
     owner: userID,
     grubID: grubID
 }, function(err, subGrub) {
+	console.log(subGrub);
   	if (err) {
   		callback({msg: 'could not create subgrub'});
   	} else {
-  		Grub.findOneAndUpdate({_id: grubID,  { $addToSet: { subGrubs: subGrub._id } }, function(err) {
+  		Grub.findOneAndUpdate({_id: grubID},  { $addToSet: { subGrubs: subGrub._id } }, function(err) {
   			if (err) {
   				callback({msg: 'could add subgrub id to grub'});
   			} else {
   				callback(null, subGrub);
   			}
-  		}
+  		});
   	}
   });
 }
@@ -115,5 +116,5 @@ subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
 	});
 }
 
-var SubGrub = mongoose.model('SubGrub'. subGrubSchema);
+var SubGrub = mongoose.model('SubGrub', subGrubSchema);
 module.exports = mongoose.model('SubGrub', subGrubSchema);
