@@ -1,6 +1,9 @@
 extends layout
 include mixins/restaurantHeader
 
+append head
+  script(src='/javascripts/subgrub.js')
+
 block content
   .page-header
     h1 Welcome to GrubSplit!
@@ -9,24 +12,7 @@ block content
 
     if restaurant.menu
       for submenu in restaurant.menu
+        if submenu.name == "Frappes"
           +menu(submenu)
 
-  //display cart
-  - var cart = [];
-  div.cart.col-md-3.col-md-offset-7
-    h3 Items
-        if cart
-            for item in cart
-              p item.name
-              p item.price
-        else
-            p <i>Your order is empty</i>
-        
-    h3 Cost
-      script.
-        var cost = 0;
-        cart.forEach(function (item) {cost += item.cost});
-      p cost
-
-    form.form-horizontal(method='POST')
-      button.btn.btn-primary(type='submit') Add items to Grub
+    button.btn.btn-primary(id='submitSubGrub' subGrubId=subgrub._id) Add items to Grub

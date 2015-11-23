@@ -27,20 +27,13 @@ router.param('subgrub', function(req, res, next, subGrubIdStr) {
  * SubGrub page.
  */
 router.get('/:subgrub', function(req, res) {
-  var grubID = req.subgrub.grubID;
-  Grub.getGrub(grubID, function (err, grub) {
+  var restaurantID = req.subgrub.grubID.restaurantID;
+  Delivery.getRestaurant(restaurantID, function(err, restaurant) {
     if (err) {
       req.flash('errors', err);
-      return res.redirect('/grubs/'+grubID);
+      return res.redirect('/grubs/'+req.subgrub.grubID._id);      
     }
-    var restaurantID = grub.restaurantID;
-    Delivery.getRestaurant(restaurantID, function(err, restaurant) {
-      if (err) {
-        req.flash('errors', err);
-        return res.redirect('/grubs/'+grubID);      
-      }
-      res.render('subgrubs', { 'subgrub': req.subgrub, 'restaurant' : restaurant });
-    });
+    res.render('subgrubs', { 'subgrub': req.subgrub, 'restaurant' : restaurant });
   });
 });
 
@@ -56,14 +49,14 @@ router.get('/:subgrub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:subgrub', function(req, res) {
-  // TODO: Get selected items
-  var items = [];
-  SubGrub.addItems(req.subgrub.grubID, items, function (err, subgrub) {
+  var items = JSON.parse(req.body.items) || [];
+  SubGrub.addItems(req.subgrub._id, items, function (err, subgrub) {
     if (err) {
       req.flash('errors', err);
       return;
     }
-    res.redirect('/grubs/'+req.grub.grubID);
+    var redirect_url = req.protocol + '://' + req.get('host') + '/grubs/' + req.subgrub.grubID._id;
+    res.send(redirect_url);
   });
 });
 
@@ -81,9 +74,8 @@ router.post('/:subgrub', function(req, res) {
     if (err) {
       req.flash('errors', err);
     }
-    res.render('grubs', { grubID: req.subgrub.grubID});
+    res.redirect('/grubs/'+req.subgrub.grubID._id);
   });
-
 });
 
 

@@ -1,8 +1,7 @@
 // recursively creates new menus for display on pages
 // Requirement:
 //      menu = menu entity from delivery.com API
-//      menuLevel = level at which the level is being added
-//                  i.e. Lunch menu = level 1, Salads = level 2
+
 mixin menu(menu)
     div=menu.name
         if menu.children
@@ -13,13 +12,18 @@ mixin menu(menu)
                     +menuItem(child)
 
 mixin menuItem(item)
-    div=item.name
-        if item.children
-            for child in item.children
-                if (child.type === 'option group')
-                    +optionGroup(child)
-                if (child.type === 'price group')
-                    +priceGroup(child)
+    div.row
+        div.col-md-6
+            a(itemid=item.id name=item.name price=item.price).item
+                p #{item.name}
+        div.col-md-6
+            p #{item.price}
+    if item.children
+        for child in item.children
+            if (child.type === 'option group')
+                //+optionGroup(child)
+            if (child.type === 'price group')
+                //+priceGroup(child)
     
 mixin optionGroup(group)
     div=group.name

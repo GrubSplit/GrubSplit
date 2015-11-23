@@ -16,10 +16,11 @@
  var Grub = require('./Grub');
 
  var itemSchema = new mongoose.Schema({
+  id: String,
+  name: String,
  	price: Number,
- 	id: String,
- 	quantity: Number,
- 	instructions: String
+ 	quantity: {type: Number, default: 1},
+ 	instructions: {type: String, default: ''}
  });
 
  var subGrubSchema = new mongoose.Schema({
@@ -48,7 +49,6 @@ subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
     owner: userID,
     grubID: grubID
 }, function(err, subGrub) {
-	console.log(subGrub);
   	if (err) {
   		callback({msg: 'could not create subgrub'});
   	} else {
@@ -69,7 +69,7 @@ subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
   @param: callback(err, subGrub)
 */
 subGrubSchema.statics.addItems = function(subgrubID, newItems, callback) {
-  SubGrub.findOneAndUpdate({ _id: subgrubID }, { $addToSet: { items: newItems }}, function(err, subGrub) {
+  SubGrub.findOneAndUpdate({ _id: subgrubID }, { $addToSet: { items: { $each: newItems } } }, function(err, subGrub) {
   	if (err) {
   		callback({msg: 'could not update subgrub with given items'});
   	} else {

@@ -6,7 +6,11 @@ The controller for the subgrub page
 author: jorrieb	
 */
 (function() {
+	var cartArray = []
 
+	$(function() {
+    	redisplayCart()
+	});
 	// Helper to display the alert view for the subgrubs
 	// params:
 	//	-item = the item to be displayed. 
@@ -21,10 +25,71 @@ author: jorrieb
 		//toss up a jade template
 	};
 
+	var redisplayCart = function(){
+
+		var subgrubButton = document.getElementById('submitSubGrub')
+		var subgrubid = subgrubButton.getAttribute('subgrubid')
+		subgrubButton.parentNode.removeChild(subgrubButton);
+
+		var cart = document.getElementById('cart')
+		if (cart){
+			cart.parentNode.removeChild(cart);
+		}
+		var newCart = document.createElement("div");
+		newCart.setAttribute('class', 'col-md-3 col-md-offset-7 cart');
+		newCart.setAttribute('id', 'cart');
+
+		var items = document.createElement('h4');
+		items.innerHTML = "Items"
+
+		for (var item in cartArray){
+			var displayedItem = document.createElement('p')
+			displayedItem.innerHTML = cartArray[item].name
+			items.appendChild(displayedItem)
+		}
+
+		newCart.appendChild(items)
+
+		var cost = document.createElement('h4');
+		cost.innerHTML = "Cost"
+
+		var price = 0
+		for (var item in cartArray){
+			 price += parseFloat(cartArray[item].price)
+		}
+		var orderPrice = document.createElement('p');
+		orderPrice.innerHTML = '$'.concat(price.toFixed(2).toString())
+		cost.appendChild(orderPrice)
+
+		newCart.appendChild(cost)
+
+		var submit = document.createElement('button');
+		submit.innerHTML = "Submit"
+		submit.setAttribute('id','submitSubGrub')
+		submit.setAttribute('subgrubid', subgrubid)
+		newCart.appendChild(submit)
+
+		document.body.appendChild(newCart)
+	}
+
 	// Submit SubGrub to Grub
-	// 
 	$(document).on('click', '#submitSubGrub', function(evt) {
-		//post submit to subgrub
+		if (cartArray.length === 0) {
+			alert('Cart is empty! Add some items to the cart first.');
+			return;
+		}
+		var url = '/subgrubs/'+$('#submitSubGrub').attr('subgrubid');
+		console.log(cartArray);
+		$.post(
+			url,
+			{ items: JSON.stringify(cartArray) }
+		).done(function(res) {
+			window.location.replace(res);
+			return;
+		}).fail(function(resObj) {
+			// TODO: What to do here?
+			return;
+		});
 	});
 
 	// User selects a menu item
@@ -33,10 +98,17 @@ author: jorrieb
 	//	-quantity
 	//	-comments/instructions
 	//	-submit to cart button
-	$(document).on('click', '.menuItem', function(evt) {
-		//get id of clicked element
-		//item = item from menu using id
-		//displayMenuItem(item)
+	$(document).on('click', '.item', function(evt) {
+		console.log(evt.currentTarget.getAttribute('itemid'))
+		var item = evt.currentTarget
+		var cartObject = {
+			id: item.getAttribute('itemid'),
+			name: item.getAttribute('name'),
+			price: item.getAttribute('price')
+		}
+		cartArray.push(cartObject)
+		redisplayCart()
+		console.log(cartArray)
 	});
 
 	// Remove item from cart

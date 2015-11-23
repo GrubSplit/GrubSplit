@@ -100,7 +100,6 @@ router.post('/signup', function(req, res, next) {
     name: req.body.name
   }), req.body.password, function(err, user) {
     if (err) {
-      console.log(err);
       req.flash('errors', {
         msg: err.message
       });
@@ -110,7 +109,6 @@ router.post('/signup', function(req, res, next) {
     passport.authenticate('local')(req, res, function() {
       req.session.save(function(err) {
         if (err) {
-          console.log(err);
           req.flash('errors', {
             msg: err.message
           });
@@ -134,44 +132,48 @@ router.get('/profile', function(req, res) {
   } else {
     return res.redirect('/users/login');
   }
-  // FIXME: A user can be an owner of a grub and not have any subgrubs...
-  // This grub would not show up in the user's profile using this query.
-  // Solution 1: Automatically create empty subgrub for GrubLeader
-  // Solution 2: Add another query here
-  SubGrub.find({ owner: req.user._id }).populate('grubID').select('-subGrubs').exec(function (err, grubs) {
+  // TODO: Make this less ugly?
+  SubGrub.find({ owner: req.user._id })
+         .select('-_id grubID')
+         .exec(function (err, grubIDs) {
     if (err) {
       req.flash('errors', err);
       return res.redirect('/');
     }
-    var open_grubs = [];
-    var past_grubs = [];
-    grubs.forEach(function (grub) {
-      if (grub.time_ordered) {
-        past_grubs.push(grub);
-      } else {
-        open_grubs.push(grub);
-      }
-    });
-    Grub.find({ _id: {$in: req.user.grub_invites } }).select('-subGrubs').exec(function (err, grub_invites) {
+    grubIDs = grubIDs.map(function(elm) {return elm.grubID});
+    Grub.find({})
+        .or([{ owner: req.user._id }, { _id: { $in: grubIDs } }])
+        .populate('owner')
+        .select('restaurant_name owner')
+        .exec(function (err, grubs) {
       if (err) {
         req.flash('errors', err);
         return res.redirect('/');
       }
-      res.render('users/profile', {
-        'grub_invites': grub_invites,
-        'open_grubs': open_grubs,
-        'past_grubs': past_grubs
+      var open_grubs = [];
+      var past_grubs = [];
+      grubs.forEach(function (grub) {
+        if (grub.time_ordered) {
+          past_grubs.push(grub);
+        } else {
+          open_grubs.push(grub);
+        }
+      });
+      Grub.find({ _id: {$in: req.user.grub_invites } })
+          .select('-subGrubs')
+          .exec(function (err, grub_invites) {
+        if (err) {
+          req.flash('errors', err);
+          return res.redirect('/');
+        }
+        res.render('users/profile', {
+          'grub_invites': grub_invites,
+          'open_grubs': open_grubs,
+          'past_grubs': past_grubs
+        });
       });
     });
   });
-  // var grub_invites = [];
-  // var open_grubs = [];
-  // var past_grubs = [];
-  // res.render('users/profile', {
-  //   'grub_invites': grub_invites,
-  //   'open_grubs': open_grubs,
-  //   'past_grubs': past_grubs
-  // });
 });
 
 module.exports = router;
