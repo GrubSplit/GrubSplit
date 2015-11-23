@@ -51,5 +51,36 @@ subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
 	});
 }
 
-var SubGrub = mongoose.model('SubGrub', subGrubSchema);
+ /*
+  given a subGrubID, return the subGrub, with all subgrubs populated
+  @param: userID = userID
+  @param: restaurantID = mongo ObjectID of restaurant
+  @param: callback(err, subGrub)
+*/
+subGrubSchema.statics.createNewGrub = function(userID, grubID, callback) {
+  var now = new Date();
+  SubGrub.create({
+    owner: mongoose.Types.ObjectId(userID),
+    grubID: mongoose.Types.ObjectId(grubID),
+  }, function(err, subGrub) {
+    callback(err, subGrub);
+  });
+}
+
+/*
+  given a subGrubID, return the subGrub, with the user and grub populated
+  @param: subGrubID = string of subGrub id
+  @param: callback(err, subGrub)
+*/
+subGrubSchema.statics.getsubGrub = function(subGrubID, callback) {
+  SubGrub.findOne({_id: subGrubID}).populate(['owner', 'grubID']).exec(function(err, subGrub) {
+    if (subGrub) {
+        callback(null, subGrub);
+    } else {
+      callback({msg: 'could not find subGrub'});
+    }
+  });
+}
+
+var SubGrub = mongoose.model('SubGrub'. subGrubSchema);
 module.exports = mongoose.model('SubGrub', subGrubSchema);
