@@ -28,22 +28,39 @@ author: jorrieb
 	var redisplayCart = function(){
 		var cart = document.getElementById('cart')
 		if (cart){
-			element.parentNode.removeChild(cart);
+			cart.parentNode.removeChild(cart);
 		}
 		var newCart = document.createElement("div");
-		newCart.setAttribute('class', 'col-md-3 col-md-offset-7');
+		newCart.setAttribute('class', 'col-md-3 col-md-offset-7 cart');
 		newCart.setAttribute('id', 'cart');
 
-		var items = document.createElement('h5');
+		var items = document.createElement('h4');
 		items.innerHTML = "Items"
+
+		for (var item in cart){
+			var displayedItem = document.createElement('p')
+			displayedItem.innerHTML = 'place item info here'
+			items.appendChild(displayedItem)
+		}
+
 		newCart.appendChild(items)
 
-		var cost = document.createElement('h5');
+		var cost = document.createElement('h4');
 		cost.innerHTML = "Cost"
+
+		var price = 0
+		for (var item in cart){
+			// price += item.cost
+		}
+		var orderPrice = document.createElement('p');
+		orderPrice.innerHTML = '$'.concat(price.toFixed(2).toString())
+		cost.appendChild(orderPrice)
+
 		newCart.appendChild(cost)
-		
+
 		var submit = document.createElement('button');
 		submit.innerHTML = "Submit"
+		submit.setAttribute('id','submitSubGrub')
 		newCart.appendChild(submit)
 
 		document.body.appendChild(newCart)
