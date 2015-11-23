@@ -20,15 +20,19 @@ block content
             form(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
               button.btn(type='submit') Cancel Grub
 
+  - var alreadyHaveSubGrub = false;
   if (grub.subGrubs.length != 0)
     for subgrub in grub.subGrubs
       +subgrub(subgrub, user, grub.time_ordered)
+      if (user._id.equals(subgrub.owner._id))
+        - alreadyHaveSubGrub = true;
   else
     div(style='text-align: center')
       p <i>No SubGrubs in this Grub!</i>
 
-  if !grub.time_ordered
+  if (!grub.time_ordered && !alreadyHaveSubGrub)
     div(style='text-align: center')
       form.form-horizontal(method="POST")
         button.btn.btn-primary.createSubGrub Create SubGrub
+
     
