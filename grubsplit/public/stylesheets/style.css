@@ -15,15 +15,20 @@ body {
     background-size: cover;
 }
 
+.item {
+  cursor: default;
+}
+
 a {
   color: #00B7FF;
 }
 
 #cart{
-	/*color:orange;*/
-	border: 2px solid orange;
+	border: 2px solid black;
   padding-bottom : 1%;
-	/*position: fixed;*/
+  right: 130px;
+  top: 30%;
+	position: fixed;
 }
 
 /*.submitOrder{
