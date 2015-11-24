@@ -3,6 +3,7 @@ var router = express.Router();
 var SubGrub = require('../models/SubGrub');
 var Grub = require('../models/Grub');
 var utils = require('../utils/utils');
+var Delivery = require('../libraries/Delivery');
 
 /*
   Grab a grub from the store whenever one is referenced with an ID in the
@@ -60,6 +61,40 @@ router.post('/:grub', function(req, res) {
       return;
     }
     res.redirect('/subgrubs/'+subgrub._id);
+  });
+});
+
+/**
+ * POST /grubs/:grub/order
+ * Grub page.
+  Request body:
+    - grubID: id of the current grub
+  Response:
+    - success: true if the server succeeded in creating new subgrub and adding ref in grub
+    - err: on failure, an error message
+ */
+router.post('/:grub/order', function(req, res) {
+  var order = [];
+  req.grub.subGrubs.forEach(function (subgrub) {
+    subgrub.items.forEach(function (item) {
+      order.push(item);
+    });
+  });
+  // TODO: Implement Delivery.placeOrder
+  Delivery.placeOrder(order, function (err) {
+    if (err) {
+      console.log(err);
+      req.flash('dcomerrors', err);
+      return;
+    }
+    Grub.findOneAndUpdate({_id: req.grub._id }, {$set: {time_ordered: new Date()}}, {new: true}, function(err) {
+      if (err) {
+        console.log(err);
+        req.flash('errors', err);
+        return;
+      }
+      res.redirect('/grubs/'+req.grub._id);
+    });
   });
 });
 

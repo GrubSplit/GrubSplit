@@ -1,21 +1,19 @@
 extends layout
 
-append head
-  script(src='/javascripts/grub.js')
-
 block content
   .page-header
     .row
       h1 #{grub.owner.name}'s order for #{grub.restaurant_name}
     .row
       if grub.time_ordered
-        h3 This was orderd on #{grub.time_ordered}
+        h3 This was ordered on #{grub.time_ordered}
       else
         .col-md-8
           h3 This order is still open!
         if isOwner
           .col-md-2
-            button.btn.btn-success Order Grub
+            form(method='POST', action='/grubs/' + grub._id +'/order')
+              button.btn.btn-success(type='submit') Order Grub
           .col-md-2
             form(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
               button.btn.btn-danger(type='submit') Cancel Grub

@@ -165,8 +165,9 @@ var Delivery = function() {
    * @param  {[type]} order [description]
    * @return {[type]}       [description]
    */
-  that.placeOrder = function(order) {
-
+  that.placeOrder = function(order, callback) {
+    // TODO: replace with real implementation
+    callback(null);
   };
 
   Object.freeze(that);
