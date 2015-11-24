@@ -87,7 +87,7 @@ router.post('/:grub/order', function(req, res) {
       req.flash('dcomerrors', err);
       return;
     }
-    Grub.findOneAndUpdate({_id: req.grub._id }, {$set: {time_ordered: new Date()}}, {new: true}, function(err) {
+    Grub.completeGrub(req.grub._id, function (err) {
       if (err) {
         console.log(err);
         req.flash('errors', err);
