@@ -11,7 +11,7 @@ var Delivery = function() {
 
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
-  var REDIRECT_URI = 'https://localhost:3000/auth';
+  var REDIRECT_URI = 'https://grubsplit.herokuapp.com/auth';
 
   /**
    * Delivery.com API endpoint for creating a new account
@@ -165,8 +165,9 @@ var Delivery = function() {
    * @param  {[type]} order [description]
    * @return {[type]}       [description]
    */
-  that.placeOrder = function(order) {
-
+  that.placeOrder = function(order, callback) {
+    // TODO: replace with real implementation
+    callback(null);
   };
 
   Object.freeze(that);
