@@ -5,11 +5,15 @@ block content
   .page-header
     h1 Welcome to GrubSplit!
     h3 This is #{restaurant.name}'s page
-    +restaurantHeader(restaurant)
-
-  form.form-horizontal(method='POST', action='/grubs?restaurantID=' + restaurant.id + '&restaurantName=' + restaurant.name)
-    button.btn.btn-primary(type='submit') Start Grub
+    .row
+      .col-md-10
+        +restaurantHeader(restaurant)
+      .col-md-2
+        form.form-horizontal(method='POST', action='/grubs?restaurantID=' + restaurant.id + '&restaurantName=' + restaurant.name)
+          button.btn.btn-primary(type='submit') Start Grub
 
   if restaurant.menu
     for submenu in restaurant.menu
         +menu(submenu)
+  else
+    p <i>No menu available :(</i>
