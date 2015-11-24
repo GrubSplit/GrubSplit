@@ -16,7 +16,7 @@ body {
 }
 
 .item {
-  cursor: default;
+  cursor: pointer;
 }
 
 a {
