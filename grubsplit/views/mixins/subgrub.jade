@@ -5,7 +5,7 @@ mixin subgrub(subgrub, user, completed)
         .col-md-2
         - if (user._id.equals(subgrub.owner._id) && !completed)
             form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
-                button.btn(type='submit') Delete SubGrub
+                button.btn.btn-danger(type='submit') Delete SubGrub
     +listGroup('list')
         for item in subgrub.items  
             +listItem
