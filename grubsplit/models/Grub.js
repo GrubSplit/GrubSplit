@@ -142,6 +142,20 @@ grubSchema.statics.deleteGrub = function(grubID, callback) {
   });
 }
 
+/*
+  given a grub ID, set time_ordered to current time
+  @param: grubID = id of the grub
+  @param: callback(err)
+*/
+grubSchema.statics.completeGrub = function(grubID, callback) {
+  Grub.findOneAndUpdate({_id: grubID }, {$set: {time_ordered: new Date()}}, {new: true}, function(err) {
+    if (err) {
+      callback({msg: 'could not mark grub as completed'});
+    } else {
+      callback(null);
+    }
+  });
+}
 
 var Grub = mongoose.model('Grub', grubSchema);
 module.exports = mongoose.model('Grub', grubSchema);
