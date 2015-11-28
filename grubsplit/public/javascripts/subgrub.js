@@ -5,13 +5,20 @@ The controller for the subgrub page
 
 author: jorrieb	
 */
+
 (function() {
-	//db pull from the cart
 	var cartArray = []
 
 	$(function() {
-    	redisplayCart()
+		var subgrubButton = document.getElementById('submitSubGrub')
+		var subgrubid = subgrubButton.getAttribute('subgrubid')
+
+		$.get('/subgrubs/items/' + subgrubid, function(response) {
+			cartArray = response;
+    		redisplayCart()
+		});
 	});
+
 	// Helper to display the alert view for the subgrubs
 	// params:
 	//	-item = the item to be displayed. 
@@ -41,22 +48,22 @@ author: jorrieb
 		newCart.setAttribute('id', 'cart');
 
 		var items = document.createElement('h4');
-		items.innerHTML = "Items"
+		items.innerHTML = "<b>Items:</b>"
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = cartArray[item].name
+			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price + '<br>Quantity: ' + cartArray[item].quantity 
 			items.appendChild(displayedItem)
 		}
 
 		newCart.appendChild(items)
 
 		var cost = document.createElement('h4');
-		cost.innerHTML = "Cost"
+		cost.innerHTML = "<b>Total Cost:</b>"
 
 		var price = 0
 		for (var item in cartArray){
-			 price += parseFloat(cartArray[item].price)
+			 price += (parseFloat(cartArray[item].price) * parseFloat(cartArray[item].quantity))
 		}
 		var orderPrice = document.createElement('p');
 		orderPrice.innerHTML = '$'.concat(price.toFixed(2).toString())
@@ -101,16 +108,26 @@ author: jorrieb
 	//	-comments/instructions
 	//	-submit to cart button
 	$(document).on('click', '.item', function(evt) {
-		console.log(evt.currentTarget.getAttribute('itemid'))
 		var item = evt.currentTarget
-		var cartObject = {
-			id: item.getAttribute('itemid'),
-			name: item.getAttribute('name'),
-			price: item.getAttribute('price')
+		var exists = false;
+		for (var index in cartArray) {
+			var cartObject = cartArray[index]
+			if (cartObject.id === item.getAttribute('itemid')) {
+				cartObject.quantity += 1;
+				exists = true;
+				break;
+			}
 		}
-		cartArray.push(cartObject)
+		if (!exists) {
+			var cartObject = {
+				id: item.getAttribute('itemid'),
+				name: item.getAttribute('name'),
+				price: item.getAttribute('price'),
+				quantity: 1
+			}
+			cartArray.push(cartObject)
+		}
 		redisplayCart()
-		console.log(cartArray)
 	});
 
 	// Remove item from cart

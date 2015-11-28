@@ -1,17 +1,20 @@
 mixin subgrub(subgrub, user, completed)
     .row
-        .col-md-10
+        .col-md-8
             h4 #{subgrub.owner.name}'s items
-        .col-md-2
         - if (user._id.equals(subgrub.owner._id) && !completed)
+        .col-md-2
+            form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=GET')
+                button.btn.btn-warning(type='submit') Edit SubGrub
+        .col-md-2
             form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
                 button.btn.btn-danger(type='submit') Delete SubGrub
     +listGroup('list')
         for item in subgrub.items  
             +listItem
                 +listHeading #{item.name}
-                    +listText Price #{item.price}
-                    +listText Quantity #{item.quantity}
+                    +listText Price: #{item.price}
+                    +listText Quantity: #{item.quantity}
 
 //- List group mixins
 - var groupType
@@ -43,6 +46,6 @@ mixin listHeading
         block
  
 mixin listText
-    .list-group-item-text
+    p.list-group-item-text
         block
 
