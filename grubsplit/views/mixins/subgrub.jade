@@ -13,8 +13,8 @@ mixin subgrub(subgrub, user, completed)
         for item in subgrub.items  
             +listItem
                 +listHeading #{item.name}
-                    +listText Price #{item.price}
-                    +listText Quantity #{item.quantity}
+                    +listText Price: #{item.price}
+                    +listText Quantity: #{item.quantity}
 
 //- List group mixins
 - var groupType
@@ -46,6 +46,6 @@ mixin listHeading
         block
  
 mixin listText
-    .list-group-item-text
+    p.list-group-item-text
         block
 

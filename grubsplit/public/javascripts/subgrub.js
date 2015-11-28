@@ -48,18 +48,18 @@ author: jorrieb
 		newCart.setAttribute('id', 'cart');
 
 		var items = document.createElement('h4');
-		items.innerHTML = "Items:"
+		items.innerHTML = "<b>Items:</b>"
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = cartArray[item].name + ' - $' + cartArray[item].price + '<br>Quantity: ' + cartArray[item].quantity 
+			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price + '<br>Quantity: ' + cartArray[item].quantity 
 			items.appendChild(displayedItem)
 		}
 
 		newCart.appendChild(items)
 
 		var cost = document.createElement('h4');
-		cost.innerHTML = "Total Cost:"
+		cost.innerHTML = "<b>Total Cost:</b>"
 
 		var price = 0
 		for (var item in cartArray){

@@ -4,6 +4,10 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+p {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
 .square {
     float:left;
     position: relative;
