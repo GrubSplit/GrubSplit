@@ -4,6 +4,10 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+p {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
 .square {
     float:left;
     position: relative;
@@ -15,14 +19,20 @@ body {
     background-size: cover;
 }
 
+.item {
+  cursor: pointer;
+}
+
 a {
   color: #00B7FF;
 }
 
 #cart{
-	/*color:orange;*/
-	border: 2px solid orange;
-	/*position: fixed;*/
+	border: 2px solid black;
+  padding-bottom : 1%;
+  right: 130px;
+  top: 30%;
+	position: fixed;
 }
 
 /*.submitOrder{

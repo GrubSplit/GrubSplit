@@ -144,7 +144,7 @@ router.get('/profile', function(req, res) {
     Grub.find({})
         .or([{ owner: req.user._id }, { _id: { $in: grubIDs } }])
         .populate('owner')
-        .select('restaurant_name owner')
+        .select('restaurant_name owner time_ordered')
         .exec(function (err, grubs) {
       if (err) {
         req.flash('errors', err);
