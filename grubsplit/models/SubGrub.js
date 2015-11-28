@@ -38,7 +38,7 @@
  });
 
 
- /*
+/*
   create SubGrub and add reference to its parent Grub
   @param: userID = ObjectId of User doc
   @param: grubID = ObjectId of Grub doc
@@ -63,7 +63,7 @@ subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
   });
 }
 
- /*
+/*
   Add items to subgrub with given id
   @param: grubID = ObjectId of Grub doc
   @param: callback(err, subGrub)
@@ -110,6 +110,8 @@ subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
 			Grub.findOneAndUpdate({ _id: grubID }, {$pull: { subGrubs: subgrubID }}, function(err){
 		        if (err) {
 		        	callback({msg: 'could not delete subgrub ref from grub'});
+		        } else {
+		        	callback(null);
 		        }
 		    });
 		}

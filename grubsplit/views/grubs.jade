@@ -1,29 +1,36 @@
 extends layout
 
-append head
-  script(src='/javascripts/grub.js')
-
 block content
   .page-header
     .row
       h1 #{grub.owner.name}'s order for #{grub.restaurant_name}
     .row
       if grub.time_ordered
-        h3 This was orderd on #{grub.time_ordered}
+        h3 This was ordered on #{grub.time_ordered}
       else
-        h3 This order is still open!
+        .col-md-8
+          h3 This order is still open!
         if isOwner
-          button.btn Order Grub
-          form.form-horizontal(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
-            button.btn(type='submit') Cancel Grub
+          .col-md-2
+            form(method='POST', action='/grubs/' + grub._id +'/order')
+              button.btn.btn-success(type='submit') Order Grub
+          .col-md-2
+            form(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
+              button.btn.btn-danger(type='submit') Cancel Grub
 
-  if grub.subGrubs
+  - var alreadyHaveSubGrub = false;
+  if (grub.subGrubs.length != 0)
     for subgrub in grub.subGrubs
       +subgrub(subgrub, user, grub.time_ordered)
+      if (user._id.equals(subgrub.owner._id))
+        - alreadyHaveSubGrub = true;
   else
-    p <i>No SubGrubs in this Grub!</i>
+    div(style='text-align: center')
+      p <i>No SubGrubs in this Grub!</i>
 
-  if !grub.time_ordered
-    form.form-horizontal(method="POST")
-      button.createSubGrub Create SubGrub
+  if (!grub.time_ordered && !alreadyHaveSubGrub)
+    div(style='text-align: center')
+      form.form-horizontal(method="POST")
+        button.btn.btn-primary.createSubGrub Create SubGrub
+
     
