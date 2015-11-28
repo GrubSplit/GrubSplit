@@ -161,11 +161,11 @@ var Delivery = function() {
   };
 
   /**
-   * POST customer's address to Delivery.com API, r
+   * POST customer's address to Delivery.com API,
    *   returns location_id needed for order checkout
    * @param {Object}   address  {street, city, state, zip_code, phone}
    * @param {String}   token    access_token from user authorization
-   * @param {Function} callback {location_id} used to checkout
+   * @param {Function} callback {error, location_id} used to checkout
    */
   that.addAddress = function(address, token, callback) {
     var url = 'https://api.delivery.com/customer/location?';
@@ -194,6 +194,13 @@ var Delivery = function() {
     });
   };
 
+  /**
+   * Update fields in a customer's address
+   * @param  {String}   locationId Represents a customer's address
+   * @param  {Object}   update     Fields to update (eg. {'city': Boston})
+   * @param  {String}   token      access_token from user authorization
+   * @param  {Function} callback   {error, location_id}
+   */
   that.updateAddress = function(locationId, update, token, callback) {
     var url = 'https://api.delivery.com/customer/location/' + locationId + '?';
     url += 'client_id=' + CLIENT_ID;
@@ -211,6 +218,32 @@ var Delivery = function() {
         body = JSON.parse(body);
         var location = body.location;
         callback(null, location.location_id);
+      }
+    });
+  };
+
+  /**
+   * Get customer's delivery addresses
+   * @param  {String}   token    access_token from user authorization
+   * @param  {Function} callback {error, locations}
+   *   list of locations returned
+   */
+  that.getAddresses = function(token, callback) {
+    var url = 'https://api.delivery.com/customer/location?';
+    url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      }
+    };
+    request(options, function(error, response, body) {
+      if (error) {
+        return callback(error);
+      } else {
+        body = JSON.parse(body);
+        var locations = body.locations;
+        callback(null, locations);
       }
     });
   };
