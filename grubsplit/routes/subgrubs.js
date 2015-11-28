@@ -38,6 +38,14 @@ router.get('/:subgrub', function(req, res) {
 });
 
 /**
+ * GET /subgrubs/items/:id
+ * SubGrub page.
+ */
+router.get('/items/:subgrub', function(req, res) {
+  res.send(req.subgrub.items);
+});
+
+/**
  * POST /subgrubs/:id
  * SubGrub page.
   Request body:
