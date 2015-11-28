@@ -18,7 +18,7 @@ author: jorrieb
     		redisplayCart()
 		});
 	});
-	
+
 	// Helper to display the alert view for the subgrubs
 	// params:
 	//	-item = the item to be displayed. 
@@ -52,7 +52,7 @@ author: jorrieb
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = cartArray[item].name
+			displayedItem.innerHTML = cartArray[item].name + '<br>Quantity: ' + cartArray[item].quantity 
 			items.appendChild(displayedItem)
 		}
 
@@ -108,16 +108,26 @@ author: jorrieb
 	//	-comments/instructions
 	//	-submit to cart button
 	$(document).on('click', '.item', function(evt) {
-		console.log(evt.currentTarget.getAttribute('itemid'))
 		var item = evt.currentTarget
-		var cartObject = {
-			id: item.getAttribute('itemid'),
-			name: item.getAttribute('name'),
-			price: item.getAttribute('price')
+		var exists = false;
+		for (var index in cartArray) {
+			var cartObject = cartArray[index]
+			if (cartObject.id === item.getAttribute('itemid')) {
+				cartObject.quantity += 1;
+				exists = true;
+				break;
+			}
 		}
-		cartArray.push(cartObject)
+		if (!exists) {
+			var cartObject = {
+				id: item.getAttribute('itemid'),
+				name: item.getAttribute('name'),
+				price: item.getAttribute('price'),
+				quantity: 1
+			}
+			cartArray.push(cartObject)
+		}
 		redisplayCart()
-		console.log(cartArray)
 	});
 
 	// Remove item from cart
