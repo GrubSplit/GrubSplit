@@ -63,7 +63,7 @@ author: jorrieb
 
 		var price = 0
 		for (var item in cartArray){
-			 price += parseFloat(cartArray[item].price)
+			 price += (parseFloat(cartArray[item].price) * parseFloat(cartArray[item].quantity))
 		}
 		var orderPrice = document.createElement('p');
 		orderPrice.innerHTML = '$'.concat(price.toFixed(2).toString())
