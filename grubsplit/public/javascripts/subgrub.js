@@ -5,13 +5,20 @@ The controller for the subgrub page
 
 author: jorrieb	
 */
+
 (function() {
-	//db pull from the cart
 	var cartArray = []
 
 	$(function() {
-    	redisplayCart()
+		var subgrubButton = document.getElementById('submitSubGrub')
+		var subgrubid = subgrubButton.getAttribute('subgrubid')
+
+		$.get('/subgrubs/items/' + subgrubid, function(response) {
+			cartArray = response;
+    		redisplayCart()
+		});
 	});
+	
 	// Helper to display the alert view for the subgrubs
 	// params:
 	//	-item = the item to be displayed. 
