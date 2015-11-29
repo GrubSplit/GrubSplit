@@ -12,6 +12,7 @@ var Delivery = function() {
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
   var REDIRECT_URI = 'https://localhost:3000/auth';
+  var DELIVERY_URL = 'https://api.delivery.com';
 
   /**
    * Delivery.com API endpoint for creating a new account
@@ -142,7 +143,7 @@ var Delivery = function() {
       var summary = body.merchant.summary;
       getMenu(restaurantId, function(error, menu) {
         if (error) {
-          return callback(error);
+          callback(error);
         } else {
           callback(null, {
             'name': summary.name,
@@ -185,7 +186,7 @@ var Delivery = function() {
     };
     request.post(options, function(error, response, body) {
       if (error) {
-        return callback(error);
+        callback(error);
       } else {
         body = JSON.parse(body);
         var location = body.location;
@@ -213,7 +214,7 @@ var Delivery = function() {
     };
     request.put(options, function(error, response, body) {
       if (error) {
-        return callback(error);
+        callback(error);
       } else {
         body = JSON.parse(body);
         var location = body.location;
@@ -239,13 +240,75 @@ var Delivery = function() {
     };
     request(options, function(error, response, body) {
       if (error) {
-        return callback(error);
+        callback(error);
       } else {
         body = JSON.parse(body);
         var locations = body.locations;
         callback(null, locations);
       }
     });
+  };
+
+  /**
+   * Get cusotmer's cart at a restaurant
+   * @param  {[type]}   restaurantId [description]
+   * @param  {[type]}   token        [description]
+   * @param  {Function} callback     [description]
+   * @return {[type]}                [description]
+   */
+  that.getCart = function(restaurantId, token, callback) {
+    var url = 'https://api.delivery.com/customer/cart/' + restaurantId + '?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&order_type=' + 'delivery';
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      }
+    };
+    request(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        body = JSON.parse(body);
+        callback(null, body);
+      }
+    });
+  };
+
+  that.createCart = function(restaurantId, items, token, callback) {
+    var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&order_type=' + 'delivery';
+    var options = {
+      url: url,
+      items: items,
+      headers: {
+        'Authorization': token
+      }
+    };
+  };
+
+  that.deleteCart = function(restaurantId, token, callback) {
+    var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
+    url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      }
+    };
+    request.delete(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        callback(null, response);
+      }
+    });
+  };
+
+  that.updateCart = function(restaurantId, item, token, callback) {
+
   };
 
   /**
