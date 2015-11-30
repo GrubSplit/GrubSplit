@@ -26,7 +26,7 @@ mixin menuItem(item)
                 //+priceGroup(child)
     
 mixin optionGroup(group)
-    div=group.name
+    div(class='option-group')=group.name
         if group.children
             for child in group.children
                 +option(child)
