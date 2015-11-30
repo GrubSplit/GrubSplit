@@ -8,6 +8,7 @@ author: jorrieb
 
 (function() {
 	var cartArray = []
+	var menu = 
 
 	$(function() {
 		var subgrubButton = document.getElementById('submitSubGrub')
