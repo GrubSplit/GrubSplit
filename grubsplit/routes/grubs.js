@@ -80,13 +80,15 @@ router.post('/:grub/order', function(req, res) {
       order.push(item);
     });
   });
+  console.log(order);
   // TODO: Implement Delivery.placeOrder
-  Delivery.placeOrder(order, function (err) {
+  Delivery.createCart(req.grub.restaurantID, order, req.user.token, function (err, response, body) {
     if (err) {
       console.log(err);
       req.flash('dcomerrors', err);
       return;
     }
+    console.log(body);
     Grub.completeGrub(req.grub._id, function (err) {
       if (err) {
         console.log(err);

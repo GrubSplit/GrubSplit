@@ -12,6 +12,7 @@ var Delivery = function() {
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
   var REDIRECT_URI = 'https://localhost:3000/auth';
+  var DELIVERY_URL = 'https://api.delivery.com';
 
   /**
    * Delivery.com API endpoint for creating a new account
@@ -158,6 +159,233 @@ var Delivery = function() {
         }
       });
     });
+  };
+
+  /**
+   * POST customer's address to Delivery.com API,
+   *   returns location_id needed for order checkout
+   * @param {Object}   address  {street, city, state, zip_code, phone}
+   * @param {String}   token    access_token from user authorization
+   * @param {Function} callback {error, location_id} used to checkout
+   */
+  that.addAddress = function(address, token, callback) {
+    var url = 'https://api.delivery.com/customer/location?';
+    url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      },
+      formData: {
+        'street': address.street,
+        'city': address.city,
+        'state': address.state,
+        'zip_code': address.zip_code,
+        'phone': address.phone
+      }
+    };
+    request.post(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        body = JSON.parse(body);
+        var location = body.location;
+        callback(null, location.location_id);
+      }
+    });
+  };
+
+  /**
+   * Update fields in a customer's address
+   * @param  {String}   locationId Represents a customer's address
+   * @param  {Object}   update     Fields to update (eg. {'city': Boston})
+   * @param  {String}   token      access_token from user authorization
+   * @param  {Function} callback   {error, location_id}
+   */
+  that.updateAddress = function(locationId, update, token, callback) {
+    var url = 'https://api.delivery.com/customer/location/' + locationId + '?';
+    url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      },
+      formData: update
+    };
+    request.put(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        body = JSON.parse(body);
+        var location = body.location;
+        callback(null, location.location_id);
+      }
+    });
+  };
+
+  /**
+   * Get customer's delivery addresses
+   * @param  {String}   token    access_token from user authorization
+   * @param  {Function} callback {error, locations}
+   *   list of locations returned
+   */
+  that.getAddresses = function(token, callback) {
+    var url = 'https://api.delivery.com/customer/location?';
+    url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      }
+    };
+    request(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        body = JSON.parse(body);
+        var locations = body.locations;
+        callback(null, locations);
+      }
+    });
+  };
+
+  /**
+   * Get cusotmer's cart at a restaurant
+   * @param  {Int}   restaurantId    Id for restaurant
+   * @param  {String}   token        customer's access_token from authorization
+   * @param  {Function} callback     {error, body}
+   */
+  that.getCart = function(restaurantId, token, callback) {
+    var url = 'https://api.delivery.com/customer/cart/' + restaurantId + '?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&order_type=' + 'delivery';
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      }
+    };
+    request(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        body = JSON.parse(body);
+        callback(null, body);
+      }
+    });
+  };
+
+  /**
+   * Format order for the Delivery.com API
+   * @param  {[Object]} items Items to add to order
+   * @return {[Object]} order Properly formatted items for API
+   */
+  var formatOrder = function(items) {
+    var order = [];
+    items.forEach(function(item) {
+      order.push({
+        'item_id': item.id,
+        'item_qty': item.quantity,
+        'option_qty': {},
+        'item_label': '',
+        'instructions': item.instructions
+      });
+    });
+    return order;
+  };
+
+  /**
+   * [createCart description]
+   * @param  {int}   restaurantId    Id for restaurant
+   * @param  {[Object]}   items      Items to order
+   * @param  {String}   token        Customer's access_token from authorization
+   * @param  {Function} callback     {error, response, body}
+   */
+  that.createCart = function(restaurantId, items, token, callback) {
+    var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&order_type=' + 'delivery';
+    items = formatOrder(items);
+    console.log(items);
+    var options = {
+      url: url,
+      body: {
+        items: items
+      },
+      json: true,
+      headers: {
+        'Authorization': token,
+      }
+    };
+    request.post(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        callback(null, response, body);
+      }
+    });
+  };
+
+  /**
+   * Delete all items in customer's cart
+   * @param  {int}   restaurantId    Id for restaurant
+   * @param  {String}   token        Customer's access_token from authorization
+   * @param  {Function} callback     {error, response}
+   */
+  that.deleteCart = function(restaurantId, token, callback) {
+    var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
+    url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      }
+    };
+    request.delete(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        callback(null, response);
+      }
+    });
+  };
+
+  /**
+   * Remove an item from the cart by index
+   * @param  {int}   restaurantId    Id for restaurant
+   * @param  {[type]}   index        Index of item to delete from cart
+   * @param  {String}   token        Customer's access_token from authorization
+   * @param  {Function} callback     {error, response}
+   */
+  that.removeItem = function(restaurantId, index, token, callback) {
+    var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
+    url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      cart_index: index,
+      headers: {
+        'Authorization': token
+      }
+    };
+    request.delete(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        callback(null, response);
+      }
+    });
+  };
+
+  /**
+   * [updateCart description]
+   * @param  {[type]}   restaurantId [description]
+   * @param  {[type]}   item         [description]
+   * @param  {[type]}   token        [description]
+   * @param  {Function} callback     [description]
+   * @return {[type]}                [description]
+   */
+  that.updateCart = function(restaurantId, item, token, callback) {
+
   };
 
   /**

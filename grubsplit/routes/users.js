@@ -140,7 +140,7 @@ router.get('/profile', function(req, res) {
       req.flash('errors', err);
       return res.redirect('/');
     }
-    grubIDs = grubIDs.map(function(elm) {return elm.grubID});
+    grubIDs = grubIDs.map(function(elm) {return elm.grubID;});
     Grub.find({})
         .or([{ owner: req.user._id }, { _id: { $in: grubIDs } }])
         .populate('owner')
