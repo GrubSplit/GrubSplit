@@ -31,7 +31,7 @@ router.get('/:subgrub', function(req, res) {
   Delivery.getRestaurant(restaurantID, function(err, restaurant) {
     if (err) {
       req.flash('errors', err);
-      return res.redirect('/grubs/'+req.subgrub.grubID._id);      
+      return res.redirect('/grubs/'+req.subgrub.grubID._id);
     }
     res.render('subgrubs', { 'subgrub': req.subgrub, 'restaurant' : restaurant });
   });
@@ -77,7 +77,7 @@ router.post('/:subgrub', function(req, res) {
     - success: true if the server succeeded in deleting subgrub
     - err: on failure, an error message
  */
- router.delete('/:subgrub', function(req, res) { 
+ router.delete('/:subgrub', function(req, res) {
   SubGrub.deleteSubGrub(req.subgrub, function (err) {
     if (err) {
       req.flash('errors', err);

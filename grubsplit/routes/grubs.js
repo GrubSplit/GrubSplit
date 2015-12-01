@@ -22,14 +22,16 @@ router.param('grub', function(req, res, next, grubIdStr) {
 
 /*
   POST /grubs
-  Request body: 
+  Request body:
     - restaurantID : TODO how to put here?
   Response:
 */
 router.post('/', function(req, res) {
   Grub.createNewGrub(req.user._id, req.query.restaurantID, req.query.restaurantName, function(err, grub) {
     if (err) {
-      req.flash('errors', { msg: err.msg });
+      req.flash('errors', {
+        msg: err.msg
+      });
     } else {
       res.redirect('/grubs/' + grub._id);
     }
@@ -42,7 +44,10 @@ router.post('/', function(req, res) {
  */
 router.get('/:grub', function(req, res) {
   var isOwner = req.user._id.equals(req.grub.owner._id);
-  res.render('grubs', { grub: req.grub, isOwner: isOwner });
+  res.render('grubs', {
+    grub: req.grub,
+    isOwner: isOwner
+  });
 });
 
 /**
@@ -55,12 +60,12 @@ router.get('/:grub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:grub', function(req, res) {
-  SubGrub.createNewSubGrub(req.user._id, req.grub._id, function (err, subgrub) {
+  SubGrub.createNewSubGrub(req.user._id, req.grub._id, function(err, subgrub) {
     if (err) {
       req.flash('errors', err);
       return;
     }
-    res.redirect('/subgrubs/'+subgrub._id);
+    res.redirect('/subgrubs/' + subgrub._id);
   });
 });
 
@@ -75,35 +80,70 @@ router.post('/:grub', function(req, res) {
  */
 router.post('/:grub/order', function(req, res) {
   var order = [];
-  req.grub.subGrubs.forEach(function (subgrub) {
-    subgrub.items.forEach(function (item) {
+  req.grub.subGrubs.forEach(function(subgrub) {
+    subgrub.items.forEach(function(item) {
       order.push(item);
     });
   });
   console.log(order);
   // TODO: Implement Delivery.placeOrder
-  Delivery.createCart(req.grub.restaurantID, order, req.user.token, function (err, response, body) {
+  Delivery.createCart(req.grub.restaurantID, order, req.user.token, function(err, response, body) {
     if (err) {
       console.log(err);
       req.flash('dcomerrors', err);
       return;
     }
     console.log(body);
-    Grub.completeGrub(req.grub._id, function (err) {
+    Grub.completeGrub(req.grub._id, function(err) {
       if (err) {
         console.log(err);
         req.flash('errors', err);
         return;
       }
-      res.redirect('/grubs/'+req.grub._id);
+      res.redirect('/grubs/' + req.grub._id);
     });
   });
+});
+
+router.post('/:grub/checkout', function(req, res) {
+  var locations, paymentOptions;
+
+  Delivery.getAddresses(req.user.token, function(error, addresses) {
+    if (error) {
+      console.log(error);
+      res.flash('errors', {
+        msg: error
+      });
+    } else {
+      locations = addresses;
+      Delivery.getPaymentMethods(req.user.token, function(error, creditCards) {
+        if (error) {
+          console.log(error);
+          req.flash('errors', {
+            msg: error
+          });
+        } else {
+          paymentOptions = creditCards;
+          res.render('checkout', {
+            locations: locations,
+            paymentOptions: paymentOptions,
+            token: req.user.token
+          });
+        }
+      });
+    }
+  });
+
+
+
 });
 
 router.delete('/:grub', function(req, res) {
   Grub.deleteGrub(req.params.grub, function(err) {
     if (err) {
-      req.flash('errors', {msg: err.msg});
+      req.flash('errors', {
+        msg: err.msg
+      });
     } else {
       res.redirect('/');
     }

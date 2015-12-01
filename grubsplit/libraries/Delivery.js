@@ -371,7 +371,7 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        callback(null, response);
+        callback(null, body);
       }
     });
   };
@@ -388,14 +388,33 @@ var Delivery = function() {
 
   };
 
-  /**
-   * Place an order
-   * @param  {[type]} order [description]
-   * @return {[type]}       [description]
-   */
-  that.placeOrder = function(order, callback) {
-    // TODO: replace with real implementation
-    callback(null);
+  that.getPaymentMethods = function(token, callback) {
+    var url = DELIVERY_URL + '/customer/cc';
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      }
+    };
+    request(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        body = JSON.parse(body);
+        callback(null, body.cards);
+      }
+    });
+  };
+
+  that.addPaymentMethodURL = function(token) {
+    var state = '';
+    var url = DELIVERY_URL + '/customer/cc?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&redirect_uri=' + REDIRECT_URI;
+    url += '&response_type=code';
+    url += '&scope=global';
+    url += '&state=' + state;
+    return url;
   };
 
   Object.freeze(that);

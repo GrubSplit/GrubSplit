@@ -10,7 +10,7 @@ mixin subgrub(subgrub, user, completed)
             form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
                 button.btn.btn-danger(type='submit') Delete SubGrub
     +listGroup('list')
-        for item in subgrub.items  
+        for item in subgrub.items
             +listItem
                 +listHeading #{item.name}
                     +listText Price: #{item.price}
@@ -18,7 +18,7 @@ mixin subgrub(subgrub, user, completed)
 
 //- List group mixins
 - var groupType
- 
+
 mixin listGroup(type)
     - groupType = type
     case groupType
@@ -28,7 +28,7 @@ mixin listGroup(type)
         default
             .list-group
                 block
- 
+
 mixin listItem(arg1, arg2)
     case groupType
         when 'list'
@@ -40,11 +40,11 @@ mixin listItem(arg1, arg2)
         default
             .list-group-item( class=["list-group-item", arg1] )
                 block
- 
+
 mixin listHeading
     h4.list-group-item-heading
         block
- 
+
 mixin listText
     p.list-group-item-text
         block
