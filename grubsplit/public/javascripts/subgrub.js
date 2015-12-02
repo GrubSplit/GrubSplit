@@ -102,6 +102,11 @@ author: jorrieb
 		});
 	});
 
+	$(document).on('click','#overlay', function(evt){
+		evt.preventDefault();
+		
+	});
+
 	// User selects a menu item
 	// Displays alert with:
 	//	-options
@@ -110,26 +115,34 @@ author: jorrieb
 	//	-submit to cart button
 	$(document).on('click', '.item', function(evt) {
 		var item = evt.currentTarget
-		var exists = false;
-		for (var index in cartArray) {
-			var cartObject = cartArray[index]
-			if (cartObject.id === item.getAttribute('itemid')) {
-				cartObject.quantity += 1;
-				exists = true;
-				break;
-			}
-		}
-		if (!exists) {
-			var cartObject = {
-				id: item.getAttribute('itemid'),
-				name: item.getAttribute('name'),
-				price: item.getAttribute('price'),
-				quantity: 1
-			}
-			cartArray.push(cartObject)
-		}
-		redisplayCart()
+		//create modal with item data
+		var overlay = document.createElement('div');
+		overlay.setAttribute('id','overlay');
+		document.body.appendChild(overlay);
+
 	});
+	// $(document).on('click', '.item', function(evt) {
+	// 	var item = evt.currentTarget
+	// 	var exists = false;
+	// 	for (var index in cartArray) {
+	// 		var cartObject = cartArray[index]
+	// 		if (cartObject.id === item.getAttribute('itemid')) {
+	// 			cartObject.quantity += 1;
+	// 			exists = true;
+	// 			break;
+	// 		}
+	// 	}
+	// 	if (!exists) {
+	// 		var cartObject = {
+	// 			id: item.getAttribute('itemid'),
+	// 			name: item.getAttribute('name'),
+	// 			price: item.getAttribute('price'),
+	// 			quantity: 1
+	// 		}
+	// 		cartArray.push(cartObject)
+	// 	}
+	// 	redisplayCart()
+	// });
 
 	// Remove item from cart
 	$(document).on('click', '.removeItem', function(evt) {

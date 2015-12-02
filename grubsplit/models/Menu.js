@@ -9,6 +9,9 @@ var Menu = function(menu){
 	var that = Object.create(Menu.prototype);
 	var itemList = {}
 
+
+	// make call to library to get menu
+
 	// Start by adding the menu
 	addMenu(menu)
 
