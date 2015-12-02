@@ -104,7 +104,7 @@ author: jorrieb
 
 	$(document).on('click','#overlay', function(evt){
 		evt.preventDefault();
-		
+
 	});
 
 	// User selects a menu item
@@ -120,7 +120,34 @@ author: jorrieb
 		overlay.setAttribute('id','overlay');
 		document.body.appendChild(overlay);
 
+		var orderBox = document.createElement('div');
+		orderBox.setAttribute('id','orderBox');
+		overlay.appendChild(orderBox);
+
+		var closeButton = document.createElement('button');
+		closeButton.setAttribute('id', 'closeModal');
+		closeButton.innerHTML = 'Close';
+		orderBox.appendChild(closeButton);
+
 	});
+
+	$(document).on('click', '#closeModal', function(evt) {
+		closeModal();
+	});
+
+	var closeModal = function(){
+		var overlay = document.getElementById('overlay');
+		overlay.parentNode.removeChild(overlay);
+	};
+
+	// var populateOrderBox = function(id, id_type, orderBox){
+	// 	//header and quantity box
+	// 	if (id_type == 'menu') {
+
+	// 	} else {
+
+	// 	}
+	// }
 	// $(document).on('click', '.item', function(evt) {
 	// 	var item = evt.currentTarget
 	// 	var exists = false;

@@ -44,6 +44,16 @@ a {
   background-color: rgba(0,0,0,.5);
 }
 
+#orderBox{
+  border-radius: 15px;
+  position: relative;
+  top: 15%;
+  left: 20%;
+  width: 60%;
+  height: 70%;
+  background-color: white;
+}
+
 /*.submitOrder{
 	bottom: 10px;
 }*/
