@@ -169,11 +169,37 @@ author: jorrieb
 		footer.appendChild(submitButton);
 
 		var itemName = document.createElement('h2');
-		console.log('item id is', item_id);
 		var menuItem = menu.getItem(item_id);
-		console.log('menu item is',menuItem);
 		itemName.innerHTML = menuItem.name;
 		content.appendChild(itemName);
+
+		for (index in menuItem.children){
+			var groupName = document.createElement('h4');
+			groupName.innerHTML = menuItem.children[index].name;
+			content.appendChild(groupName);
+			var form = document.createElement('form');
+			if (menuItem.children[index].type == "price group"){
+				for (child in menuItem.children[index].children){
+					var button = document.createElement('input');
+					button.setAttribute('type','radio');
+					button.setAttribute('name', menuItem.children[index].id);
+					button.setAttribute('value',menuItem.children[index].children[child].name);
+					button.innerHTML = menuItem.children[index].children[child].name;
+					button.setAttribute('checked',true);
+					form.appendChild(button);
+				}
+			} else {
+				for (child in menuItem.children[index].children){
+					var button = document.createElement('input');
+					button.type = 'radio';
+					button.setAttribute('name', menuItem.children[index].id);
+					button.setAttribute('value',menuItem.children[index].children[child].name)
+					button.innerHTML = menuItem.children[index].children[child].name;
+					form.appendChild(button);
+				}
+			}
+			content.appendChild(form);
+		}
 
 	};
 
