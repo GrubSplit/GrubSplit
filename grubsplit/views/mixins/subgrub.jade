@@ -2,12 +2,13 @@ mixin subgrub(subgrub, user, grubowner, completed)
     .row
         .col-md-8
             h4 #{subgrub.owner.name}'s items
-        - if (user._id.equals(grubowner._id) && completed && !subgrub.owner._id.equals(grubowner._id) && subgrub.paid)
-        .col-md-2
-            button.btn.btn-primary.togglePaid.hasPaid(subGrubId=subgrub._id) Mark Unpaid
-        - if (user._id.equals(grubowner._id) && completed && !subgrub.owner._id.equals(grubowner._id) && !subgrub.paid)
-        .col-md-2
-            button.btn.btn-primary.togglePaid.hasNotPaid(subGrubId=subgrub._id) Mark Paid
+        // - if (user._id.equals(grubowner._id) && !completed && !subgrub.owner._id.equals(grubowner._id))
+        - if (user._id.equals(grubowner._id) && !completed)
+            .col-md-2
+                if subgrub.paid
+                    button.btn.btn-primary.togglePaid.hasPaid(subGrubId=subgrub._id) Mark Unpaid
+                else
+                    button.btn.btn-primary.togglePaid.hasNotPaid(subGrubId=subgrub._id) Mark Paid
         - if (user._id.equals(subgrub.owner._id) && !completed)
         .col-md-2
             form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=GET')
