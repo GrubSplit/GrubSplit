@@ -116,6 +116,12 @@ author: jorrieb
 	$(document).on('click', '.item', function(evt) {
 		var item = evt.currentTarget
 		//create modal with item data
+		presentModal();
+
+	});
+
+	var presentModal = function(id,id_type){
+		//base things
 		var overlay = document.createElement('div');
 		overlay.setAttribute('id','overlay');
 		document.body.appendChild(overlay);
@@ -124,15 +130,64 @@ author: jorrieb
 		orderBox.setAttribute('id','orderBox');
 		overlay.appendChild(orderBox);
 
+		var header = document.createElement('div');
+		header.setAttribute('class','modalRow');
+		header.setAttribute('id','header');
+		orderBox.appendChild(header);
+
 		var closeButton = document.createElement('button');
 		closeButton.setAttribute('id', 'closeModal');
 		closeButton.innerHTML = 'Close';
-		orderBox.appendChild(closeButton);
+		header.appendChild(closeButton);
 
-	});
+		var content = document.createElement('div');
+		content.setAttribute('class','modalRow');
+		content.setAttribute('id','content');
+		orderBox.appendChild(content);
+
+		var textRow = document.createElement('div');
+		textRow.setAttribute('class','modalRow');
+		textRow.setAttribute('id','textRow');
+		orderBox.appendChild(textRow);
+
+		var instructions = document.createElement('textarea');
+		instructions.setAttribute('class','FormElement');
+		instructions.setAttribute('placeHolder','Add your order instructions here! e.g. Peanut Allergy');
+		instructions.setAttribute('id','instructionsBox');
+		instructions.setAttribute('rows','4');
+		textRow.appendChild(instructions);
+
+		var footer = document.createElement('div');
+		footer.setAttribute('class','modalRow');
+		footer.setAttribute('id','footer');
+		orderBox.appendChild(footer);
+
+		var quantLabel = document.createElement('h5');
+		quantLabel.innerHTML = 'Quantity:';
+		footer.appendChild(quantLabel);
+
+		var quantInput = document.createElement('input');
+		quantInput.setAttribute('id', 'quantity');
+		quantInput.defaultValue = 1;
+		footer.appendChild(quantInput);
+
+		var submitButton = document.createElement('button');
+		submitButton.setAttribute('id','submitButton');
+		submitButton.innerHTML = 'Submit to Cart';
+		footer.appendChild(submitButton);
+
+	};
 
 	$(document).on('click', '#closeModal', function(evt) {
 		closeModal();
+	});
+
+	$(document).on('click', '#submitButton', function(evt){
+
+		//save to cart
+
+		closeModal();
+
 	});
 
 	var closeModal = function(){
@@ -140,14 +195,6 @@ author: jorrieb
 		overlay.parentNode.removeChild(overlay);
 	};
 
-	// var populateOrderBox = function(id, id_type, orderBox){
-	// 	//header and quantity box
-	// 	if (id_type == 'menu') {
-
-	// 	} else {
-
-	// 	}
-	// }
 	// $(document).on('click', '.item', function(evt) {
 	// 	var item = evt.currentTarget
 	// 	var exists = false;
