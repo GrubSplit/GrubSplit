@@ -34,7 +34,8 @@
  		ref: "Grub",
  		required: true
  	},
- 	items: [itemSchema]
+ 	items: [itemSchema],
+  paid: Boolean
  });
 
 
@@ -45,21 +46,31 @@
   @param: callback(err, subGrub)
 */
 subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
-  SubGrub.create({
-    owner: userID,
-    grubID: grubID
-}, function(err, subGrub) {
-  	if (err) {
-  		callback({msg: 'could not create subgrub'});
-  	} else {
-  		Grub.findOneAndUpdate({_id: grubID},  { $addToSet: { subGrubs: subGrub._id } }, function(err) {
-  			if (err) {
-  				callback({msg: 'could add subgrub id to grub'});
-  			} else {
-  				callback(null, subGrub);
-  			}
-  		});
-  	}
+  var paidStatus = userID == userID
+  Grub.findOne({_id: grubID}).populate(['owner']).exec(function(err, grub) {
+    if (err) {
+      callback({msg: 'could not find Grub'});
+    } else {
+      var grubOwnerID = grub.owner._id;
+      SubGrub.create({
+          owner: userID,
+          grubID: grubID,
+          paid: grubOwnerID.equals(userID)
+      }, function(err, subGrub) {
+          if (err) {
+            callback({msg: 'could not create subgrub'});
+          } else {
+            Grub.findOneAndUpdate({_id: grubID},  { $addToSet: { subGrubs: subGrub._id } }, function(err) {
+              if (err) {
+                callback({msg: 'could not add subgrub id to grub'});
+              } else {
+                console.log(subGrub)
+                callback(null, subGrub);
+              }
+            });
+          }
+        });
+    }
   });
 }
 
