@@ -21,7 +21,7 @@ author: jorrieb
 
 		$.get('/subgrubs/menu/' + subgrubid, function(response){
 			menu = Menu(response);
-			console.log('menu item is',menu.getItem('E175'));
+			console.log(menu);
 		});
 	});
 
@@ -107,12 +107,13 @@ author: jorrieb
 	$(document).on('click', '.item', function(evt) {
 		var item = evt.currentTarget
 		//create modal with item data
-		presentModal();
+		presentModal(item.getAttribute('itemid'),'menuitem');
 
 	});
 
-	var presentModal = function(id,id_type){
-		//base things
+	var presentModal = function(item_id,id_type){
+		console.log('menu is',menu);
+		//generic things
 		var overlay = document.createElement('div');
 		overlay.setAttribute('id','overlay');
 		document.body.appendChild(overlay);
@@ -167,6 +168,13 @@ author: jorrieb
 		submitButton.innerHTML = 'Submit to Cart';
 		footer.appendChild(submitButton);
 
+		var itemName = document.createElement('h2');
+		console.log('item id is', item_id);
+		var menuItem = menu.getItem(item_id);
+		console.log('menu item is',menuItem);
+		itemName.innerHTML = menuItem.name;
+		content.appendChild(itemName);
+
 	};
 
 	$(document).on('click', '#closeModal', function(evt) {
@@ -174,9 +182,7 @@ author: jorrieb
 	});
 
 	$(document).on('click', '#submitButton', function(evt){
-
 		//save to cart
-
 		closeModal();
 
 	});
