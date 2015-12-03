@@ -1,5 +1,5 @@
 /* 
-grub.js
+grubs.js
 
 The controller for the grub page
 
