@@ -8,7 +8,7 @@ author: jorrieb
 
 (function() {
 	var cartArray = []
-	var menu = 
+	var menu = {}
 
 	$(function() {
 		var subgrubButton = document.getElementById('submitSubGrub')
@@ -18,21 +18,12 @@ author: jorrieb
 			cartArray = response;
     		redisplayCart()
 		});
+
+		$.get('/subgrubs/menu/' + subgrubid, function(response){
+			menu = Menu(response);
+			console.log('menu item is',menu.getItem('E175'));
+		});
 	});
-
-	// Helper to display the alert view for the subgrubs
-	// params:
-	//	-item = the item to be displayed. 
-	//	-quantity = optional - number of items in the cart
-	//	-selectedOptions = optional - 
-	var displayMenuItem = function(item,quantity,selectedOptions,instructions){
-		//set default values
-		quantity = typeof quantity !== 'undefined' ? quantity : 0;
-		selectedOptions = typeof selectedOptions !== 'undefined' ? selectedOptions : [];
-		instructions = typeof instructions !== 'undefined' ? instructions : '';
-
-		//toss up a jade template
-	};
 
 	var redisplayCart = function(){
 

@@ -4,26 +4,20 @@
 // Menu is immutable.
 // @param menu from delivery.com API
 
-var Menu = function(menu){
+var Menu = function Menu(menu){
 
 	var that = Object.create(Menu.prototype);
-	var itemList = {}
-
-
-	// make call to library to get menu
-
-	// Start by adding the menu
-	addMenu(menu)
+	var itemList = {};
 
 	// Private method to add menu's items to menu object.
 	// Used only when generating menu.
 	// @param menu from delivery.com API
 	var addMenu = function(subMenu){
-		for index in subMenu.children{
-			if subMenu.children[index].type == "menu"{
-				addMenu(subMenu.children[index])
+		for (index in subMenu) {
+			if (subMenu[index].type == "menu"){
+				addMenu(subMenu[index].children)
 			} else {
-				addItem(subMenu.children[index]);
+				addItem(subMenu[index]);
 			}
 		}
 	}
@@ -42,6 +36,8 @@ var Menu = function(menu){
 		return itemList[itemID]
 	}
 
-	object.freeze(that)
+	addMenu(menu);
+
+	Object.freeze(that)
 	return that
 };
