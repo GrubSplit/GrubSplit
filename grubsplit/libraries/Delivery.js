@@ -84,10 +84,13 @@ var Delivery = function() {
     var restaurants = [];
     request(url, function(error, response, body) {
       body = JSON.parse(body);
-      if (body.message[0].code === 'bad_address') {
-        callback({
-          message: 'Bad Address'
-        });
+      console.log(body);
+      if (body.message && body.message[0] && body.message[0].code) {
+        if (body.message[0].code === 'bad_address') {
+          callback({
+            message: 'Bad Address'
+          });
+        }
       } else {
         console.log(body);
         // console.log(body.merchants[0]);
