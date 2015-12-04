@@ -104,7 +104,6 @@ subGrubSchema.statics.getSubGrub = function(subGrubID, callback) {
   });
 }
 
-
  /*
   RemoveSubGrub doc, remove it from SubGrub collection and 
   remove reference from parent Grub
@@ -127,6 +126,22 @@ subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
 		    });
 		}
 	});
+}
+
+ /*
+  Changes payment status of subgrub
+  @param: subgrubID = id of subgrub
+  @param: paidStatus = new payment status (boolean)
+  @param: callback(err, subgrub)
+*/
+subGrubSchema.statics.togglePayment = function(subgrubID, paidStatus, callback) {
+  SubGrub.findOneAndUpdate({_id: subgrubID}, { $set: { paid: paidStatus }}, {'new': true}, function(err, subGrub) {
+    if (subGrub) {
+      callback(null, subGrub);
+    } else {
+      callback({msg: 'could not update subGrub'});
+    }
+  });
 }
 
 var SubGrub = mongoose.model('SubGrub', subGrubSchema);
