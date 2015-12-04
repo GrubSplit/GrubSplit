@@ -3,19 +3,19 @@ mixin subgrub(subgrub, user, grubowner, completed)
         .col-md-8
             h4 #{subgrub.owner.name}'s items
         // - if (user._id.equals(grubowner._id) && !completed && !subgrub.owner._id.equals(grubowner._id))
-        - if (user._id.equals(grubowner._id) && !completed)
+        - if (user._id.equals(grubowner._id) && completed)
             .col-md-2
                 if subgrub.paid
-                    button.btn.btn-primary.togglePaid.hasPaid(subGrubId=subgrub._id) Mark Unpaid
+                    button.btn.btn-primary.togglePaid.hasPaid(subGrubId=subgrub._id) Mark As Unpaid
                 else
-                    button.btn.btn-primary.togglePaid.hasNotPaid(subGrubId=subgrub._id) Mark Paid
+                    button.btn.btn-primary.togglePaid.hasNotPaid(subGrubId=subgrub._id) Mark As Paid
         - if (user._id.equals(subgrub.owner._id) && !completed)
-        .col-md-2
-            form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=GET')
-                button.btn.btn-warning(type='submit') Edit SubGrub
-        .col-md-2
-            form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
-                button.btn.btn-danger(type='submit') Delete SubGrub
+            .col-md-2
+                form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=GET')
+                    button.btn.btn-warning(type='submit') Edit SubGrub
+            .col-md-2
+                form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
+                    button.btn.btn-danger(type='submit') Delete SubGrub
     +listGroup('list')
         for item in subgrub.items  
             +listItem
