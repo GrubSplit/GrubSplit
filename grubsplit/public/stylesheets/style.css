@@ -36,11 +36,11 @@ a {
 }
 
 .hasNotPaid {
-  background-color: red;
+  background-color: #f08f8f;
 }
 
 .hasPaid {
-  background-color: green;
+  background-color: #dcefdc;
 }
 
 /*.submitOrder{
