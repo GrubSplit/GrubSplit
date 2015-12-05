@@ -86,9 +86,9 @@ var Delivery = function() {
       body = JSON.parse(body);
       console.log(body);
       if (body.message && body.message[0] && body.message[0].code) {
-        if (body.message[0].code === 'bad_address') {
+        if (body.message[0].code === 'invalid_address') {
           callback({
-            message: 'Bad Address'
+            msg: "We couldn't find that address. Please try again!"
           });
         }
       } else {
