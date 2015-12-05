@@ -406,9 +406,10 @@ var Delivery = function() {
     });
   };
 
-  that.addPaymentMethodURL = function(token) {
-    var state = '';
-    var url = DELIVERY_URL + '/customer/cc?';
+  that.addPaymentMethodURL = function(state) {
+    var url;
+    state = state;
+    url = DELIVERY_URL + '/third_party/credit_card/add?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
     url += '&response_type=code';

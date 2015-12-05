@@ -105,7 +105,7 @@ router.post('/:grub/order', function(req, res) {
   });
 });
 
-router.post('/:grub/checkout', function(req, res) {
+router.get('/:grub/checkout', function(req, res) {
   var locations, paymentOptions;
 
   Delivery.getAddresses(req.user.token, function(error, addresses) {
@@ -133,9 +133,6 @@ router.post('/:grub/checkout', function(req, res) {
       });
     }
   });
-
-
-
 });
 
 router.delete('/:grub', function(req, res) {

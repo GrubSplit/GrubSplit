@@ -1,4 +1,3 @@
-include mixins/checkout
 extends layout
 
 append head
@@ -20,9 +19,9 @@ block content
       +textInputGroup('city', 'Cambridge')
       +textInputGroup('state', 'MA')
       +textInputGroup('zip_code', '02139')
-      .form-group
-      .col-sm.col-sm-7
+      .form-group.col-sm.col-sm-7
         button.col-sm-3.btn.btn-primary(type='submit') Submit
   h1 Add Payment Option
   div
-    button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
+    form.form-hotizontal(method='GET', action='/auth/addPayment'
+      button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment

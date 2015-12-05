@@ -12,7 +12,7 @@ block content
           h3 This order is still open!
         if isOwner
           .col-md-2
-            form(method='POST', action='/grubs/' + grub._id +'/checkout')
+            form(method='GET', action='/grubs/' + grub._id +'/checkout')
               button.btn.btn-success(type='submit') Checkout Grub
           .col-md-2
             form(method='POST', action='/grubs/' + grub._id +'?_method=DELETE')
