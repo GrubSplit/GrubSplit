@@ -11,7 +11,7 @@ author: aezhou
 	$(document).on('click', '.togglePaid', function(evt) {
 		var toggleButton = $(this)
 		console.log(toggleButton)
-		var subgrubContainer = toggleButton.parent().parent()
+		var subgrubContainer = toggleButton.parent().parent().parent()
 		var url = '/subgrubs/payment/' + toggleButton.attr('subgrubid')
 		var payAction = false;
 
