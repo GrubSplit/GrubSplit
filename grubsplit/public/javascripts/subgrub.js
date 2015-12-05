@@ -203,7 +203,6 @@ author: jorrieb
 			}
 			content.appendChild(form);
 		}
-
 	};
 
 	$(document).on('click', '#closeModal', function(evt) {
