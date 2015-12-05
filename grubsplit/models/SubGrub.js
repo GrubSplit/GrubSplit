@@ -34,7 +34,8 @@
  		ref: "Grub",
  		required: true
  	},
- 	items: [itemSchema]
+ 	items: [itemSchema],
+  paid: Boolean
  });
 
 
@@ -45,21 +46,30 @@
   @param: callback(err, subGrub)
 */
 subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
-  SubGrub.create({
-    owner: userID,
-    grubID: grubID
-}, function(err, subGrub) {
-  	if (err) {
-  		callback({msg: 'could not create subgrub'});
-  	} else {
-  		Grub.findOneAndUpdate({_id: grubID},  { $addToSet: { subGrubs: subGrub._id } }, function(err) {
-  			if (err) {
-  				callback({msg: 'could add subgrub id to grub'});
-  			} else {
-  				callback(null, subGrub);
-  			}
-  		});
-  	}
+  Grub.findOne({_id: grubID}).populate(['owner']).exec(function(err, grub) {
+    if (err) {
+      callback({msg: 'could not find Grub'});
+    } else {
+      var grubOwnerID = grub.owner._id;
+      SubGrub.create({
+          owner: userID,
+          grubID: grubID,
+          paid: grubOwnerID.equals(userID)
+      }, function(err, subGrub) {
+        if (err) {
+          callback({msg: 'could not create subgrub'});
+        } else {
+          grub.subGrubs.push(subGrub._id);
+          grub.save(function(err) {
+            if (err) {
+              callback({msg: 'could not add subgrub id to grub'});
+            } else {
+              callback(null, subGrub);
+            }
+          });
+        }
+      });
+    }
   });
 }
 
@@ -93,7 +103,6 @@ subGrubSchema.statics.getSubGrub = function(subGrubID, callback) {
   });
 }
 
-
  /*
   RemoveSubGrub doc, remove it from SubGrub collection and 
   remove reference from parent Grub
@@ -116,6 +125,65 @@ subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
 		    });
 		}
 	});
+}
+
+ /*
+  Changes payment status of subgrub
+  @param: subgrubID = id of subgrub
+  @param: paidStatus = new payment status (boolean)
+  @param: callback(err, subgrub)
+*/
+subGrubSchema.statics.togglePayment = function(subgrubID, paidStatus, callback) {
+  SubGrub.findOneAndUpdate({_id: subgrubID}, { $set: { paid: paidStatus }}, {'new': true}, function(err, subGrub) {
+    if (subGrub) {
+      callback(null, subGrub);
+    } else {
+      callback({msg: 'could not update subGrub'});
+    }
+  });
+}
+
+/*
+  Find all Grubs where User is invited, is ordering, or has ordered in.
+  @param: userID = ObjectId of current user 
+  @param: grub_invites = ObjectIds of Grub docs that current user is invited to
+  @param: callback(err, invites, open_grubs, past_grubs)
+*/
+subGrubSchema.statics.findUserGrubs = function(userID, grub_invites, callback) {
+  SubGrub.find({ owner: userID })
+         .select('-_id grubID')
+         .exec(function (err, grubIDs) {
+    if (err) {
+      return callback(err);
+    }
+    grubIDs = grubIDs.map(function(elm) {return elm.grubID;});
+    Grub.find({})
+        .or([{ owner: userID }, { _id: { $in: grubIDs } }])
+        .populate('owner')
+        .select('restaurant_name owner time_ordered')
+        .exec(function (err, grubs) {
+      if (err) {
+        return callback(err);
+      }
+      var open_grubs = [];
+      var past_grubs = [];
+      grubs.forEach(function (grub) {
+        if (grub.time_ordered) {
+          past_grubs.push(grub);
+        } else {
+          open_grubs.push(grub);
+        }
+      });
+      Grub.find({ _id: {$in: grub_invites } })
+          .select('-subGrubs')
+          .exec(function (err, invites) {
+        if (err) {
+          return callback(err);
+        }
+        return callback(null, invites, open_grubs, past_grubs);
+      });
+    });
+  });
 }
 
 var SubGrub = mongoose.model('SubGrub', subGrubSchema);

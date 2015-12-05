@@ -100,6 +100,18 @@ a {
   position: absolute;
 }
 
+.hasNotPaid {
+  background-color: #f08f8f;
+}
+
+.hasPaid {
+  background-color: #dcefdc;
+}
+
+.subgrubTitle {
+  margin-left: 8px;
+}
+
 /*.submitOrder{
 	bottom: 10px;
 }*/
