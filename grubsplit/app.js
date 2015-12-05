@@ -99,6 +99,11 @@ var isAuthenticated = function(req, res, next) {
     }
     return res.redirect(Delivery.authorizeAccountURL());
   }
+  // If user tries to access invite to grub's page
+  // but is not logged in, redirect after login
+  if (req.originalUrl.indexOf('/grubs/') === 0) {
+    req.session.redirect_grub = req.originalUrl;
+  }
   return res.redirect('/users/login');
 };
 

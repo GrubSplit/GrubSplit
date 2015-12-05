@@ -125,14 +125,13 @@ router.get('/profile', function(req, res) {
   } else {
     return res.redirect('/users/login');
   }
-  SubGrub.findUserGrubs(req.user._id, req.user.grub_invites,
-    function (err, invites, open_grubs, past_grubs) {
+  SubGrub.findUserGrubs(req.user._id,
+    function (err, open_grubs, past_grubs) {
       if (err) {
         req.flash('errors', err);
         return res.redirect('/');
       }
       res.render('users/profile', {
-          'grub_invites': invites,
           'open_grubs': open_grubs,
           'past_grubs': past_grubs
       });
