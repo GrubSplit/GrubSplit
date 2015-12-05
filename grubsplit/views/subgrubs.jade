@@ -16,6 +16,6 @@ block content
 
     if restaurant.menu
       for submenu in restaurant.menu
-          +menu(submenu)
+          +menu(submenu, true)
 
     button.btn.btn-primary(id='submitSubGrub' subGrubId=subgrub._id) Add items to Grub

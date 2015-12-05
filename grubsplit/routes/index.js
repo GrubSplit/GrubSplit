@@ -19,8 +19,7 @@ router.post('/', function(req, res, next) {
 
   Delivery.searchNearbyRestaurants(req.body.address, function(err, restaurants) {
     if (err) {
-      console.log(err.message);
-      req.flash('dcomerrors', err.message);
+      req.flash('errors', err);
       return res.redirect('/');
     }
     restaurants = restaurants || [];
