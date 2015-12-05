@@ -9,9 +9,6 @@ block content
     +addresses(locations)
   if paymentOptions
     +paymentOptions(paymentOptions)
-  div
-    form.form-horizontal(method='POST', action='')
-      button.btn.btn-primary()
   h1 Add New Address
   div
     form.form-horizontal(method='POST')
@@ -26,3 +23,6 @@ block content
   div
     form.form-hotizontal(method='GET')
       button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
+  div
+    button.btn.btn-primary(type='submitOrder', id='submitOrder') Submit Order
+    //- form.form-horizontal(method='POST')

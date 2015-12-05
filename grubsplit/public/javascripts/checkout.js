@@ -4,8 +4,8 @@
 
 
 (function() {
-  $(document).on('click', '#addPayment', function(event) {
-    // alert('Hello!');
+  $(document).on('click', '#submitOrder', function(event) {
+    alert('Hello!');
     // location.href = '/';
   });
 })();
