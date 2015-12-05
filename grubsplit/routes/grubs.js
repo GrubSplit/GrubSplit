@@ -135,6 +135,17 @@ router.get('/:grub/checkout', function(req, res) {
   });
 });
 
+router.post('/:grub/checkout', function(req, res) {
+  console.log(req.body);
+  Delivery.addAddress(req.body, req.user.token, function(error, location_id) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.redirect('/grubs/' + req.grub._id + '/checkout');
+    }
+  });
+});
+
 router.delete('/:grub', function(req, res) {
   Grub.deleteGrub(req.params.grub, function(err) {
     if (err) {

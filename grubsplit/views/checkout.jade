@@ -19,9 +19,10 @@ block content
       +textInputGroup('city', 'Cambridge')
       +textInputGroup('state', 'MA')
       +textInputGroup('zip_code', '02139')
+      +textInputGroup('phone', '555-555-5555')
       .form-group.col-sm.col-sm-7
-        button.col-sm-3.btn.btn-primary(type='submit') Submit
+        button.col-sm-3.btn.btn-primary(type='addAddress', action='/auth/addAddress') Submit
   h1 Add Payment Option
   div
-    form.form-hotizontal(method='GET', action='/auth/addPayment'
+    form.form-hotizontal(method='GET')
       button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
