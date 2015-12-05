@@ -22,4 +22,37 @@ userSchema.plugin(passportLocalMongoose, {
   'usernameLowerCase': true
 });
 
+userSchema.statics.setTokens = function (userID, access_token, refresh_token, callback) {
+  User.update({
+    _id: userID
+  }, {
+    $set: {
+      token: access_token,
+      refresh_token: refresh_token
+    },
+  }, function(err) {
+    if (err) {
+      return callback(err);
+    }
+    callback(null);
+  });
+}
+
+userSchema.statics.deleteTokens = function (userID, callback) {
+  User.update({
+    _id: userID
+  }, {
+    $set: {
+      token: null,
+      refresh_token: null
+    },
+  }, function(err) {
+    if (err) {
+    	return callback(err);
+    }
+    return callback(null);
+  });
+}
+
+var User = mongoose.model('User', userSchema);
 module.exports = mongoose.model('User', userSchema);
