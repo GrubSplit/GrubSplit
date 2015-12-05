@@ -69,6 +69,27 @@ router.post('/:subgrub', function(req, res) {
 });
 
 /**
+ * POST /subgrubs/payment/:id
+ * SubGrub page.
+  Request body:
+    - grubID: id of the current grub
+    - markAsPaid: boolean of if we are marking as paid or unpaid
+  Response:
+    - success: true if the server succeeded adding item to subgrub
+    - err: on failure, an error message
+ */
+router.post('/payment/:subgrub', function(req, res) {
+  SubGrub.togglePayment(req.subgrub._id, req.body.markAsPaid, function (err, subgrub) {
+    if (err) {
+      req.flash('errors', err);
+      return;
+    } else {
+      res.send(subgrub);
+    }
+  });
+});
+
+/**
  * DELETE /subgrubs/:id
  * SubGrub page.
   Request body:

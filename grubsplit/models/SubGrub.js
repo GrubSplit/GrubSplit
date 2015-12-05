@@ -34,7 +34,8 @@
  		ref: "Grub",
  		required: true
  	},
- 	items: [itemSchema]
+ 	items: [itemSchema],
+  paid: Boolean
  });
 
 
@@ -45,21 +46,30 @@
   @param: callback(err, subGrub)
 */
 subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
-  SubGrub.create({
-    owner: userID,
-    grubID: grubID
-}, function(err, subGrub) {
-  	if (err) {
-  		callback({msg: 'could not create subgrub'});
-  	} else {
-  		Grub.findOneAndUpdate({_id: grubID},  { $addToSet: { subGrubs: subGrub._id } }, function(err) {
-  			if (err) {
-  				callback({msg: 'could add subgrub id to grub'});
-  			} else {
-  				callback(null, subGrub);
-  			}
-  		});
-  	}
+  Grub.findOne({_id: grubID}).populate(['owner']).exec(function(err, grub) {
+    if (err) {
+      callback({msg: 'could not find Grub'});
+    } else {
+      var grubOwnerID = grub.owner._id;
+      SubGrub.create({
+          owner: userID,
+          grubID: grubID,
+          paid: grubOwnerID.equals(userID)
+      }, function(err, subGrub) {
+        if (err) {
+          callback({msg: 'could not create subgrub'});
+        } else {
+          grub.subGrubs.push(subGrub._id);
+          grub.save(function(err) {
+            if (err) {
+              callback({msg: 'could not add subgrub id to grub'});
+            } else {
+              callback(null, subGrub);
+            }
+          });
+        }
+      });
+    }
   });
 }
 
@@ -93,7 +103,6 @@ subGrubSchema.statics.getSubGrub = function(subGrubID, callback) {
   });
 }
 
-
  /*
   RemoveSubGrub doc, remove it from SubGrub collection and 
   remove reference from parent Grub
@@ -116,6 +125,22 @@ subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
 		    });
 		}
 	});
+}
+
+ /*
+  Changes payment status of subgrub
+  @param: subgrubID = id of subgrub
+  @param: paidStatus = new payment status (boolean)
+  @param: callback(err, subgrub)
+*/
+subGrubSchema.statics.togglePayment = function(subgrubID, paidStatus, callback) {
+  SubGrub.findOneAndUpdate({_id: subgrubID}, { $set: { paid: paidStatus }}, {'new': true}, function(err, subGrub) {
+    if (subGrub) {
+      callback(null, subGrub);
+    } else {
+      callback({msg: 'could not update subGrub'});
+    }
+  });
 }
 
 /*
