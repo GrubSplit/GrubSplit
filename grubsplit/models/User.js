@@ -22,6 +22,14 @@ userSchema.plugin(passportLocalMongoose, {
   'usernameLowerCase': true
 });
 
+
+/*
+  Set delivery.com access/refresh tokens for given user
+  @param: userID
+  @param: access_token
+  @param: refresh_token
+  @param: callback(err)
+*/
 userSchema.statics.setTokens = function (userID, access_token, refresh_token, callback) {
   User.update({
     _id: userID
@@ -38,6 +46,13 @@ userSchema.statics.setTokens = function (userID, access_token, refresh_token, ca
   });
 }
 
+/*
+  Delete delivery.com access/refresh tokens for given user
+  @param: userID
+  @param: access_token
+  @param: refresh_token
+  @param: callback(err)
+*/
 userSchema.statics.deleteTokens = function (userID, callback) {
   User.update({
     _id: userID

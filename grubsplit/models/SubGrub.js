@@ -118,6 +118,12 @@ subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
 	});
 }
 
+/*
+  Find all Grubs where User is invited, is ordering, or has ordered in.
+  @param: userID = ObjectId of current user 
+  @param: grub_invites = ObjectIds of Grub docs that current user is invited to
+  @param: callback(err, invites, open_grubs, past_grubs)
+*/
 subGrubSchema.statics.findUserGrubs = function(userID, grub_invites, callback) {
   SubGrub.find({ owner: userID })
          .select('-_id grubID')
