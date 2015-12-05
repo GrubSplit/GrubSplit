@@ -21,7 +21,6 @@ author: jorrieb
 
 		$.get('/subgrubs/menu/' + subgrubid, function(response){
 			menu = Menu(response);
-			console.log(menu);
 		});
 	});
 
@@ -80,7 +79,6 @@ author: jorrieb
 			return;
 		}
 		var url = '/subgrubs/'+$('#submitSubGrub').attr('subgrubid');
-		console.log(cartArray);
 		$.post(
 			url,
 			{ items: JSON.stringify(cartArray) }
@@ -91,11 +89,6 @@ author: jorrieb
 			// TODO: What to do here?
 			return;
 		});
-	});
-
-	$(document).on('click','#overlay', function(evt){
-		// evt.preventDefault();
-
 	});
 
 	// User selects a menu item
@@ -112,7 +105,6 @@ author: jorrieb
 	});
 
 	var presentModal = function(item_id,id_type){
-		console.log('menu is',menu);
 		//generic things
 		var overlay = document.createElement('div');
 		overlay.setAttribute('id','overlay');
@@ -220,7 +212,6 @@ author: jorrieb
 
 	$(document).on('click', '#submitButton', function(evt){
 		item = menu.getItem(evt.currentTarget.getAttribute('item_id'));
-		console.log(item);
 		options = {};
 		price = 0;
 		for (optionGroupIndex in item.children){
@@ -237,7 +228,6 @@ author: jorrieb
 				var checked = document.querySelectorAll('input[name='+item.children[optionGroupIndex].id+']:checked');
 				Array.prototype.map.call(checked, function(obj) {
 					options[obj.value] = 1;
-					console.log(obj.getAttribute('price'));
 					price += parseFloat(obj.getAttribute('price'));
 				});
 			}
@@ -257,9 +247,9 @@ author: jorrieb
 			instructions: document.getElementById('instructionsBox').value,
 			option_qty: options
 		}
+
 		cartArray.push(cartObject);
 		redisplayCart();
-
 		closeModal();
 
 	});
@@ -268,29 +258,6 @@ author: jorrieb
 		var overlay = document.getElementById('overlay');
 		overlay.parentNode.removeChild(overlay);
 	};
-
-	// $(document).on('click', '.item', function(evt) {
-	// 	var item = evt.currentTarget
-	// 	var exists = false;
-	// 	for (var index in cartArray) {
-	// 		var cartObject = cartArray[index]
-	// 		if (cartObject.id === item.getAttribute('itemid')) {
-	// 			cartObject.quantity += 1;
-	// 			exists = true;
-	// 			break;
-	// 		}
-	// 	}
-	// 	if (!exists) {
-			// var cartObject = {
-			// 	id: item.getAttribute('itemid'),
-			// 	name: item.getAttribute('name'),
-			// 	price: item.getAttribute('price'),
-			// 	quantity: 1
-			// }
-			// cartArray.push(cartObject)
-	// 	}
-	// 	redisplayCart()
-	// });
 
 	// Remove item from cart
 	$(document).on('click', '.removeItem', function(evt) {
@@ -301,13 +268,6 @@ author: jorrieb
 	// Edit item in cart
 	$(document).on('click', '.editItem', function(evt) {
 		//get item info
-		//displayMenuItem(item,additional info)
-	});
-
-	// Cancel subgrub
-	$(document).on('click', '#cancelSubGrub', function(evt) {
-		//remove subgrub from the db
-		//navigate to the 
 		//displayMenuItem(item,additional info)
 	});
 
