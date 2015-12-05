@@ -4,6 +4,7 @@ var Delivery = require('../libraries/Delivery');
 var Grub = require('../models/Grub');
 var SubGrub = require('../models/SubGrub');
 var utils = require('../utils/utils');
+// var publicSubGrub = require('../public/javascripts/subgrub');
 
 
 
@@ -44,6 +45,22 @@ router.get('/:subgrub', function(req, res) {
 router.get('/items/:subgrub', function(req, res) {
   res.send(req.subgrub.items);
 });
+
+/**
+ * GET /subgrubs/items/:id
+ * SubGrub page.
+ */
+ router.get('/menu/:subgrub', function(req, res) {
+  console.log('menu call was made');
+  var restaurantID = req.subgrub.grubID.restaurantID;
+  Delivery.getRestaurant(restaurantID, function(err, restaurant) {
+    if (err) {
+      req.flash('errors', err);
+      return res.redirect('/grubs/'+req.subgrub.grubID._id);      
+    }
+    res.send(restaurant.menu);
+  });
+ });
 
 /**
  * POST /subgrubs/:id
