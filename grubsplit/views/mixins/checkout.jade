@@ -1,0 +1,36 @@
+mixin addresses(locations)
+  h1 Addresses
+  div
+    for location in locations
+      +address(location)
+
+mixin address(address)
+  div
+    input(type="radio", name="address", checked=false, id=address.location_id)
+    |  #{address.location_id}
+    |  #{address.phone}
+    |  #{address.street}
+    |  #{address.city} #{address.state} #{address.zip_code}
+
+mixin paymentOptions(creditCards)
+  h1 Payment Options
+  div
+    for creditCard in creditCards
+      +paymentOption(creditCard)
+
+mixin paymentOption(creditCard)
+  div
+    input(type="radio", name="payment", checked=false, id=creditCard.cc_id)
+    | #{creditCard.cc_id}
+    | #{creditCard.type} #{creditCard.last_four}
+    | Expires #{creditCard.exp_month}/#{creditCard.exp_year}
+
+mixin addAddress
+  div
+    h1 Add new address
+
+mixin textInputGroup(type, placeholder)
+  .form-group
+      label.col-sm-3.control-label(for=type)
+        input.form-control(type=type, name=type, id=name, placeholder=placeholder)
+
