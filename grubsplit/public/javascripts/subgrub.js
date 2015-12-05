@@ -180,23 +180,29 @@ author: jorrieb
 			var form = document.createElement('form');
 			if (menuItem.children[index].type == "price group"){
 				for (child in menuItem.children[index].children){
+					var label = document.createElement('label');
+					label.setAttribute('class', 'option');
+					label.innerHTML = menuItem.children[index].children[child].name;
 					var button = document.createElement('input');
 					button.setAttribute('type','radio');
 					button.setAttribute('name', menuItem.children[index].id);
 					button.setAttribute('value',menuItem.children[index].children[child].name);
 					button.innerHTML = menuItem.children[index].children[child].name;
-					$(button).text(menuItem.children[index].children[child].name);
-					// button.setAttribute('checked',true);
-					form.appendChild(button);
+					label.appendChild(button);
+					form.appendChild(label);
 				}
 			} else {
 				for (child in menuItem.children[index].children){
+					var label = document.createElement('label');
+					label.innerHTML = menuItem.children[index].children[child].name;
+					label.setAttribute('class', 'option');
 					var button = document.createElement('input');
 					button.type = 'checkbox';
 					button.setAttribute('name', menuItem.children[index].id);
 					button.setAttribute('value',menuItem.children[index].children[child].name)
 					button.innerHTML = menuItem.children[index].children[child].name;
-					form.appendChild(button);
+					label.appendChild(button);
+					form.appendChild(label);
 				}
 			}
 			content.appendChild(form);

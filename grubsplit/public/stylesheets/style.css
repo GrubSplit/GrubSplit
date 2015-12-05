@@ -73,6 +73,10 @@ a {
   position: absolute;
 }
 
+.option{
+  padding: 5px;
+}
+
 /*rows*/
 .modalRow{
   width: 100%;
