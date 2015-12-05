@@ -94,7 +94,7 @@ author: jorrieb
 	});
 
 	$(document).on('click','#overlay', function(evt){
-		evt.preventDefault();
+		// evt.preventDefault();
 
 	});
 
@@ -185,13 +185,14 @@ author: jorrieb
 					button.setAttribute('name', menuItem.children[index].id);
 					button.setAttribute('value',menuItem.children[index].children[child].name);
 					button.innerHTML = menuItem.children[index].children[child].name;
-					button.setAttribute('checked',true);
+					$(button).text(menuItem.children[index].children[child].name);
+					// button.setAttribute('checked',true);
 					form.appendChild(button);
 				}
 			} else {
 				for (child in menuItem.children[index].children){
 					var button = document.createElement('input');
-					button.type = 'radio';
+					button.type = 'checkbox';
 					button.setAttribute('name', menuItem.children[index].id);
 					button.setAttribute('value',menuItem.children[index].children[child].name)
 					button.innerHTML = menuItem.children[index].children[child].name;
