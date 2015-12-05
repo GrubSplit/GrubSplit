@@ -1,21 +1,35 @@
 mixin subgrub(subgrub, user, grubowner, completed)
-    .row
-        .col-md-8
-            h4 #{subgrub.owner.name}'s items
-        // - if (user._id.equals(grubowner._id) && !completed && !subgrub.owner._id.equals(grubowner._id))
-        - if (user._id.equals(grubowner._id) && completed)
-            .col-md-2
-                if subgrub.paid
-                    button.btn.btn-primary.togglePaid.hasPaid(subGrubId=subgrub._id) Mark As Unpaid
-                else
-                    button.btn.btn-primary.togglePaid.hasNotPaid(subGrubId=subgrub._id) Mark As Paid
-        - if (user._id.equals(subgrub.owner._id) && !completed)
-            .col-md-2
-                form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=GET')
-                    button.btn.btn-warning(type='submit') Edit SubGrub
-            .col-md-2
-                form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
-                    button.btn.btn-danger(type='submit') Delete SubGrub
+    if completed
+        if subgrub.paid
+            .hasPaid
+                .row
+                    .col-md-10
+                        h4 #{subgrub.owner.name}'s items
+                    if (user._id.equals(grubowner._id))
+                        //- && !subgrub.owner._id.equals(grubowner._id)
+                        .col-md-2
+                            button.btn.btn-danger.togglePaid(subGrubId=subgrub._id) Mark As Unpaid    
+        else
+            .hasNotPaid
+                .row
+                    .col-md-10
+                        h4 #{subgrub.owner.name}'s items
+                    if (user._id.equals(grubowner._id)) 
+                         //- && !subgrub.owner._id.equals(grubowner._id)
+                        .col-md-2
+                            button.btn.btn-success.togglePaid(subGrubId=subgrub._id) Mark As Paid
+    else
+        div
+            .row
+                .col-md-8
+                    h4 #{subgrub.owner.name}'s items
+                if (user._id.equals(subgrub.owner._id))
+                    .col-md-2
+                        form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=GET')
+                            button.btn.btn-warning(type='submit') Edit SubGrub
+                    .col-md-2
+                        form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
+                            button.btn.btn-danger(type='submit') Delete SubGrub
     +listGroup('list')
         for item in subgrub.items  
             +listItem
@@ -55,4 +69,32 @@ mixin listHeading
 mixin listText
     p.list-group-item-text
         block
+
+
+    //- .row
+    //-     if completed
+    //-         if paid
+    //-             .col-md-10.hasPaid
+    //-                 h4 #{subgrub.owner.name}'s items
+    //-             if (user._id.equals(grubowner._id))
+    //-                 //- && !subgrub.owner._id.equals(grubowner._id)
+    //-                 .col-md-2
+    //-                     button.btn.btn-danger.togglePaid(subGrubId=subgrub._id) Mark As Unpaid
+    //-         else
+    //-             .col-md-10.hasNotPaid
+    //-                 h4 #{subgrub.owner.name}'s items
+    //-             if (user._id.equals(grubowner._id)) 
+    //-                  //- && !subgrub.owner._id.equals(grubowner._id)
+    //-                 .col-md-2
+    //-                     button.btn.btn-success.togglePaid(subGrubId=subgrub._id) Mark As Paid
+    //-     else 
+    //-         .col-md-8
+    //-             h4 #{subgrub.owner.name}'s items
+    //-         if (user._id.equals(subgrub.owner._id))
+    //-             .col-md-2
+    //-                 form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=GET')
+    //-                     button.btn.btn-warning(type='submit') Edit SubGrub
+    //-             .col-md-2
+    //-                 form.form-horizontal(method='POST', action='/subgrubs/' + subgrub._id +'?_method=DELETE')
+    //-                     button.btn.btn-danger(type='submit') Delete SubGrub
 
