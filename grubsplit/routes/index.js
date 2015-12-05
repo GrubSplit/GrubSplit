@@ -4,7 +4,11 @@ var Delivery = require('../libraries/Delivery');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  // console.log(res);
+  if (req.session.redirect_grub) {
+    var redirect_grub = req.session.redirect_grub;
+    req.session.redirect_grub = null;
+    return res.redirect(redirect_grub);
+  }
   res.render('index');
 });
 
