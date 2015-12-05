@@ -13,20 +13,12 @@ router.get('/', function(req, res, next) {
   }
 
   Delivery.requestTokenURL(query.code, function(error, response) {
-    User.update({
-      _id: req.user.id
-    }, {
-      $set: {
-        token: response.access_token,
-        refresh_token: response.refresh_token
-      },
-    }, function(err) {
-      if (!err) {
-        console.log('TOKEN: ' + response.access_token);
-        res.redirect('/');
-      } else {
-        res.redirect(Delivery.authorizeAccountURL());
+    User.setTokens(req.user.id, response.access_token, response.refresh_token, function (err) {
+      if (err || error) {
+        return res.redirect(Delivery.authorizeAccountURL());
       }
+      console.log('TOKEN: ' + response.access_token);
+      res.redirect('/');
     });
   });
 });

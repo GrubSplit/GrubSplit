@@ -4,6 +4,7 @@ var Delivery = require('../libraries/Delivery');
 var Grub = require('../models/Grub');
 var SubGrub = require('../models/SubGrub');
 var utils = require('../utils/utils');
+// var publicSubGrub = require('../public/javascripts/subgrub');
 
 
 
@@ -46,6 +47,22 @@ router.get('/items/:subgrub', function(req, res) {
 });
 
 /**
+ * GET /subgrubs/items/:id
+ * SubGrub page.
+ */
+ router.get('/menu/:subgrub', function(req, res) {
+  console.log('menu call was made');
+  var restaurantID = req.subgrub.grubID.restaurantID;
+  Delivery.getRestaurant(restaurantID, function(err, restaurant) {
+    if (err) {
+      req.flash('errors', err);
+      return res.redirect('/grubs/'+req.subgrub.grubID._id);      
+    }
+    res.send(restaurant.menu);
+  });
+ });
+
+/**
  * POST /subgrubs/:id
  * SubGrub page.
   Request body:
@@ -65,6 +82,27 @@ router.post('/:subgrub', function(req, res) {
     }
     var redirect_url = req.protocol + '://' + req.get('host') + '/grubs/' + req.subgrub.grubID._id;
     res.send(redirect_url);
+  });
+});
+
+/**
+ * POST /subgrubs/payment/:id
+ * SubGrub page.
+  Request body:
+    - grubID: id of the current grub
+    - markAsPaid: boolean of if we are marking as paid or unpaid
+  Response:
+    - success: true if the server succeeded adding item to subgrub
+    - err: on failure, an error message
+ */
+router.post('/payment/:subgrub', function(req, res) {
+  SubGrub.togglePayment(req.subgrub._id, req.body.markAsPaid, function (err, subgrub) {
+    if (err) {
+      req.flash('errors', err);
+      return;
+    } else {
+      res.send(subgrub);
+    }
   });
 });
 

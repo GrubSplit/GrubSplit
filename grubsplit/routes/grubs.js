@@ -90,7 +90,7 @@ router.post('/:grub/order', function(req, res) {
   Delivery.createCart(req.grub.restaurantID, order, req.user.token, function(err, response, body) {
     if (err) {
       console.log(err);
-      req.flash('dcomerrors', err);
+      req.flash('errors', err);
       return;
     }
     console.log(body);

@@ -81,9 +81,38 @@ var Delivery = function() {
     var url = DELIVERY_URL + '/merchant/search/delivery?';
     url += 'client_id=' + CLIENT_ID;
     url += '&address=' + address;
-    that.getRestaurant('70706', function(err, restaurant) {
-      callback(err, [restaurant]);
+    var restaurants = [];
+    request(url, function(error, response, body) {
+      body = JSON.parse(body);
+      console.log(body);
+      if (body.message && body.message[0] && body.message[0].code) {
+        if (body.message[0].code === 'bad_address') {
+          callback({
+            message: 'Bad Address'
+          });
+        }
+      } else {
+        console.log(body);
+        // console.log(body.merchants[0]);
+        body.merchants.forEach(function(restaurant) {
+          restaurants.push({
+            'name': restaurant.summary.name,
+            'id': restaurant.id,
+            'phone': restaurant.summary.phone,
+            'merchant_logo': restaurant.summary.merchant_logo,
+            'street': restaurant.location.street,
+            'city': restaurant.location.city,
+            'state': restaurant.location.state,
+            'zip_code': restaurant.location.zip,
+            // 'menu': menu
+          });
+        });
+        callback(null, restaurants);
+      }
     });
+    // that.getRestaurant('70706', function(err, restaurant) {
+    //       callback(err, [restaurant]);
+    // });
   };
 
   /**

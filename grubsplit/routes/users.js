@@ -46,14 +46,7 @@ router.post('/login', passport.authenticate('local', {
  */
 router.get('/logout', function(req, res) {
   if (!req.user) return res.redirect('/users/login');
-  User.update({
-    _id: req.user.id
-  }, {
-    $set: {
-      token: null,
-      refresh_token: null
-    },
-  }, function(err) {
+  User.deleteTokens(req.user.id, function (err) {
     if (err) {
       req.flash('errors', { msg: err });
     }
@@ -132,47 +125,17 @@ router.get('/profile', function(req, res) {
   } else {
     return res.redirect('/users/login');
   }
-  // TODO: Make this less ugly?
-  SubGrub.find({ owner: req.user._id })
-         .select('-_id grubID')
-         .exec(function (err, grubIDs) {
-    if (err) {
-      req.flash('errors', err);
-      return res.redirect('/');
-    }
-    grubIDs = grubIDs.map(function(elm) {return elm.grubID;});
-    Grub.find({})
-        .or([{ owner: req.user._id }, { _id: { $in: grubIDs } }])
-        .populate('owner')
-        .select('restaurant_name owner time_ordered')
-        .exec(function (err, grubs) {
+  SubGrub.findUserGrubs(req.user._id, req.user.grub_invites,
+    function (err, invites, open_grubs, past_grubs) {
       if (err) {
         req.flash('errors', err);
         return res.redirect('/');
       }
-      var open_grubs = [];
-      var past_grubs = [];
-      grubs.forEach(function (grub) {
-        if (grub.time_ordered) {
-          past_grubs.push(grub);
-        } else {
-          open_grubs.push(grub);
-        }
-      });
-      Grub.find({ _id: {$in: req.user.grub_invites } })
-          .select('-subGrubs')
-          .exec(function (err, grub_invites) {
-        if (err) {
-          req.flash('errors', err);
-          return res.redirect('/');
-        }
-        res.render('users/profile', {
-          'grub_invites': grub_invites,
+      res.render('users/profile', {
+          'grub_invites': invites,
           'open_grubs': open_grubs,
           'past_grubs': past_grubs
-        });
       });
-    });
   });
 });
 

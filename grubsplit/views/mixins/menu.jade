@@ -14,34 +14,7 @@ mixin menu(menu)
 mixin menuItem(item)
     div.row
         div.col-md-6
-            a(itemid=item.id name=item.name price=item.price).item
+            a(itemid=item.id).item
                 p #{item.name}
         div.col-md-6
             p #{item.price}
-    if item.children
-        for child in item.children
-            if (child.type === 'option group')
-                //+optionGroup(child)
-            if (child.type === 'price group')
-                //+priceGroup(child)
-
-mixin optionGroup(group)
-    div=group.name
-        if group.children
-            for child in group.children
-                +option(child)
-
-mixin priceGroup(group)
-    div=group.name
-        if group.children
-            for child in group.children
-                +option(child)
-
-mixin option(opt)
-    div=opt.name
-        if opt.children
-            for child in opt.children
-                if (child.type === 'option group')
-                    +optionGroup(child)
-                if (child.type === 'price group')
-                    +priceGroup(child)

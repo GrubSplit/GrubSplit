@@ -1,5 +1,8 @@
 extends layout
 
+append head
+  script(src='/javascripts/grubs.js')
+
 block content
   .page-header
     .row
@@ -21,7 +24,7 @@ block content
   - var alreadyHaveSubGrub = false;
   if (grub.subGrubs.length != 0)
     for subgrub in grub.subGrubs
-      +subgrub(subgrub, user, grub.time_ordered)
+      +subgrub(subgrub, user, grub.owner, grub.time_ordered)
       if (user._id.equals(subgrub.owner._id))
         - alreadyHaveSubGrub = true;
   else
