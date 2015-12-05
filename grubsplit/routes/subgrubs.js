@@ -4,6 +4,7 @@ var Delivery = require('../libraries/Delivery');
 var Grub = require('../models/Grub');
 var SubGrub = require('../models/SubGrub');
 var utils = require('../utils/utils');
+// var publicSubGrub = require('../public/javascripts/subgrub');
 
 
 
@@ -31,7 +32,7 @@ router.get('/:subgrub', function(req, res) {
   Delivery.getRestaurant(restaurantID, function(err, restaurant) {
     if (err) {
       req.flash('errors', err);
-      return res.redirect('/grubs/'+req.subgrub.grubID._id);      
+      return res.redirect('/grubs/'+req.subgrub.grubID._id);
     }
     res.render('subgrubs', { 'subgrub': req.subgrub, 'restaurant' : restaurant });
   });
@@ -44,6 +45,22 @@ router.get('/:subgrub', function(req, res) {
 router.get('/items/:subgrub', function(req, res) {
   res.send(req.subgrub.items);
 });
+
+/**
+ * GET /subgrubs/items/:id
+ * SubGrub page.
+ */
+ router.get('/menu/:subgrub', function(req, res) {
+  console.log('menu call was made');
+  var restaurantID = req.subgrub.grubID.restaurantID;
+  Delivery.getRestaurant(restaurantID, function(err, restaurant) {
+    if (err) {
+      req.flash('errors', err);
+      return res.redirect('/grubs/'+req.subgrub.grubID._id);      
+    }
+    res.send(restaurant.menu);
+  });
+ });
 
 /**
  * POST /subgrubs/:id
@@ -69,6 +86,27 @@ router.post('/:subgrub', function(req, res) {
 });
 
 /**
+ * POST /subgrubs/payment/:id
+ * SubGrub page.
+  Request body:
+    - grubID: id of the current grub
+    - markAsPaid: boolean of if we are marking as paid or unpaid
+  Response:
+    - success: true if the server succeeded adding item to subgrub
+    - err: on failure, an error message
+ */
+router.post('/payment/:subgrub', function(req, res) {
+  SubGrub.togglePayment(req.subgrub._id, req.body.markAsPaid, function (err, subgrub) {
+    if (err) {
+      req.flash('errors', err);
+      return;
+    } else {
+      res.send(subgrub);
+    }
+  });
+});
+
+/**
  * DELETE /subgrubs/:id
  * SubGrub page.
   Request body:
@@ -77,7 +115,7 @@ router.post('/:subgrub', function(req, res) {
     - success: true if the server succeeded in deleting subgrub
     - err: on failure, an error message
  */
- router.delete('/:subgrub', function(req, res) { 
+ router.delete('/:subgrub', function(req, res) {
   SubGrub.deleteSubGrub(req.subgrub, function (err) {
     if (err) {
       req.flash('errors', err);

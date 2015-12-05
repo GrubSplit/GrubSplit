@@ -8,6 +8,7 @@ author: jorrieb
 
 (function() {
 	var cartArray = []
+	var menu = {}
 
 	$(function() {
 		var subgrubButton = document.getElementById('submitSubGrub')
@@ -17,21 +18,12 @@ author: jorrieb
 			cartArray = response;
     		redisplayCart()
 		});
+
+		$.get('/subgrubs/menu/' + subgrubid, function(response){
+			menu = Menu(response);
+			console.log(menu);
+		});
 	});
-
-	// Helper to display the alert view for the subgrubs
-	// params:
-	//	-item = the item to be displayed. 
-	//	-quantity = optional - number of items in the cart
-	//	-selectedOptions = optional - 
-	var displayMenuItem = function(item,quantity,selectedOptions,instructions){
-		//set default values
-		quantity = typeof quantity !== 'undefined' ? quantity : 0;
-		selectedOptions = typeof selectedOptions !== 'undefined' ? selectedOptions : [];
-		instructions = typeof instructions !== 'undefined' ? instructions : '';
-
-		//toss up a jade template
-	};
 
 	var redisplayCart = function(){
 
@@ -101,6 +93,11 @@ author: jorrieb
 		});
 	});
 
+	$(document).on('click','#overlay', function(evt){
+		// evt.preventDefault();
+
+	});
+
 	// User selects a menu item
 	// Displays alert with:
 	//	-options
@@ -109,26 +106,191 @@ author: jorrieb
 	//	-submit to cart button
 	$(document).on('click', '.item', function(evt) {
 		var item = evt.currentTarget
-		var exists = false;
-		for (var index in cartArray) {
-			var cartObject = cartArray[index]
-			if (cartObject.id === item.getAttribute('itemid')) {
-				cartObject.quantity += 1;
-				exists = true;
-				break;
-			}
-		}
-		if (!exists) {
-			var cartObject = {
-				id: item.getAttribute('itemid'),
-				name: item.getAttribute('name'),
-				price: item.getAttribute('price'),
-				quantity: 1
-			}
-			cartArray.push(cartObject)
-		}
-		redisplayCart()
+		//create modal with item data
+		presentModal(item.getAttribute('itemid'),'menuitem');
+
 	});
+
+	var presentModal = function(item_id,id_type){
+		console.log('menu is',menu);
+		//generic things
+		var overlay = document.createElement('div');
+		overlay.setAttribute('id','overlay');
+		document.body.appendChild(overlay);
+
+		var orderBox = document.createElement('div');
+		orderBox.setAttribute('id','orderBox');
+		overlay.appendChild(orderBox);
+
+		var header = document.createElement('div');
+		header.setAttribute('class','modalRow');
+		header.setAttribute('id','header');
+		orderBox.appendChild(header);
+
+		var closeButton = document.createElement('button');
+		closeButton.setAttribute('id', 'closeModal');
+		closeButton.innerHTML = 'Close';
+		header.appendChild(closeButton);
+
+		var content = document.createElement('div');
+		content.setAttribute('class','modalRow');
+		content.setAttribute('id','content');
+		orderBox.appendChild(content);
+
+		var textRow = document.createElement('div');
+		textRow.setAttribute('class','modalRow');
+		textRow.setAttribute('id','textRow');
+		orderBox.appendChild(textRow);
+
+		var instructions = document.createElement('textarea');
+		instructions.setAttribute('class','FormElement');
+		instructions.setAttribute('placeHolder','Add your order instructions here! e.g. Peanut Allergy');
+		instructions.setAttribute('id','instructionsBox');
+		instructions.setAttribute('rows','4');
+		textRow.appendChild(instructions);
+
+		var footer = document.createElement('div');
+		footer.setAttribute('class','modalRow');
+		footer.setAttribute('id','footer');
+		orderBox.appendChild(footer);
+
+		var quantLabel = document.createElement('h5');
+		quantLabel.innerHTML = 'Quantity:';
+		footer.appendChild(quantLabel);
+
+		var quantInput = document.createElement('input');
+		quantInput.setAttribute('id', 'quantity');
+		quantInput.defaultValue = 1;
+		footer.appendChild(quantInput);
+
+		var submitButton = document.createElement('button');
+		submitButton.setAttribute('id','submitButton');
+		submitButton.setAttribute('item_id', item_id);
+		submitButton.innerHTML = 'Submit to Cart';
+		footer.appendChild(submitButton);
+
+		var itemName = document.createElement('h2');
+		var menuItem = menu.getItem(item_id);
+		itemName.innerHTML = menuItem.name;
+		content.appendChild(itemName);
+
+		for (index in menuItem.children){
+			var groupName = document.createElement('h4');
+			groupName.innerHTML = menuItem.children[index].name;
+			content.appendChild(groupName);
+			var form = document.createElement('form');
+			form.setAttribute('id', menuItem.children[index].id);
+			if (menuItem.children[index].type == "price group"){
+				for (child in menuItem.children[index].children){
+					var label = document.createElement('label');
+					label.setAttribute('class', 'option');
+					label.innerHTML = menuItem.children[index].children[child].name;
+					var button = document.createElement('input');
+					button.setAttribute('type','radio');
+					button.setAttribute('name', menuItem.children[index].id);
+					button.setAttribute('value',menuItem.children[index].children[child].id);
+					button.setAttribute('price',menuItem.children[index].children[child].price);
+					button.innerHTML = menuItem.children[index].children[child].name;
+					label.appendChild(button);
+					form.appendChild(label);
+				}
+			} else {
+				for (child in menuItem.children[index].children){
+					var label = document.createElement('label');
+					label.innerHTML = menuItem.children[index].children[child].name;
+					label.setAttribute('class', 'option');
+					var button = document.createElement('input');
+					button.type = 'checkbox';
+					button.setAttribute('name', menuItem.children[index].id);
+					button.setAttribute('value',menuItem.children[index].children[child].id)
+					button.setAttribute('price',menuItem.children[index].children[child].price);
+					button.innerHTML = menuItem.children[index].children[child].name;
+					label.appendChild(button);
+					form.appendChild(label);
+				}
+			}
+			content.appendChild(form);
+		}
+
+	};
+
+	$(document).on('click', '#closeModal', function(evt) {
+		closeModal();
+	});
+
+	$(document).on('click', '#submitButton', function(evt){
+		item = menu.getItem(evt.currentTarget.getAttribute('item_id'));
+		console.log(item);
+		options = {};
+		price = 0;
+		for (optionGroupIndex in item.children){
+			if (item.children[optionGroupIndex].type == "price group"){
+				var checked = document.querySelector('input[name='+item.children[optionGroupIndex].id+']:checked');
+				if (!checked){
+					window.alert("Must select exactly one option");
+					return;
+				}
+				options[checked.value] = 1;
+				price = parseFloat(checked.getAttribute('price'));
+			} else if (item.children[optionGroupIndex].type == "option group"){
+				//this is the checked array
+				var checked = document.querySelectorAll('input[name='+item.children[optionGroupIndex].id+']:checked');
+				Array.prototype.map.call(checked, function(obj) {
+					options[obj.value] = 1;
+					console.log(obj.getAttribute('price'));
+					price += parseFloat(obj.getAttribute('price'));
+				});
+			}
+		}
+
+		var quantity = parseInt(document.getElementById('quantity').value);
+		if (quantity == 'NaN' || quantity < 1){
+			window.alert("Invalid quantity");
+			return;
+		}
+
+		var cartObject = {
+			id: item.id,
+			name: item.name,
+			price: price,
+			quantity: quantity,
+			instructions: document.getElementById('instructionsBox').value,
+			option_qty: options
+		}
+		cartArray.push(cartObject);
+		redisplayCart();
+
+		closeModal();
+
+	});
+
+	var closeModal = function(){
+		var overlay = document.getElementById('overlay');
+		overlay.parentNode.removeChild(overlay);
+	};
+
+	// $(document).on('click', '.item', function(evt) {
+	// 	var item = evt.currentTarget
+	// 	var exists = false;
+	// 	for (var index in cartArray) {
+	// 		var cartObject = cartArray[index]
+	// 		if (cartObject.id === item.getAttribute('itemid')) {
+	// 			cartObject.quantity += 1;
+	// 			exists = true;
+	// 			break;
+	// 		}
+	// 	}
+	// 	if (!exists) {
+			// var cartObject = {
+			// 	id: item.getAttribute('itemid'),
+			// 	name: item.getAttribute('name'),
+			// 	price: item.getAttribute('price'),
+			// 	quantity: 1
+			// }
+			// cartArray.push(cartObject)
+	// 	}
+	// 	redisplayCart()
+	// });
 
 	// Remove item from cart
 	$(document).on('click', '.removeItem', function(evt) {
