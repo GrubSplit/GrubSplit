@@ -118,5 +118,48 @@ subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
 	});
 }
 
+/*
+  Find all Grubs where User is invited, is ordering, or has ordered in.
+  @param: userID = ObjectId of current user 
+  @param: grub_invites = ObjectIds of Grub docs that current user is invited to
+  @param: callback(err, invites, open_grubs, past_grubs)
+*/
+subGrubSchema.statics.findUserGrubs = function(userID, grub_invites, callback) {
+  SubGrub.find({ owner: userID })
+         .select('-_id grubID')
+         .exec(function (err, grubIDs) {
+    if (err) {
+      return callback(err);
+    }
+    grubIDs = grubIDs.map(function(elm) {return elm.grubID;});
+    Grub.find({})
+        .or([{ owner: userID }, { _id: { $in: grubIDs } }])
+        .populate('owner')
+        .select('restaurant_name owner time_ordered')
+        .exec(function (err, grubs) {
+      if (err) {
+        return callback(err);
+      }
+      var open_grubs = [];
+      var past_grubs = [];
+      grubs.forEach(function (grub) {
+        if (grub.time_ordered) {
+          past_grubs.push(grub);
+        } else {
+          open_grubs.push(grub);
+        }
+      });
+      Grub.find({ _id: {$in: grub_invites } })
+          .select('-subGrubs')
+          .exec(function (err, invites) {
+        if (err) {
+          return callback(err);
+        }
+        return callback(null, invites, open_grubs, past_grubs);
+      });
+    });
+  });
+}
+
 var SubGrub = mongoose.model('SubGrub', subGrubSchema);
 module.exports = mongoose.model('SubGrub', subGrubSchema);
