@@ -165,6 +165,7 @@ author: jorrieb
 
 		var submitButton = document.createElement('button');
 		submitButton.setAttribute('id','submitButton');
+		submitButton.setAttribute('item_id', item_id);
 		submitButton.innerHTML = 'Submit to Cart';
 		footer.appendChild(submitButton);
 
@@ -178,6 +179,7 @@ author: jorrieb
 			groupName.innerHTML = menuItem.children[index].name;
 			content.appendChild(groupName);
 			var form = document.createElement('form');
+			form.setAttribute('id', menuItem.children[index].id);
 			if (menuItem.children[index].type == "price group"){
 				for (child in menuItem.children[index].children){
 					var label = document.createElement('label');
@@ -186,7 +188,8 @@ author: jorrieb
 					var button = document.createElement('input');
 					button.setAttribute('type','radio');
 					button.setAttribute('name', menuItem.children[index].id);
-					button.setAttribute('value',menuItem.children[index].children[child].name);
+					button.setAttribute('value',menuItem.children[index].children[child].id);
+					button.setAttribute('price',menuItem.children[index].children[child].price);
 					button.innerHTML = menuItem.children[index].children[child].name;
 					label.appendChild(button);
 					form.appendChild(label);
@@ -199,7 +202,8 @@ author: jorrieb
 					var button = document.createElement('input');
 					button.type = 'checkbox';
 					button.setAttribute('name', menuItem.children[index].id);
-					button.setAttribute('value',menuItem.children[index].children[child].name)
+					button.setAttribute('value',menuItem.children[index].children[child].id)
+					button.setAttribute('price',menuItem.children[index].children[child].price);
 					button.innerHTML = menuItem.children[index].children[child].name;
 					label.appendChild(button);
 					form.appendChild(label);
@@ -215,7 +219,47 @@ author: jorrieb
 	});
 
 	$(document).on('click', '#submitButton', function(evt){
-		//save to cart
+		item = menu.getItem(evt.currentTarget.getAttribute('item_id'));
+		console.log(item);
+		options = {};
+		price = 0;
+		for (optionGroupIndex in item.children){
+			if (item.children[optionGroupIndex].type == "price group"){
+				var checked = document.querySelector('input[name='+item.children[optionGroupIndex].id+']:checked');
+				if (!checked){
+					window.alert("Must select exactly one option");
+					return;
+				}
+				options[checked.value] = 1;
+				price = parseFloat(checked.getAttribute('price'));
+			} else if (item.children[optionGroupIndex].type == "option group"){
+				//this is the checked array
+				var checked = document.querySelectorAll('input[name='+item.children[optionGroupIndex].id+']:checked');
+				Array.prototype.map.call(checked, function(obj) {
+					options[obj.value] = 1;
+					console.log(obj.getAttribute('price'));
+					price += parseFloat(obj.getAttribute('price'));
+				});
+			}
+		}
+
+		var quantity = parseInt(document.getElementById('quantity').value);
+		if (quantity == 'NaN' || quantity < 1){
+			window.alert("Invalid quantity");
+			return;
+		}
+
+		var cartObject = {
+			id: item.id,
+			name: item.name,
+			price: price,
+			quantity: quantity,
+			instructions: document.getElementById('instructionsBox').value,
+			option_qty: options
+		}
+		cartArray.push(cartObject);
+		redisplayCart();
+
 		closeModal();
 
 	});
@@ -237,13 +281,13 @@ author: jorrieb
 	// 		}
 	// 	}
 	// 	if (!exists) {
-	// 		var cartObject = {
-	// 			id: item.getAttribute('itemid'),
-	// 			name: item.getAttribute('name'),
-	// 			price: item.getAttribute('price'),
-	// 			quantity: 1
-	// 		}
-	// 		cartArray.push(cartObject)
+			// var cartObject = {
+			// 	id: item.getAttribute('itemid'),
+			// 	name: item.getAttribute('name'),
+			// 	price: item.getAttribute('price'),
+			// 	quantity: 1
+			// }
+			// cartArray.push(cartObject)
 	// 	}
 	// 	redisplayCart()
 	// });
