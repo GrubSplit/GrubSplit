@@ -250,11 +250,11 @@ author: jorrieb
 			var options = Object.keys(cartItem.option_qty);
 			for (selectedIndex in options){
 				var checkbox = document.querySelector('input[value="'+options[selectedIndex]+'"]');
-				console.log(checkbox);
 				checkbox.setAttribute('checked',true);
 			}
 			quantInput.value = cartItem.quantity;
 			instructions.value = cartItem.instructions;
+			orderBox.setAttribute('cartid',cartItem.cartid);
 		}
 	};
 
@@ -263,6 +263,13 @@ author: jorrieb
 	});
 
 	$(document).on('click', '#submitButton', function(evt){
+		//remove item from cart
+		var cartitemid = document.getElementById('orderBox').getAttribute('cartid');
+		console.log(cartitemid);
+		if (cartitemid){
+			removeCartItemByCartID(cartitemid)
+		}
+
 		item = menu.getItem(evt.currentTarget.getAttribute('item_id'));
 		options = {};
 		price = item.price;
@@ -323,17 +330,19 @@ author: jorrieb
 	$(document).on('click', '.removeItem', function(evt) {
 		evt.stopPropagation();
 		var item = evt.currentTarget;
-		$.grep(cartArray, function(e){
-			console.log('cartid of e is:' + e.cartid);
-			console.log('cart id of item is:' + item.getAttribute('cartid'));
-			if (e.cartid == item.getAttribute('cartid') ){
-				var index = cartArray.indexOf(e);
-				cartArray.splice(index, 1);
-			}
-		});
+		removeCartItemByCartID(item.getAttribute('cartid'));
 		redisplayCart();
 		//get item id
 		//put to subgrub cart
 	});
+
+	var removeCartItemByCartID = function(cartid){
+		$.grep(cartArray, function(e){
+			if (e.cartid == cartid ){
+				var index = cartArray.indexOf(e);
+				cartArray.splice(index, 1);
+			}
+		});
+	}
 
 })();

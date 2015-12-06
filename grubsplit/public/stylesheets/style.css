@@ -45,7 +45,7 @@ a {
 .cartitem{
   border-bottom: 1px dashed lightgray;
   cursor: pointer;
-  
+
 }
 
 /*modal codal*/
@@ -96,12 +96,14 @@ a {
 
 /*rows*/
 .modalRow{
+  padding:5px;
   width: 100%;
 }
 
 #content{
   overflow-y: scroll;
   max-height: 350px;
+  border:1px solid lightgray;
 }
 
 #header{
