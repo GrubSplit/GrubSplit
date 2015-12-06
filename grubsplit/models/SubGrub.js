@@ -79,8 +79,8 @@ subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
   @param: grubID = ObjectId of Grub doc
   @param: callback(err, subGrub)
 */
-subGrubSchema.statics.addItems = function(subgrubID, newItems, callback) {
-  SubGrub.findOneAndUpdate({ _id: subgrubID }, { $set: { items: newItems } }, function(err, subGrub) {
+subGrubSchema.statics.addItems = function(subgrubID, newItems, totalCost, callback) {
+  SubGrub.findOneAndUpdate({ _id: subgrubID }, { $set: { items: newItems, totalAmount: totalCost } }, {'new': true},function(err, subGrub) {
   	if (err) {
   		callback({msg: 'could not update subgrub with given items'});
   	} else {
