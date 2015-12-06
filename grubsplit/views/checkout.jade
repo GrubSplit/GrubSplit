@@ -6,28 +6,33 @@ append head
 block content
   .page-header
     h1 Checkout
-  if locations
-    div
-      +addresses(locations)
-  if paymentOptions
-    div
-      +paymentOptions(paymentOptions)
-  div
-    h1 Add New Address
-    form.form-horizontal(method='POST')
-      +textInputGroup('street', '123 Main Street')
-      +textInputGroup('city', 'Cambridge')
-      +textInputGroup('state', 'MA')
-      +textInputGroup('zip_code', '02139')
-      +textInputGroup('phone', '555-555-5555')
-      .form-group.col-sm.col-sm-7
-        button.col-sm-3.btn.btn-primary(type='addAddress', action='/auth/addAddress') Submit
-  div
-    form.form-horizontal(method='GET', action='/auth/addPayment')
-      button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
-  div
-    +textInputGroup('tip', '2.00')
-    button.btn.btn-primary(type='submitOrder', id='submitOrder', grubId=grubId) Submit Order
+  .row
+    if locations
+      .col-md-6
+        +addresses(locations)
+      .col-md-6
+        h2 Add New Address
+        form.form-horizontal(method='POST')
+          +textInputGroup('street', '123 Main Street')
+          +textInputGroup('city', 'Cambridge')
+          +textInputGroup('state', 'MA')
+          +textInputGroup('zip_code', '02139')
+          +textInputGroup('phone', '555-555-5555')
+          .form-group.col-sm.col-sm-7
+            button.col-sm-3.btn.btn-primary(type='addAddress', action='/auth/addAddress') Submit
+  .row
+    if paymentOptions
+      .col-md-6
+        +paymentOptions(paymentOptions)
+      .col-md-6
+        h2 Add Payment Option
+        form.form-horizontal(method='GET', action='/auth/addPayment')
+          button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
+  .row
+    .col-md-12
+      h2 Submit Order
+      +textInputGroup('tip', '2.00')
+      button.btn.btn-success(type='submitOrder', id='submitOrder', grubId=grubId) Submit Order
     //- form.form-horizontal(method='POST', action='/grubs/' + grubId + '/order')
   form(method='POST', action='/grubs/' + grubId + '/order', id='target')
     +textInputGroup('_tip', '', 'display: none')

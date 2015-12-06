@@ -1,6 +1,6 @@
 mixin addresses(locations)
   div
-    h1 Addresses
+    h2 Addresses
     if locations.length > 0
       for location in locations
         +address(location)
@@ -17,7 +17,7 @@ mixin address(address)
 
 mixin paymentOptions(creditCards)
   div
-    h1 Payment Options
+    h2 Payment Options
     if creditCards.length > 0
       for creditCard in creditCards
         +paymentOption(creditCard)
@@ -37,6 +37,6 @@ mixin addAddress
 
 mixin textInputGroup(type, placeholder, style)
   .form-group
-      label.col-sm-3.control-label(for=type)
+      label.control-label(for=type)
         input.form-control(type=type, name=type, id=type, placeholder=placeholder, style=style)
 
