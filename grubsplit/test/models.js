@@ -10,8 +10,12 @@ var assert = require('assert');
 
 before(function (done) {
   // Connect to test database and clear it out for testing 
-  mongoose.connect('mongodb://localhost/test');
-  mongoose.connection.db.dropDatabase();
+    done();
+});
+
+after(function(done) {
+  mongoose.connection.close();
+  done();
 });
 
 // Testing the User model
@@ -56,13 +60,17 @@ describe('User', function() {
 // Testing the Grub model
 describe('Grub', function() {
 
-  beforeEach(function(done){
-    // Insert some test Grub data
+  before(function(done) {
+    if (mongoose.connection.db) {
+      mongoose.connection.close();
+    }
+    mongoose.connect('mongodb://localhost/grubsplit_test');
+    mongoose.connection.db.dropDatabase();
     done();
-  });    
+  });  
   
-  afterEach(function(done){
-    // Remove all Grub data
+  after(function(done){
+    mongoose.connection.close();
     done();
   });  
 
