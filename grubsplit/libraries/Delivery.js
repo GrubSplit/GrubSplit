@@ -1,8 +1,9 @@
 var request = require('request');
 
 /**
- * Library for retrieving data from Delivery.com's API by
- *   parsing information from responses
+ * Library for retrieving data from Delivery.com's API
+ *
+ *   https://developers.delivery.com/overview/
  *
  * Author: mattmik
  */
@@ -77,6 +78,22 @@ var Delivery = function() {
     });
   };
 
+  /**
+   * Search for restaurants near a given address
+   * @param  {String}   address  Address to search from
+   * @param  {Function} callback {error, [restaurants]}
+   *  address format:
+   *      '123 Main Street Cambridge MA 02139'
+   *  restaurant format:
+   *      name
+   *      id
+   *      phone
+   *      merchant_logo
+   *      street
+   *      city
+   *      state
+   *      zip_code
+   */
   that.searchNearbyRestaurants = function(address, callback) {
     var url = DELIVERY_URL + '/merchant/search/delivery?';
     url += 'client_id=' + CLIENT_ID;
@@ -112,9 +129,7 @@ var Delivery = function() {
   /**
    * Get menu info and parse response
    * @param  {int} restaurantId    Id for restaurant
-   * @return {JSON}                Menu info
-   *   attributes in response:
-   *     menuItems
+   * @return {Function} callback   {error, menu}
    */
   var getMenu = function(restaurantId, callback) {
     var url = DELIVERY_URL + '/merchant/' + restaurantId + '/menu?';
@@ -405,7 +420,7 @@ var Delivery = function() {
   };
 
   /**
-   * [updateCart description]
+   * Update a user's cart
    * @param  {[type]}   restaurantId [description]
    * @param  {[type]}   item         [description]
    * @param  {[type]}   token        [description]
@@ -413,9 +428,19 @@ var Delivery = function() {
    * @return {[type]}                [description]
    */
   that.updateCart = function(restaurantId, item, token, callback) {
-
+      //TODO: Implement
   };
 
+  /**
+   * Retrieve a user's payment methods (credit cards)
+   * @param  {String}   token    access_token from user authorization
+   * @param  {Function} callback {error, [credit_card]}
+   *   credit_card format:
+   *     cc_id
+   *     type
+   *     exp_month
+   *     exp_year
+   */
   that.getPaymentMethods = function(token, callback) {
     var url = DELIVERY_URL + '/customer/cc';
     var options = {
@@ -434,6 +459,10 @@ var Delivery = function() {
     });
   };
 
+  /**
+   * URL for adding payment methods, used for redirect
+   * @param {String} state GrubSplit endpoint to return to after redirect
+   */
   that.addPaymentMethodURL = function(state) {
     var url;
     state = state;
@@ -446,6 +475,15 @@ var Delivery = function() {
     return url;
   };
 
+  /**
+   * Submit an order for delivery
+   * @param  {String}   restaurantId Id for restaurant
+   * @param  {String}   location_id  Id for delivery address
+   * @param  {String}   cc_id        Id for payment method
+   * @param  {String}   tip          Tip amount in dollars
+   * @param  {String}   token        access_token from user authorization
+   * @param  {Function} callback     {error, body}
+   */
   that.placeOrder = function(restaurantId, location_id, cc_id, tip, token, callback) {
     var url;
     url = DELIVERY_URL + '/customer/cart/' + restaurantId + '/checkout?';
