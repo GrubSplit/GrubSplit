@@ -38,12 +38,17 @@ author: jorrieb
 		newCart.setAttribute('class', 'col-md-3 col-md-offset-7 cart');
 		newCart.setAttribute('id', 'cart');
 
-		var items = document.createElement('h4');
-		items.innerHTML = "<b>Items:</b>"
+		var itemLabel = document.createElement('h4');
+		itemLabel.innerHTML = "<b>Items:</b>"
+		newCart.appendChild(itemLabel);
+
+		var items = document.createElement('div');
+		items.setAttribute('class','items');
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity 
+			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity;
+			displayedItem.setAttribute('class','item');
 			items.appendChild(displayedItem)
 		}
 
@@ -191,6 +196,12 @@ author: jorrieb
 					button.setAttribute('value',menuItem.children[index].children[child].id);
 					button.setAttribute('price',menuItem.children[index].children[child].price);
 					button.innerHTML = menuItem.children[index].children[child].name;
+					if (menuItem.children[index].children[child].price != 0){
+						var price = document.createElement('p');
+						price.innerHTML = ' ($'+menuItem.children[index].children[child].price+') ';
+						price.setAttribute('class','labelPrice');
+						label.appendChild(price);
+					}
 					label.appendChild(button);
 					form.appendChild(label);
 				}
@@ -205,6 +216,12 @@ author: jorrieb
 					button.setAttribute('value',menuItem.children[index].children[child].id)
 					button.setAttribute('price',menuItem.children[index].children[child].price);
 					button.innerHTML = menuItem.children[index].children[child].name;
+					if (menuItem.children[index].children[child].price != 0){
+						var price = document.createElement('p');
+						price.innerHTML = ' +($'+menuItem.children[index].children[child].price+') ';
+						price.setAttribute('class','labelPrice');
+						label.appendChild(price);
+					}
 					label.appendChild(button);
 					form.appendChild(label);
 				}
