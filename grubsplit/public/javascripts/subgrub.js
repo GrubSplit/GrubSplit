@@ -9,7 +9,7 @@ author: jorrieb
 (function() {
 	var cartArray = []
 	var menu = {}
-
+	var cartid = 1
 	$(function() {
 		var subgrubButton = document.getElementById('submitSubGrub')
 		var subgrubid = subgrubButton.getAttribute('subgrubid')
@@ -47,8 +47,28 @@ author: jorrieb
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity;
-			displayedItem.setAttribute('class','item');
+			displayedItem.innerHTML = '<a><i class="glyphicon glyphicon-remove removeItem" cartid="'+cartArray[item].cartid+'"></i></a>' + '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity + '<br>';
+			displayedItem.setAttribute('class','cartitem');
+			displayedItem.setAttribute('itemid',cartArray[item].id);
+			displayedItem.setAttribute('cartid',cartArray[item].cartid);
+
+			var options = Object.keys(cartArray[item].option_qty);
+			for (index in options){
+				var optionText = document.createElement('li');
+				optionText.setAttribute('class','optionText');
+				optionText.innerHTML = menu.getOption(options[index]).name;
+				displayedItem.appendChild(optionText);
+			}
+
+			if (cartArray[item].instructions != ''){
+				var instructions = document.createElement('li');
+				instructions.innerHTML = 'Instructions: "'+cartArray[item].instructions+'"';
+				instructions.setAttribute('class','optionText');
+				displayedItem.appendChild(instructions);
+			}
+			
+			var itemPanel = document.createElement('div');
+			itemPanel.appendChild(displayedItem);
 			items.appendChild(displayedItem)
 		}
 
@@ -110,11 +130,24 @@ author: jorrieb
 	$(document).on('click', '.item', function(evt) {
 		var item = evt.currentTarget
 		//create modal with item data
-		presentModal(item.getAttribute('itemid'),'menuitem');
+		presentModal(item.getAttribute('itemid'));
 
 	});
 
-	var presentModal = function(item_id,id_type){
+	$(document).on('click', '.cartitem', function(evt) {
+		var item = evt.currentTarget;
+		var cartitem = $.grep(cartArray, function(e){console.log(e); return e.cartid == item.getAttribute('cartid'); });
+
+		//create modal with item data
+		presentModal(item.getAttribute('itemid'),cartitem[0]);
+
+	});
+
+	//Presents modal where user can select options, give instruction, and determine quantity
+	//@param item_id, id of the item being displayed
+	//@param cartItem, optional, if it's a cart item, a cart array item will be passed to fill
+	//out options
+	var presentModal = function(item_id,cartItem){
 		//generic things
 		var overlay = document.createElement('div');
 		overlay.setAttribute('id','overlay');
@@ -228,6 +261,17 @@ author: jorrieb
 			}
 			content.appendChild(form);
 		}
+
+		if (cartItem){
+			var options = Object.keys(cartItem.option_qty);
+			for (selectedIndex in options){
+				var checkbox = document.querySelector('input[value="'+options[selectedIndex]+'"]');
+				checkbox.setAttribute('checked',true);
+			}
+			quantInput.value = cartItem.quantity;
+			instructions.value = cartItem.instructions;
+			orderBox.setAttribute('cartid',cartItem.cartid);
+		}
 	};
 
 	$(document).on('click', '#closeModal', function(evt) {
@@ -235,6 +279,12 @@ author: jorrieb
 	});
 
 	$(document).on('click', '#submitButton', function(evt){
+		//remove item from cart
+		var cartitemid = document.getElementById('orderBox').getAttribute('cartid');
+		if (cartitemid){
+			removeCartItemByCartID(cartitemid)
+		}
+
 		item = menu.getItem(evt.currentTarget.getAttribute('item_id'));
 		options = {};
 		price = item.price;
@@ -275,8 +325,10 @@ author: jorrieb
 			price: price,
 			quantity: quantity,
 			instructions: document.getElementById('instructionsBox').value,
-			option_qty: options
+			option_qty: options,
+			cartid: cartid
 		}
+		cartid += 1;
 
 		cartArray.push(cartObject);
 		redisplayCart();
@@ -291,14 +343,21 @@ author: jorrieb
 
 	// Remove item from cart
 	$(document).on('click', '.removeItem', function(evt) {
+		evt.stopPropagation();
+		var item = evt.currentTarget;
+		removeCartItemByCartID(item.getAttribute('cartid'));
+		redisplayCart();
 		//get item id
 		//put to subgrub cart
 	});
 
-	// Edit item in cart
-	$(document).on('click', '.editItem', function(evt) {
-		//get item info
-		//displayMenuItem(item,additional info)
-	});
+	var removeCartItemByCartID = function(cartid){
+		$.grep(cartArray, function(e){
+			if (e.cartid == cartid ){
+				var index = cartArray.indexOf(e);
+				cartArray.splice(index, 1);
+			}
+		});
+	}
 
 })();

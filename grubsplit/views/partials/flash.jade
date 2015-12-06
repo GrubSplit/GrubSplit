@@ -1,11 +1,3 @@
-if messages.dcomerrors
-  // delivery.com API error messages show up here
-  // https://developers.delivery.com/api-overview-food/#Error_Responses
-  .alert.alert-danger.fade.in
-    button.close(type='button', data-dismiss='alert')
-      i.fa.fa-times-circle-o
-    for error in messages.dcomerrors
-      div= error.user_msg
 if messages.error
   // passport failureFlash messages show up here
   .alert.alert-danger.fade.in
