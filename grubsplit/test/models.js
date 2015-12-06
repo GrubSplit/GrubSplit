@@ -217,53 +217,256 @@ describe('Grub', function() {
 
 // Testing the SubGrub model
 describe('SubGrub', function() {
+  var tester_id;
+  var hungry_id;
+  var grub_id;
+  before(function(done) {
+    if (mongoose.connection.db) {
+      mongoose.connection.close();
+    }
+    mongoose.connect('mongodb://localhost/grubsplit_test');
+    mongoose.connection.db.dropDatabase();
 
-  beforeEach(function(done){
-    // Insert some test SubGrub data
-    done();
-  });    
-  
-  afterEach(function(done){
-    // Remove all SubGrub data
-    done();
+    User.create({
+      email: 'test@test.com',
+      name: 'Tester'
+    }, function(err, user) {
+      tester_id = user._id
+      User.create({
+        email: 'hungry@ta.com',
+        name: 'Hungry'
+      }, function(err, user) {
+        hungry_id = user._id;
+        Grub.createNewGrub(tester_id, 70706, 'Cafe 472', function(err, grub) {
+          grub_id = grub._id;
+          done();
+        });
+      });
+    });  
   });  
+  
+  after(function(done){
+    mongoose.connection.close();
+    done();
+  }); 
 
   describe('#createNewSubGrub()', function () {
 
+    it('should successfully create a new (paid) subgrub, given a grub ID and a user ID', function(done) {
+      SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
+        assert.equal(err, null);
+        assert.equal(subGrub.owner, tester_id);
+        assert.equal(subGrub.grubID, grub_id);
+        assert.equal(subGrub.paid, true);
+        
+        Grub.getGrub(grub_id, function(err, grub) {
+          assert(grub.subGrubs[0]._id.equals(subGrub._id));
+          done();
+        });
+      });
+    });
+
+    it('should successfully create a new (unpaid) subgrub, given a grub ID and a user ID', function(done) {
+      SubGrub.createNewSubGrub(hungry_id, grub_id, function(err, subGrub) {
+        assert.equal(err, null);
+        assert.equal(subGrub.owner, hungry_id);
+        assert.equal(subGrub.grubID, grub_id);
+        assert.equal(subGrub.paid, false);
+        
+        Grub.getGrub(grub_id, function(err, grub) {
+          assert(grub.subGrubs[0]._id.equals(subGrub._id) || grub.subGrubs[1]._id.equals(subGrub._id));
+          done();
+        });
+      });
+    });
+
     it('should return error if grub with given id does not exist', function (done) {
-      done();
+      SubGrub.createNewSubGrub(tester_id, '', function(err, subGrub){
+        assert.notEqual(err, null);
+        assert.equal(err.msg, 'could not find Grub');
+        done();
+      });
     });
 
   });
 
   describe('#addItems()', function () {
+    var subgrub_id;
+    before(function(done) {
+      SubGrub.remove({}, function(err) {
+        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+          SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
+            subgrub_id = subGrub._id;
+            done();
+          });
+        });
+      });
+    });
 
-    it('should return error if grub with given id does not exist', function (done) {
-      done();
+    it('should successfully add items to a subgrub, given a valid subgrub id', function(done) {
+      SubGrub.addItems(subgrub_id, [], 10, function(err, subGrub) {
+        assert.equal(err, null);
+        assert.equal(subGrub.totalAmount, 10);
+        assert.notEqual(subGrub.items, null);
+        assert.equal(subGrub.items.length, 0);
+        done();
+      });
+    });
+
+    it('should return error if subgrub with given id does not exist', function (done) {
+      SubGrub.addItems('', [], 0, function(err, subGrub) {
+        assert.equal(subGrub, null);
+        assert.notEqual(err, null);
+        assert.equal(err.msg, 'could not update subgrub with given items');
+        done();
+      });
     });
 
   }); 
 
   describe('#getSubGrub()', function () {
+    var subgrub_id;
+    before(function(done) {
+      SubGrub.remove({}, function(err) {
+        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+          SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
+            subgrub_id = subGrub._id;
+            done();
+          });
+        });
+      });
+    });
 
-    it('should return error if grub with given id does not exist', function (done) {
-      done();
+    it('should return populated subgrub, given a valid subgrub id', function (done) {
+      SubGrub.getSubGrub(subgrub_id, function(err, subgrub) {
+        assert.equal(err, null);
+        assert(subgrub.owner._id.equals(tester_id));
+        assert(subgrub.grubID._id.equals(grub_id));
+        done();
+      });
+    });
+
+    it('should return error if subgrub with given id does not exist', function (done) {
+      SubGrub.getSubGrub('', function(err, subgrub) {
+        assert.equal(subgrub, null);
+        assert.notEqual(err, null);
+        assert.equal(err.msg, 'could not find subGrub');
+        done();
+      });
     });
 
   }); 
 
   describe('#deleteSubGrub()', function () {
+    var subgrub_id;
+    before(function(done) {
+      SubGrub.remove({}, function(err) {
+        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+          SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
+            subgrub_id = subGrub._id;
+            done();
+          });
+        });
+      });
+    });
 
-    it('should return error if grub with given id does not exist', function (done) {
-      done();
+    it('should remove subgrub and reference in grub', function(done) {
+      SubGrub.deleteSubGrub(subgrub_id, grub_id, function(err) {
+        assert.equal(err, null);
+        Grub.getGrub(grub_id, function(err, grub) {
+          assert.equal(grub_id.subGrubs, null);
+          done();
+        });
+      });
+    });
+
+
+    it('should return error if subgrub with given id does not exist', function (done) {
+      SubGrub.deleteSubGrub('', '', function(err) {
+        assert.notEqual(err, null);
+        assert.equal(err.msg, 'could not delete subgrub');
+        done();
+      });
+    });
+
+  });
+
+  describe('#togglePayment()', function () {
+    var subgrub_id;
+    before(function(done) {
+      SubGrub.remove({}, function(err) {
+        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+          SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
+            subgrub_id = subGrub._id;
+            done();
+          });
+        });
+      });
+    });
+
+    it('should change payment status, given a valid subgrub id', function (done) {
+      SubGrub.findOne(subgrub_id, function(err, subgrub) {
+        assert.equal(subgrub.paid, true);
+        SubGrub.togglePayment(subgrub_id, false, function(err, subgrub) {
+          assert.equal(err, null);
+          assert.equal(subgrub.paid, false);
+          done();
+        });
+      });
+    });
+
+    it('should return error if subgrub with given id does not exist', function (done) {
+      SubGrub.togglePayment('', false, function(err, subgrub) {
+        assert.equal(subgrub, null);
+        assert.notEqual(err, null);
+        assert.equal(err.msg, 'could not update subGrub');
+        done();
+      });
     });
 
   });
 
   describe('#findUserGrubs()', function () {
+    var subgrub_id;
+    var hungry_grub_id;
+    before(function(done) {
+      // we create two subgrubs for tester - putting one of them in a different grub that is completed
+      SubGrub.remove({}, function(err) {
+        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+          SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
+            subgrub_id = subGrub._id;
+            Grub.createNewGrub(hungry_id, 70706, 'Cafe 472', function(err, grub) {
+              hungry_grub_id = grub._id;
+              SubGrub.createNewSubGrub(tester_id, hungry_grub_id, function(err, subGrub) {
+                Grub.completeGrub(hungry_grub_id, 10, 0, 0, 0, 0, 10, function(err, grub) {
+                  done();
+                });
+              });
+            });
+          });
+        });
+      });
+    });
 
-    it('should return error if grub with given id does not exist', function (done) {
-      done();
+    it('should find all grubs the user has participated in, given a valid user id', function (done) {
+      SubGrub.findUserGrubs(tester_id, function(err, open_grubs, past_grubs) {
+        assert.equal(err, null);
+        assert.equal(open_grubs.length, 1);
+        assert(open_grubs[0]._id.equals(grub_id));
+        assert.equal(past_grubs.length, 1);
+        assert(past_grubs[0]._id.equals(hungry_grub_id));
+        done();
+      });
+    });
+
+    it('should return error if user with given id does not exist', function (done) {
+      SubGrub.findUserGrubs('', function(err, open_grubs, past_grubs) {
+        assert.equal(open_grubs, null);
+        assert.equal(past_grubs, null);
+        assert.notEqual(err, null);
+        assert.equal(err.msg, 'could not find grubs for user');
+        done();
+      });
     });
 
   });
