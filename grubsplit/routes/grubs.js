@@ -79,28 +79,42 @@ router.post('/:grub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:grub/order', function(req, res) {
+  var location_id, cc_id, tip;
   var order = [];
   req.grub.subGrubs.forEach(function(subgrub) {
     subgrub.items.forEach(function(item) {
       order.push(item);
     });
   });
-  console.log(order);
-  // TODO: Implement Delivery.placeOrder
   Delivery.createCart(req.grub.restaurantID, order, req.user.token, function(err, response, body) {
     if (err) {
       console.log(err);
       req.flash('errors', err);
       return;
     }
-    console.log(body);
-    Grub.completeGrub(req.grub._id, function(err) {
-      if (err) {
-        console.log(err);
-        req.flash('errors', err);
-        return;
+    location_id = req.body._location_id;
+    cc_id = req.body._cc_id;
+    tip = req.body._tip;
+    subtotal = body.subtotal;
+    discount = body.discount;
+    tax = body.tax;
+    total = body.total;
+    delivery_fee = body.fees.delivery_fee || 0;
+    // return;  // ******** UNCOMMENT THIS TO AVOID PLACING ORDER WHEN TESTING ********
+    Delivery.placeOrder(req.grub.restaurantID, location_id, cc_id, tip, req.user.token, function(error, body) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(body);
+        Grub.completeGrub(req.grub._id, subtotal, tax, tip, delivery_fee, discount, total, function(err) {
+          if (err) {
+            console.log(err);
+            req.flash('errors', err);
+            return;
+          }
+          res.redirect('/grubs/' + req.grub._id);
+        });
       }
-      res.redirect('/grubs/' + req.grub._id);
     });
   });
 });
@@ -127,7 +141,8 @@ router.get('/:grub/checkout', function(req, res) {
           res.render('checkout', {
             locations: locations,
             paymentOptions: paymentOptions,
-            token: req.user.token
+            token: req.user.token,
+            grubId: req.grub._id
           });
         }
       });
@@ -136,13 +151,11 @@ router.get('/:grub/checkout', function(req, res) {
 });
 
 router.post('/:grub/checkout', function(req, res) {
-  console.log(req.body);
   Delivery.addAddress(req.body, req.user.token, function(error, location_id) {
     if (error) {
-      console.log(error);
-    } else {
-      res.redirect('/grubs/' + req.grub._id + '/checkout');
+      req.flash('errors', error);
     }
+    res.redirect('/grubs/' + req.grub._id + '/checkout');
   });
 });
 

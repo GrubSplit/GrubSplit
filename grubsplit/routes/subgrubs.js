@@ -56,7 +56,7 @@ router.get('/items/:subgrub', function(req, res) {
   Delivery.getRestaurant(restaurantID, function(err, restaurant) {
     if (err) {
       req.flash('errors', err);
-      return res.redirect('/grubs/'+req.subgrub.grubID._id);      
+      return res.redirect('/grubs/'+req.subgrub.grubID._id);
     }
     res.send(restaurant.menu);
   });
