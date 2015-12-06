@@ -377,9 +377,10 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
+        body = JSON.parse(body);
         if (body.message.length > 0) {
-          // var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
-          callback(body.message);
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
         } else {
           callback(null, body);
         }
@@ -541,10 +542,10 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        body = JSON.parse(body);
+        // body = JSON.parse(body);
         if (body.message.length > 0) {
-          // var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
-          callback(body.message);
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
         } else {
           callback(null, body);
         }
