@@ -8,6 +8,7 @@ var Menu = function Menu(menu){
 
 	var that = Object.create(Menu.prototype);
 	var itemList = {};
+	var optionList = {};
 
 	// Private method to add menu's items to menu object.
 	// Used only when generating menu.
@@ -27,6 +28,27 @@ var Menu = function Menu(menu){
 	// @param item from delivery.com API
 	var addItem = function(item){
 		itemList[item.id] = item
+		for (index in item.children){
+			if (item.children[index].type == "price group" || item.children[index].type == "option group"){
+				addGroup(item.children[index]);
+			} else {
+				addOption(item.children[index]);
+			}
+		}
+	}
+
+	var addGroup = function(group){
+		for (index in group.children){
+			if (group.children[index].type == "price group" || group.children[index].type == "option group"){
+				addGroup(group[index]);
+			} else {
+				addOption(group.children[index]);
+			}
+		}
+	}
+
+	var addOption = function(option){
+		optionList[option.id] = option;
 	}
 
 	// Public method which returns item object, complete
@@ -34,6 +56,10 @@ var Menu = function Menu(menu){
 	// @param itemID from delivery.com API
 	that.getItem = function(itemID){
 		return itemList[itemID]
+	}
+
+	that.getOption = function(optionID){
+		return optionList[optionID];
 	}
 
 	addMenu(menu);

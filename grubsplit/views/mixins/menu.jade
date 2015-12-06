@@ -3,7 +3,7 @@
 //      menu = menu entity from delivery.com API
 
 mixin menu(menu, isSubGrub)
-    b #{menu.name}
+    h3 #{menu.name}
         if menu.children
             for child in menu.children
                 if (child.type === 'menu')
