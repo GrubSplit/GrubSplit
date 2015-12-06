@@ -1,8 +1,11 @@
 mixin addresses(locations)
-  h1 Addresses
   div
-    for location in locations
-      +address(location)
+    h1 Addresses
+    if locations.length > 0
+      for location in locations
+        +address(location)
+    else
+      p <i>No saved addresses!</i>
 
 mixin address(address)
   div
@@ -13,10 +16,13 @@ mixin address(address)
     |  #{address.city} #{address.state} #{address.zip_code}
 
 mixin paymentOptions(creditCards)
-  h1 Payment Options
   div
-    for creditCard in creditCards
-      +paymentOption(creditCard)
+    h1 Payment Options
+    if creditCards.length > 0
+      for creditCard in creditCards
+        +paymentOption(creditCard)
+    else
+      p <i>No saved credit cards!</i>
 
 mixin paymentOption(creditCard)
   div
@@ -24,10 +30,6 @@ mixin paymentOption(creditCard)
     | #{creditCard.cc_id}
     | #{creditCard.type} #{creditCard.last_four}
     | Expires #{creditCard.exp_month}/#{creditCard.exp_year}
-
-mixin addAddress
-  div
-    h1 Add new address
 
 mixin textInputGroup(type, placeholder)
   .form-group
