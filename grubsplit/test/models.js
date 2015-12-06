@@ -9,19 +9,13 @@ var SubGrub = require('../models/SubGrub.js');
 var assert = require('assert');
 
 before(function (done) {
-  // Make sure database is empty before starting tests
-  db.on('open', function () {
-    User.remove({}, function(err) {
-      console.log('User collection removed');
-      Grub.remove({}, function(err) {
-        console.log('Grub collection removed');
-        SubGrub.remove({}, function(err) {
-          console.log('SubGrub collection removed');
-          done();
-        });
-      });
-    });
-  });
+  // Connect to test database and clear it out for testing 
+    done();
+});
+
+after(function(done) {
+  mongoose.connection.close();
+  done();
 });
 
 // Testing the User model
@@ -66,68 +60,154 @@ describe('User', function() {
 // Testing the Grub model
 describe('Grub', function() {
 
-  beforeEach(function(done){
-    // Insert some test Grub data
+  before(function(done) {
+    if (mongoose.connection.db) {
+      mongoose.connection.close();
+    }
+    mongoose.connect('mongodb://localhost/grubsplit_test');
+    mongoose.connection.db.dropDatabase();
     done();
-  });    
+  });  
   
-  afterEach(function(done){
-    // Remove all Grub data
+  after(function(done){
+    mongoose.connection.close();
     done();
   });  
 
   describe('#createNewGrub()', function () {
 
-    it('should return error if grub with given id does not exist', function (done) {
-      done();
+    it('should successfully create a grub, indicating that it is an open grub', function (done) {
+      var user_id;
+      User.create({
+        email: "test@test.com",
+        name: 'Tester'
+      }, function(err, user) {
+        user_id = user._id;
+        Grub.createNewGrub(user_id, 70706, 'Cafe 472', function(err, grub) {
+          assert.equal(err, null);
+          assert.equal(grub.time_ordered, null);
+          done();
+        });
+      });
     });
 
   });
 
   describe('#getGrub()', function () {
+    var tester_id;
+    var hungry_id;
+    before(function(done){
+      User.create({
+        email : 'test@test.com', 
+        name : 'Tester', 
+      }, function(err, user) {
+        tester_id = user._id;
+        User.create({
+          email : 'hungry@ta.com', 
+          name : 'Hungry', 
+        }, function(err, user) {
+          hungry_id = user._id;
+          done();
+        });
+      });
+    });    
+    
+    after(function(done){
+      done();
+    });
+
+    it('should return the grub, with owner and subgrubs populated, if the given id exists', function (done) {
+      var grub_id;
+      Grub.createNewGrub(tester_id, 70706, 'Cafe 472', function(err, grub) {
+        grub_id = grub._id;
+        SubGrub.createNewSubGrub(hungry_id, grub_id, function(err, subgrub) {
+
+          Grub.getGrub(grub_id, function(err, grub) {
+            assert.equal(err, null);
+            assert.equal(grub.owner.name, 'Tester');
+            assert.equal(grub.subGrubs.length, 1);
+            assert.equal(grub.subGrubs[0].owner.name, 'Hungry');
+            done();
+          });
+        });
+      });
+    });
 
     it('should return error if grub with given id does not exist', function (done) {
-      done();
+      Grub.getGrub('', function(err, grub) {
+        assert.equal(grub, null);
+        assert.notEqual(err, null);
+        assert.equal(err.msg, 'could not find grub');
+        done();
+      });
     });
 
   }); 
-
-  describe('#updateTax()', function () {
-
-    it('should return error if grub with given id does not exist', function (done) {
-      done();
-    });
-
-  });
-
-  describe('#updateTip()', function () {
-
-    it('should return error if grub with given id does not exist', function (done) {
-      done();
-    });
-
-  }); 
-
-  describe('#updateDelivery()', function () {
-
-    it('should return error if grub with given id does not exist', function (done) {
-      done();
-    });
-
-  });
 
   describe('#deleteGrub()', function () {
 
+    it('should successfully delete a grub (if the grub id exists) and return no errors', function(done) {
+      User.create({
+        email: 'test@test.com',
+        name: 'Tester'
+      }, function(err, user) {
+        Grub.createNewGrub(user._id, 70706, 'Cafe 472', function(err, grub) {
+          assert.equal(err, null);
+          assert.notEqual(grub, null);
+          
+          Grub.deleteGrub(grub._id, function(err) {
+            assert.equal(err, null);
+            done();
+          });
+        });
+      });      
+    });
+
     it('should return error if grub with given id does not exist', function (done) {
+      Grub.deleteGrub('', function(err) {
+        assert.notEqual(err, null);
+        assert.equal(err, 'could not delete grub');
+      });
       done();
     });
 
   });
 
   describe('#completeGrub()', function () {
+    var grub_id;
+    before(function(done) {
+      User.create({
+        email: 'test@test.com',
+        name: 'Tester'
+      }, function(err, user) {
+        Grub.createNewGrub(user._id, 70706, 'Cafe 472', function(err, grub) {
+          grub_id = grub._id;
+          done();
+        });
+      });  
+    });
+
+    it('should successfully complete a grub, if the given id exists', function(done) {
+      Grub.completeGrub(grub_id, 10, 0.25, 2, 3.25, 0, 15.50, function(err, grub) {
+        assert.equal(err, null);
+        assert.notEqual(grub.time_ordered, null);
+        assert.equal(grub.subtotal, 10);
+        assert.equal(grub.tax, 0.25);
+        assert.equal(grub.tip, 2);
+        assert.equal(grub.delivery_fee, 3.25);
+        assert.equal(grub.discount, 0);
+        assert.equal(grub.total, 15.50);
+        done();
+      }); 
+    });
 
     it('should return error if grub with given id does not exist', function (done) {
-      done();
+      Grub.completeGrub('', 0, 0, 0, 0, 0, 0, function(err, grub) {
+        assert.equal(grub, null);
+        assert.notEqual(err, null);
+        assert.equal(err.msg, 'could not mark grub as completed');
+        done();
+      });
     });
 
   }); 

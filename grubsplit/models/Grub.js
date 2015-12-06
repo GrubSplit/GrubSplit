@@ -28,18 +28,22 @@ var grubSchema = new mongoose.Schema({
   }],
   restaurantID: Number,
   restaurant_name: String,
+  subtotal: Number,
   tax: Number,
   tip: Number,
   delivery_fee: Number,
+  discount: Number,
+  total: Number,
   time_created: Date,
   time_ordered: Date // if no time_ordered... then order is still open
 });
 
 
 /*
-  given a grubID, return the grub, with all subgrubs populated
+  Create a new Grub, given a userID, and restaurant information
   @param: userID = mongoID of userID
   @param: restaurantID = mongo ObjectID of restaurant
+  @param: restaurantName = name of restaurant (string)
   @param: callback(err, grub)
 */
 grubSchema.statics.createNewGrub = function(userID, restaurantID, restaurantName, callback) {
@@ -79,61 +83,12 @@ grubSchema.statics.getGrub = function(grubID, callback) {
 }
 
 /*
-  given a grub ID, update the tax, and return the grub or error message
-  @param: grubID = id of the grub
-  @param: tax = tax amount
-  @param: callback(err, grub)
-*/
-grubSchema.statics.updateTax = function(grubID, tax, callback) {
-  Grub.findOneAndUpdate({_id: grubID}, {$set: {tax: tax}}, {new: true}, function(err, grub) {
-    if (grub) {
-      callback(null, grub);
-    } else {
-      callback({msg: "could not find grub to update tax"});
-    }
-  });
-}
-
-
-/*
-  given a grub ID, update the delivery amount, and return the grub or error message
-  @param: grubID = id of the grub
-  @param: delivery = delivery fee
-  @param: callback(err, grub)
-*/
-grubSchema.statics.updateDelivery = function(grubID, delivery, callback) {
-  Grub.findOneAndUpdate({_id: grubID}, {$set: {delivery_fee: delivery}}, {new: true}, function(err, grub) {
-    if (grub) {
-      callback(null, grub);
-    } else {
-      callback({msg: "could not find grub to update delivery fee"});
-    }
-  });
-}
-
-/*
-  given a grub ID, update the tip, and return the grub or error message
-  @param: grubID = id of the grub
-  @param: tip = tip amount
-  @param: callback(err, grub)
-*/
-grubSchema.statics.updateTip = function(grubID, tip, callback) {
-  Grub.findOneAndUpdate({_id: grubID}, {$set: {tip: tip}}, {new: true}, function(err, grub) {
-    if (grub) {
-      callback(null, grub);
-    } else {
-      callback({msg: "could not find grub to update tip"});
-    }
-  });
-}
-
-/*
   given a grub ID, delete it
   @param: grubID = id of the grub
   @param: callback(err)
 */
 grubSchema.statics.deleteGrub = function(grubID, callback) {
-  Grub.remove({_id: grubID}, function(err, grub) {
+  Grub.remove({_id: grubID}, function(err) {
     if (err) {
       callback({msg: 'could not delete grub'});
     } else {
@@ -143,16 +98,26 @@ grubSchema.statics.deleteGrub = function(grubID, callback) {
 }
 
 /*
-  given a grub ID, set time_ordered to current time
+  given a grub ID, set time_ordered to current time,
+  and set subtotal, tax, delivery_fee, discount, and total
   @param: grubID = id of the grub
   @param: callback(err)
 */
-grubSchema.statics.completeGrub = function(grubID, callback) {
-  Grub.findOneAndUpdate({_id: grubID }, {$set: {time_ordered: new Date()}}, {new: true}, function(err) {
+grubSchema.statics.completeGrub = function(grubID, subtotal, tax, tip, delivery_fee, discount, total, callback) {
+  var update = {
+    'time_ordered': new Date(),
+    'subtotal': subtotal,
+    'tax': tax,
+    'tip': tip,
+    'delivery_fee': delivery_fee,
+    'discount': discount,
+    'total': total
+  }
+  Grub.findOneAndUpdate({_id: grubID }, {$set: update}, {new: true}, function(err, grub) {
     if (err) {
       callback({msg: 'could not mark grub as completed'});
     } else {
-      callback(null);
+      callback(null, grub);
     }
   });
 }
