@@ -28,12 +28,10 @@ block content
         h2 Add Payment Option
         form.form-horizontal(method='GET', action='/auth/addPayment')
           button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
-  .row
-    .col-md-12
-      h2 Submit Order
+  .center
+    h2 Submit Order
       +textInputGroup('tip', '2.00')
       button.btn.btn-success(type='submitOrder', id='submitOrder', grubId=grubId) Submit Order
-    //- form.form-horizontal(method='POST', action='/grubs/' + grubId + '/order')
   form(method='POST', action='/grubs/' + grubId + '/order', id='target')
     +textInputGroup('_tip', '', 'display: none')
     +textInputGroup('_location_id', '', 'display: none')
