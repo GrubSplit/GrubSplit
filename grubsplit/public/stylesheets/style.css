@@ -48,6 +48,11 @@ a {
 
 }
 
+.optionText{
+  font-size: 10px;
+  color:gray;
+}
+
 /*modal codal*/
 #overlay{
   top: 0px;

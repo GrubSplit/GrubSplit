@@ -47,10 +47,26 @@ author: jorrieb
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = '<a><i class="glyphicon glyphicon-remove removeItem" cartid="'+cartArray[item].cartid+'"></i></a>' + '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity;
+			displayedItem.innerHTML = '<a><i class="glyphicon glyphicon-remove removeItem" cartid="'+cartArray[item].cartid+'"></i></a>' + '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity + '<br>';
 			displayedItem.setAttribute('class','cartitem');
 			displayedItem.setAttribute('itemid',cartArray[item].id);
 			displayedItem.setAttribute('cartid',cartArray[item].cartid);
+
+			var options = Object.keys(cartArray[item].option_qty);
+			for (index in options){
+				var optionText = document.createElement('li');
+				optionText.setAttribute('class','optionText');
+				optionText.innerHTML = menu.getOption(options[index]).name;
+				displayedItem.appendChild(optionText);
+			}
+
+			if (cartArray[item].instructions != ''){
+				var instructions = document.createElement('li');
+				instructions.innerHTML = 'Instructions: "'+cartArray[item].instructions+'"';
+				instructions.setAttribute('class','optionText');
+				displayedItem.appendChild(instructions);
+			}
+			
 			var itemPanel = document.createElement('div');
 			itemPanel.appendChild(displayedItem);
 			items.appendChild(displayedItem)
@@ -265,7 +281,6 @@ author: jorrieb
 	$(document).on('click', '#submitButton', function(evt){
 		//remove item from cart
 		var cartitemid = document.getElementById('orderBox').getAttribute('cartid');
-		console.log(cartitemid);
 		if (cartitemid){
 			removeCartItemByCartID(cartitemid)
 		}
