@@ -28,9 +28,12 @@ var grubSchema = new mongoose.Schema({
   }],
   restaurantID: Number,
   restaurant_name: String,
+  subtotal: Number,
   tax: Number,
   tip: Number,
   delivery_fee: Number,
+  discount: Number,
+  total: Number,
   time_created: Date,
   time_ordered: Date // if no time_ordered... then order is still open
 });
@@ -95,12 +98,22 @@ grubSchema.statics.deleteGrub = function(grubID, callback) {
 }
 
 /*
-  given a grub ID, set time_ordered to current time
+  given a grub ID, set time_ordered to current time,
+  and set subtotal, tax, delivery_fee, discount, and total
   @param: grubID = id of the grub
   @param: callback(err)
 */
-grubSchema.statics.completeGrub = function(grubID, callback) {
-  Grub.findOneAndUpdate({_id: grubID }, {$set: {time_ordered: new Date()}}, {new: true}, function(err, grub) {
+grubSchema.statics.completeGrub = function(grubID, subtotal, tax, tip, delivery_fee, discount, total, callback) {
+  var update = {
+    'time_ordered': new Date(),
+    'subtotal': subtotal,
+    'tax': tax,
+    'tip': tip,
+    'delivery_fee': delivery_fee,
+    'discount': discount,
+    'total': total
+  }
+  Grub.findOneAndUpdate({_id: grubID }, {$set: update}, {new: true}, function(err) {
     if (err) {
       callback({msg: 'could not mark grub as completed'});
     } else {

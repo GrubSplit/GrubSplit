@@ -84,7 +84,6 @@ var Delivery = function() {
     var restaurants = [];
     request(url, function(error, response, body) {
       body = JSON.parse(body);
-      console.log(body);
       if (body.message && body.message[0] && body.message[0].code) {
         if (body.message[0].code === 'invalid_address') {
           callback({
@@ -92,8 +91,6 @@ var Delivery = function() {
           });
         }
       } else {
-        console.log(body);
-        // console.log(body.merchants[0]);
         body.merchants.forEach(function(restaurant) {
           restaurants.push({
             'name': restaurant.summary.name,
@@ -110,9 +107,6 @@ var Delivery = function() {
         callback(null, restaurants);
       }
     });
-    // that.getRestaurant('70706', function(err, restaurant) {
-    //       callback(err, [restaurant]);
-    // });
   };
 
   /**
@@ -218,8 +212,13 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        var location = body.location;
-        callback(null, location.location_id);
+        if (body.location === undefined) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          var location = body.location;
+          callback(null, location.location_id);
+        }
       }
     });
   };
@@ -315,7 +314,7 @@ var Delivery = function() {
       order.push({
         'item_id': item.id,
         'item_qty': item.quantity,
-        'option_qty': {},
+        'option_qty': item.option_qty,
         'item_label': '',
         'instructions': item.instructions
       });
@@ -447,10 +446,32 @@ var Delivery = function() {
     return url;
   };
 
-  that.placeOrder = function(restaurantId, tip, location_id, cc_id, callback) {
+  that.placeOrder = function(restaurantId, location_id, cc_id, tip, token, callback) {
     var url;
-    url += DELIVERY_URL + '/customer/cart/' + restaurantId + 'checkout?';
+    url = DELIVERY_URL + '/customer/cart/' + restaurantId + '/checkout?';
     url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token,
+        'User-Agent': 'Custom User Agent'
+      },
+      formData: {
+        'tip': tip,
+        'location_id': location_id,
+        'payments[0][type]': 'credit_card',
+        'payments[0][id]': cc_id,
+        'order_type': 'delivery'
+      }
+    };
+    request.post(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        body = JSON.parse(body);
+        callback(null, body);
+      }
+    });
   };
 
   Object.freeze(that);

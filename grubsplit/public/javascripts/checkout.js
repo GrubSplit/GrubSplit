@@ -5,7 +5,18 @@
 
 (function() {
   $(document).on('click', '#submitOrder', function(event) {
-    alert('Hello!');
-    // location.href = '/';
+    var location_id, cc_id, tip, href;
+    tip = $('#tip').val();
+    location_id = $('input[name=address]:checked').attr('id');
+    cc_id = $('input[name=payment]:checked').attr('id');
+    if (!tip || !location_id || !cc_id) {
+      alert('Please select a delivery address, payment method, and leave a tip!');
+      event.preventDefault();
+    } else {
+      $('#_tip').val(tip);
+      $('#_location_id').val(location_id);
+      $('#_cc_id').val(cc_id);
+      $('#target').submit();
+    }
   });
 })();
