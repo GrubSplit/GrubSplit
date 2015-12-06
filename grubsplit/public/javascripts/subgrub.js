@@ -109,18 +109,15 @@ author: jorrieb
 			 price += (parseFloat(cartArray[item].price) * parseFloat(cartArray[item].quantity))
 		}
 
-		console.log('submit being pushed');
 
 		$.post(
 			url,
 			{ items: JSON.stringify(cartArray),
 			totalCost:  price}
 		).done(function(res) {
-			console.log('not a failure');
 			window.location.replace(res);
 			return;
 		}).fail(function(resObj) {
-			console.log('failure');
 			// TODO: What to do here?
 			return;
 		});
