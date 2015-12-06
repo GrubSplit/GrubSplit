@@ -6,12 +6,9 @@
 (function() {
   $(document).on('click', '#submitOrder', function(event) {
     var location_id, cc_id, tip, href;
-    console.log($('#tip').val());
     tip = $('#tip').val();
     location_id = $('input[name=address]:checked').attr('id');
     cc_id = $('input[name=payment]:checked').attr('id');
-    console.log(location_id);
-    console.log(cc_id);
     if (!tip || !location_id || !cc_id) {
       alert('Please select a delivery address, payment method, and leave a tip!');
       event.preventDefault();

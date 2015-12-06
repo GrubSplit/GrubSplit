@@ -450,7 +450,6 @@ var Delivery = function() {
     var url;
     url = DELIVERY_URL + '/customer/cart/' + restaurantId + '/checkout?';
     url += 'client_id=' + CLIENT_ID;
-    console.log(url);
     var options = {
       url: url,
       headers: {
@@ -469,7 +468,6 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        console.log(response);
         body = JSON.parse(body);
         callback(null, body);
       }
