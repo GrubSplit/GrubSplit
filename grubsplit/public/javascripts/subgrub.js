@@ -38,12 +38,17 @@ author: jorrieb
 		newCart.setAttribute('class', 'col-md-3 col-md-offset-7 cart');
 		newCart.setAttribute('id', 'cart');
 
-		var items = document.createElement('h4');
-		items.innerHTML = "<b>Items:</b>"
+		var itemLabel = document.createElement('h4');
+		itemLabel.innerHTML = "<b>Items:</b>"
+		newCart.appendChild(itemLabel);
+
+		var items = document.createElement('div');
+		items.setAttribute('class','items');
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity 
+			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity;
+			displayedItem.setAttribute('class','item');
 			items.appendChild(displayedItem)
 		}
 
@@ -79,12 +84,10 @@ author: jorrieb
 			return;
 		}
 		var url = '/subgrubs/'+$('#submitSubGrub').attr('subgrubid');
-		console.log(cartArray);
 		var price = 0
 		for (var item in cartArray){
 			 price += (parseFloat(cartArray[item].price) * parseFloat(cartArray[item].quantity))
 		}
-		console.log(price)
 		$.post(
 			url,
 			{ items: JSON.stringify(cartArray),
@@ -171,12 +174,15 @@ author: jorrieb
 		var itemName = document.createElement('h2');
 		var menuItem = menu.getItem(item_id);
 		itemName.innerHTML = menuItem.name;
-		content.appendChild(itemName);
+		header.appendChild(itemName);
 
 		for (index in menuItem.children){
 			var groupName = document.createElement('h4');
 			groupName.innerHTML = menuItem.children[index].name;
 			content.appendChild(groupName);
+			var description = document.createElement('p');
+			description.innerHTML = menuItem.children[index].description;
+			content.appendChild(description);
 			var form = document.createElement('form');
 			form.setAttribute('id', menuItem.children[index].id);
 			if (menuItem.children[index].type == "price group"){
@@ -190,6 +196,12 @@ author: jorrieb
 					button.setAttribute('value',menuItem.children[index].children[child].id);
 					button.setAttribute('price',menuItem.children[index].children[child].price);
 					button.innerHTML = menuItem.children[index].children[child].name;
+					if (menuItem.children[index].children[child].price != 0){
+						var price = document.createElement('p');
+						price.innerHTML = ' ($'+menuItem.children[index].children[child].price+') ';
+						price.setAttribute('class','labelPrice');
+						label.appendChild(price);
+					}
 					label.appendChild(button);
 					form.appendChild(label);
 				}
@@ -204,6 +216,12 @@ author: jorrieb
 					button.setAttribute('value',menuItem.children[index].children[child].id)
 					button.setAttribute('price',menuItem.children[index].children[child].price);
 					button.innerHTML = menuItem.children[index].children[child].name;
+					if (menuItem.children[index].children[child].price != 0){
+						var price = document.createElement('p');
+						price.innerHTML = ' +($'+menuItem.children[index].children[child].price+') ';
+						price.setAttribute('class','labelPrice');
+						label.appendChild(price);
+					}
 					label.appendChild(button);
 					form.appendChild(label);
 				}
@@ -230,8 +248,14 @@ author: jorrieb
 				options[checked.value] = 1;
 				price = parseFloat(checked.getAttribute('price'));
 			} else if (item.children[optionGroupIndex].type == "option group"){
-				//this is the checked array
 				var checked = document.querySelectorAll('input[name='+item.children[optionGroupIndex].id+']:checked');
+				if (item.children[optionGroupIndex].max_selection < checked.length){
+					window.alert("You've selected too many additions from the group " + item.children[optionGroupIndex].name);
+					return;
+				} else if(item.children[optionGroupIndex].min_selection > checked.length){
+					window.alert("You must choose one of the required options from the group " + item.children[optionGroupIndex].name);
+					return;
+				}
 				Array.prototype.map.call(checked, function(obj) {
 					options[obj.value] = 1;
 					price += parseFloat(obj.getAttribute('price'));
