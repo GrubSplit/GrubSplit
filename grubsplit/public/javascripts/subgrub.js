@@ -79,12 +79,10 @@ author: jorrieb
 			return;
 		}
 		var url = '/subgrubs/'+$('#submitSubGrub').attr('subgrubid');
-		console.log(cartArray);
 		var price = 0
 		for (var item in cartArray){
 			 price += (parseFloat(cartArray[item].price) * parseFloat(cartArray[item].quantity))
 		}
-		console.log(price)
 		$.post(
 			url,
 			{ items: JSON.stringify(cartArray),
@@ -180,8 +178,6 @@ author: jorrieb
 			var description = document.createElement('p');
 			description.innerHTML = menuItem.children[index].description;
 			content.appendChild(description);
-			console.log('1');
-			console.log(menuItem.children[index]);
 			var form = document.createElement('form');
 			form.setAttribute('id', menuItem.children[index].id);
 			if (menuItem.children[index].type == "price group"){
