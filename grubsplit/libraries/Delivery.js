@@ -459,13 +459,10 @@ var Delivery = function() {
         'User-Agent': 'Custom User Agent'
       },
       formData: {
+        'tip': tip,
         'location_id': location_id,
         'payments[0][type]': 'credit_card',
         'payments[0][id]': cc_id,
-        // 'payments': [{
-        //   'type': 'credit_card',
-        //   'id': cc_id
-        // }],
         'order_type': 'delivery'
       }
     };
