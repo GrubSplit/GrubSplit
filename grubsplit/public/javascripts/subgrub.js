@@ -16,11 +16,11 @@ author: jorrieb
 
 		$.get('/subgrubs/items/' + subgrubid, function(response) {
 			cartArray = response;
-    		redisplayCart()
 		});
 
 		$.get('/subgrubs/menu/' + subgrubid, function(response){
 			menu = Menu(response);
+			redisplayCart();
 		});
 	});
 
@@ -108,14 +108,19 @@ author: jorrieb
 		for (var item in cartArray){
 			 price += (parseFloat(cartArray[item].price) * parseFloat(cartArray[item].quantity))
 		}
+
+		console.log('submit being pushed');
+
 		$.post(
 			url,
 			{ items: JSON.stringify(cartArray),
 			totalCost:  price}
 		).done(function(res) {
+			console.log('not a failure');
 			window.location.replace(res);
 			return;
 		}).fail(function(resObj) {
+			console.log('failure');
 			// TODO: What to do here?
 			return;
 		});
@@ -136,7 +141,7 @@ author: jorrieb
 
 	$(document).on('click', '.cartitem', function(evt) {
 		var item = evt.currentTarget;
-		var cartitem = $.grep(cartArray, function(e){console.log(e); return e.cartid == item.getAttribute('cartid'); });
+		var cartitem = $.grep(cartArray, function(e){return e.cartid == item.getAttribute('cartid'); });
 
 		//create modal with item data
 		presentModal(item.getAttribute('itemid'),cartitem[0]);
