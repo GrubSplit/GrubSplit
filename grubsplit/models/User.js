@@ -39,7 +39,7 @@ userSchema.statics.setTokens = function (userID, access_token, refresh_token, ca
     },
   }, function(err) {
     if (err) {
-      return callback(err);
+      return callback({msg : 'could not set tokens'});
     }
     callback(null);
   });
@@ -62,7 +62,7 @@ userSchema.statics.deleteTokens = function (userID, callback) {
     },
   }, function(err) {
     if (err) {
-    	return callback(err);
+    	return callback({msg : 'could not delete tokens'});
     }
     return callback(null);
   });

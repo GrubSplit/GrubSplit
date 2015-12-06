@@ -48,7 +48,7 @@ router.get('/logout', function(req, res) {
   if (!req.user) return res.redirect('/users/login');
   User.deleteTokens(req.user.id, function (err) {
     if (err) {
-      req.flash('errors', { msg: err });
+      req.flash('errors', { msg: err.msg });
     }
     req.logout();
     res.redirect('/users/login');
