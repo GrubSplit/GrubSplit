@@ -21,7 +21,6 @@ author: jorrieb
 
 		$.get('/subgrubs/menu/' + subgrubid, function(response){
 			menu = Menu(response);
-			console.log(menu);
 		});
 	});
 
@@ -44,7 +43,7 @@ author: jorrieb
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price + '<br>Quantity: ' + cartArray[item].quantity 
+			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity 
 			items.appendChild(displayedItem)
 		}
 
@@ -81,9 +80,15 @@ author: jorrieb
 		}
 		var url = '/subgrubs/'+$('#submitSubGrub').attr('subgrubid');
 		console.log(cartArray);
+		var price = 0
+		for (var item in cartArray){
+			 price += (parseFloat(cartArray[item].price) * parseFloat(cartArray[item].quantity))
+		}
+		console.log(price)
 		$.post(
 			url,
-			{ items: JSON.stringify(cartArray) }
+			{ items: JSON.stringify(cartArray),
+			totalCost:  price}
 		).done(function(res) {
 			window.location.replace(res);
 			return;
@@ -91,11 +96,6 @@ author: jorrieb
 			// TODO: What to do here?
 			return;
 		});
-	});
-
-	$(document).on('click','#overlay', function(evt){
-		// evt.preventDefault();
-
 	});
 
 	// User selects a menu item
@@ -112,7 +112,6 @@ author: jorrieb
 	});
 
 	var presentModal = function(item_id,id_type){
-		console.log('menu is',menu);
 		//generic things
 		var overlay = document.createElement('div');
 		overlay.setAttribute('id','overlay');
@@ -216,7 +215,6 @@ author: jorrieb
 			}
 			content.appendChild(form);
 		}
-
 	};
 
 	$(document).on('click', '#closeModal', function(evt) {
@@ -225,7 +223,6 @@ author: jorrieb
 
 	$(document).on('click', '#submitButton', function(evt){
 		item = menu.getItem(evt.currentTarget.getAttribute('item_id'));
-		console.log(item);
 		options = {};
 		price = item.price;
 		for (optionGroupIndex in item.children){
@@ -248,7 +245,6 @@ author: jorrieb
 				}
 				Array.prototype.map.call(checked, function(obj) {
 					options[obj.value] = 1;
-					console.log(obj.getAttribute('price'));
 					price += parseFloat(obj.getAttribute('price'));
 				});
 			}
@@ -268,9 +264,9 @@ author: jorrieb
 			instructions: document.getElementById('instructionsBox').value,
 			option_qty: options
 		}
+
 		cartArray.push(cartObject);
 		redisplayCart();
-
 		closeModal();
 
 	});
@@ -289,13 +285,6 @@ author: jorrieb
 	// Edit item in cart
 	$(document).on('click', '.editItem', function(evt) {
 		//get item info
-		//displayMenuItem(item,additional info)
-	});
-
-	// Cancel subgrub
-	$(document).on('click', '#cancelSubGrub', function(evt) {
-		//remove subgrub from the db
-		//navigate to the 
 		//displayMenuItem(item,additional info)
 	});
 
