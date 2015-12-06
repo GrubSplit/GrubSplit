@@ -67,15 +67,15 @@ router.get('/items/:subgrub', function(req, res) {
  * SubGrub page.
   Request body:
   	- grubID: id of the current grub
-    - item: the item to be added
-    - quantity: how many items to be added
+    - items: the items to be added
+    - totalCost: the total cost of all items
   Response:
     - success: true if the server succeeded adding item to subgrub
     - err: on failure, an error message
  */
 router.post('/:subgrub', function(req, res) {
   var items = JSON.parse(req.body.items) || [];
-  SubGrub.addItems(req.subgrub._id, items, function (err, subgrub) {
+  SubGrub.addItems(req.subgrub._id, items, req.body.totalCost, function (err, subgrub) {
     if (err) {
       req.flash('errors', err);
       return;

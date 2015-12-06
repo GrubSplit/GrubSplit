@@ -81,9 +81,15 @@ author: jorrieb
 		}
 		var url = '/subgrubs/'+$('#submitSubGrub').attr('subgrubid');
 		console.log(cartArray);
+		var price = 0
+		for (var item in cartArray){
+			 price += (parseFloat(cartArray[item].price) * parseFloat(cartArray[item].quantity))
+		}
+		console.log(price)
 		$.post(
 			url,
-			{ items: JSON.stringify(cartArray) }
+			{ items: JSON.stringify(cartArray),
+			totalCost:  price}
 		).done(function(res) {
 			window.location.replace(res);
 			return;

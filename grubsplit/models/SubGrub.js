@@ -35,7 +35,8 @@
  		required: true
  	},
  	items: [itemSchema],
-  paid: Boolean
+  paid: Boolean,
+  totalAmount: Number
  });
 
 
