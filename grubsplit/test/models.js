@@ -9,19 +9,9 @@ var SubGrub = require('../models/SubGrub.js');
 var assert = require('assert');
 
 before(function (done) {
-  // Make sure database is empty before starting tests
-  db.on('open', function () {
-    User.remove({}, function(err) {
-      console.log('User collection removed');
-      Grub.remove({}, function(err) {
-        console.log('Grub collection removed');
-        SubGrub.remove({}, function(err) {
-          console.log('SubGrub collection removed');
-          done();
-        });
-      });
-    });
-  });
+  // Connect to test database and clear it out for testing 
+  mongoose.connect('mongodb://localhost/test');
+  mongoose.connection.db.dropDatabase();
 });
 
 // Testing the User model

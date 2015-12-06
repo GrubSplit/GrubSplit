@@ -17,7 +17,7 @@ var methodOverride = require('method-override')
 // Database set up
 var mongoose = require('mongoose');
 // Connect to either the MONGOLAB_URI or to the local database.
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/test');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/grubsplit');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function(callback) {
