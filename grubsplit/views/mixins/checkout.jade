@@ -10,7 +10,6 @@ mixin addresses(locations)
 mixin address(address)
   div
     input(type="radio", name="address", checked=false, id=address.location_id)
-    |  #{address.location_id}
     |  #{address.phone}
     |  #{address.street}
     |  #{address.city} #{address.state} #{address.zip_code}
@@ -27,7 +26,6 @@ mixin paymentOptions(creditCards)
 mixin paymentOption(creditCard)
   div
     input(type="radio", name="payment", checked=false, id=creditCard.cc_id)
-    | #{creditCard.cc_id}
     | #{creditCard.type} #{creditCard.last_four}
     | Expires #{creditCard.exp_month}/#{creditCard.exp_year}
 
