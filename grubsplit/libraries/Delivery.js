@@ -315,7 +315,7 @@ var Delivery = function() {
       order.push({
         'item_id': item.id,
         'item_qty': item.quantity,
-        'option_qty': {},
+        'option_qty': item.option_qty,
         'item_label': '',
         'instructions': item.instructions
       });
