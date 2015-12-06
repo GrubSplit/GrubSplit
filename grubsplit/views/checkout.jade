@@ -24,5 +24,10 @@ block content
     form.form-horizontal(method='GET')
       button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
   div
-    form.form-horizontal(method='POST', action='/grubs/' + grubId + '/order')
-      button.btn.btn-primary(type='submitOrder', id='submitOrder', grubId=grubId) Submit Order
+    +textInputGroup('tip', '2.00')
+    button.btn.btn-primary(type='submitOrder', id='submitOrder', grubId=grubId) Submit Order
+    //- form.form-horizontal(method='POST', action='/grubs/' + grubId + '/order')
+  form(method='POST', action='/grubs/' + grubId + '/order', id='target')
+    +textInputGroup('_tip', '', 'display: none')
+    +textInputGroup('_location_id', '', 'display: none')
+    +textInputGroup('_cc_id', '', 'display: none')

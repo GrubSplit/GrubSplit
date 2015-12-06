@@ -75,6 +75,8 @@ router.get('/items/:subgrub', function(req, res) {
  */
 router.post('/:subgrub', function(req, res) {
   var items = JSON.parse(req.body.items) || [];
+  console.log('ITEMS');
+  console.log(items);
   SubGrub.addItems(req.subgrub._id, items, function (err, subgrub) {
     if (err) {
       req.flash('errors', err);

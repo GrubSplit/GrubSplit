@@ -315,7 +315,7 @@ var Delivery = function() {
       order.push({
         'item_id': item.id,
         'item_qty': item.quantity,
-        'option_qty': {},
+        'option_qty': item.option_qty,
         'item_label': '',
         'instructions': item.instructions
       });
@@ -447,10 +447,31 @@ var Delivery = function() {
     return url;
   };
 
-  that.placeOrder = function(restaurantId, tip, location_id, cc_id, callback) {
+  that.placeOrder = function(location_id, cc_id, tip, callback) {
     var url;
     url += DELIVERY_URL + '/customer/cart/' + restaurantId + 'checkout?';
     url += 'client_id=' + CLIENT_ID;
+    var options = {
+      url: url,
+      formData: {
+        'location_id': location_id,
+        'payments': [
+          {
+            'type': 'credit_card',
+            'id': cc_id
+          }
+        ],
+        'order_type': 'delivery'
+      }
+    };
+    request.post(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        body = JSON.parse(body);
+        console.log(null, body);
+      }
+    });
   };
 
   Object.freeze(that);

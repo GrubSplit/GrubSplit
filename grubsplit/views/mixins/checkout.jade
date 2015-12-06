@@ -29,8 +29,8 @@ mixin addAddress
   div
     h1 Add new address
 
-mixin textInputGroup(type, placeholder)
+mixin textInputGroup(type, placeholder, style)
   .form-group
       label.col-sm-3.control-label(for=type)
-        input.form-control(type=type, name=type, id=name, placeholder=placeholder)
+        input.form-control(type=type, name=type, id=type, placeholder=placeholder, style=style)
 
