@@ -172,12 +172,17 @@ author: jorrieb
 		var itemName = document.createElement('h2');
 		var menuItem = menu.getItem(item_id);
 		itemName.innerHTML = menuItem.name;
-		content.appendChild(itemName);
+		header.appendChild(itemName);
 
 		for (index in menuItem.children){
 			var groupName = document.createElement('h4');
 			groupName.innerHTML = menuItem.children[index].name;
 			content.appendChild(groupName);
+			var description = document.createElement('p');
+			description.innerHTML = menuItem.children[index].description;
+			content.appendChild(description);
+			console.log('1');
+			console.log(menuItem.children[index]);
 			var form = document.createElement('form');
 			form.setAttribute('id', menuItem.children[index].id);
 			if (menuItem.children[index].type == "price group"){
@@ -222,7 +227,7 @@ author: jorrieb
 		item = menu.getItem(evt.currentTarget.getAttribute('item_id'));
 		console.log(item);
 		options = {};
-		price = 0;
+		price = item.price;
 		for (optionGroupIndex in item.children){
 			if (item.children[optionGroupIndex].type == "price group"){
 				var checked = document.querySelector('input[name='+item.children[optionGroupIndex].id+']:checked');
@@ -233,8 +238,14 @@ author: jorrieb
 				options[checked.value] = 1;
 				price = parseFloat(checked.getAttribute('price'));
 			} else if (item.children[optionGroupIndex].type == "option group"){
-				//this is the checked array
 				var checked = document.querySelectorAll('input[name='+item.children[optionGroupIndex].id+']:checked');
+				if (item.children[optionGroupIndex].max_selection < checked.length){
+					window.alert("You've selected too many additions from the group " + item.children[optionGroupIndex].name);
+					return;
+				} else if(item.children[optionGroupIndex].min_selection > checked.length){
+					window.alert("You must choose one of the required options from the group " + item.children[optionGroupIndex].name);
+					return;
+				}
 				Array.prototype.map.call(checked, function(obj) {
 					options[obj.value] = 1;
 					console.log(obj.getAttribute('price'));
@@ -268,29 +279,6 @@ author: jorrieb
 		var overlay = document.getElementById('overlay');
 		overlay.parentNode.removeChild(overlay);
 	};
-
-	// $(document).on('click', '.item', function(evt) {
-	// 	var item = evt.currentTarget
-	// 	var exists = false;
-	// 	for (var index in cartArray) {
-	// 		var cartObject = cartArray[index]
-	// 		if (cartObject.id === item.getAttribute('itemid')) {
-	// 			cartObject.quantity += 1;
-	// 			exists = true;
-	// 			break;
-	// 		}
-	// 	}
-	// 	if (!exists) {
-			// var cartObject = {
-			// 	id: item.getAttribute('itemid'),
-			// 	name: item.getAttribute('name'),
-			// 	price: item.getAttribute('price'),
-			// 	quantity: 1
-			// }
-			// cartArray.push(cartObject)
-	// 	}
-	// 	redisplayCart()
-	// });
 
 	// Remove item from cart
 	$(document).on('click', '.removeItem', function(evt) {

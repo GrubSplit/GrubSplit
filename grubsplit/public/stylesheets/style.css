@@ -46,19 +46,19 @@ a {
 }
 
 #orderBox{
+  overflow-y:scroll;
+  padding: 5px;
   border-radius: 5px;
   position: relative;
   top: 15%;
   left: 20%;
   width: 60%;
-  height: 70%;
   background-color: white;
 }
 
 #closeModal{
   right:5px;
   top:5px;
-  position:absolute;
   border-radius: 3px;
 }
 
@@ -67,10 +67,9 @@ a {
 }
 
 #instructionsBox{
-  width: 96%;
+  width: 100%;
   border-radius: 3px;
   left: 2%;
-  position: absolute;
 }
 
 .option{
@@ -83,21 +82,19 @@ a {
 }
 
 #content{
-  height:70%;
+  overflow-y: scroll;
+  max-height: 350px;
 }
 
 #header{
-  height:5%;
 }
 
 #instructionsBox{
-  height:10%;
 }
 
 #footer{
   height: 15%;
   bottom: 5px;
-  position: absolute;
 }
 
 .hasNotPaid {
