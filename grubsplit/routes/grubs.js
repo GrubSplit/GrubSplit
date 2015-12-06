@@ -97,13 +97,14 @@ router.post('/:grub/order', function(req, res) {
     location_id = req.body._location_id;
     cc_id = req.body._cc_id;
     tip = req.body._tip;
-    Delivery.placeOrder(location_id, cc_id, tip, function(error, body) {
+    Delivery.placeOrder(req.grub.restaurantID, location_id, cc_id, tip, req.user.token, function(error, body) {
       if (error) {
         console.log(error);
       } else {
         console.log(body);
         Grub.completeGrub(req.grub._id, function(err) {
           if (err) {
+            console.log('ERR');
             console.log(err);
             req.flash('errors', err);
             return;

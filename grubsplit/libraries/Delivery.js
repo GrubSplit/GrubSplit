@@ -447,20 +447,25 @@ var Delivery = function() {
     return url;
   };
 
-  that.placeOrder = function(location_id, cc_id, tip, callback) {
+  that.placeOrder = function(restaurantId, location_id, cc_id, tip, token, callback) {
     var url;
-    url += DELIVERY_URL + '/customer/cart/' + restaurantId + 'checkout?';
+    url = DELIVERY_URL + '/customer/cart/' + restaurantId + '/checkout?';
     url += 'client_id=' + CLIENT_ID;
+    console.log(url);
     var options = {
       url: url,
+      headers: {
+        'Authorization': token,
+        'User-Agent': 'Custom User Agent'
+      },
       formData: {
         'location_id': location_id,
-        'payments': [
-          {
-            'type': 'credit_card',
-            'id': cc_id
-          }
-        ],
+        'payments[0][type]': 'credit_card',
+        'payments[0][id]': cc_id,
+        // 'payments': [{
+        //   'type': 'credit_card',
+        //   'id': cc_id
+        // }],
         'order_type': 'delivery'
       }
     };
@@ -468,8 +473,9 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
+        console.log(response);
         body = JSON.parse(body);
-        console.log(null, body);
+        callback(null, body);
       }
     });
   };

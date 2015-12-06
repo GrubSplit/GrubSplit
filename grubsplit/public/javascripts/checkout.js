@@ -5,7 +5,6 @@
 
 (function() {
   $(document).on('click', '#submitOrder', function(event) {
-<<<<<<< HEAD
     var location_id, cc_id, tip, href;
     console.log($('#tip').val());
     tip = $('#tip').val();
