@@ -9,7 +9,8 @@ if messages.errors
     button.close(type='button', data-dismiss='alert')
       i.fa.fa-times-circle-o
     for error in messages.errors
-      div= error
+      - var log = JSON.stringify(error)
+      div= log
 if messages.info
   .alert.alert-info.fade.in
     button.close(type='button', data-dismiss='alert')
