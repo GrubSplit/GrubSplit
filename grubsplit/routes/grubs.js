@@ -79,6 +79,9 @@ router.post('/:grub', function(req, res) {
     - err: on failure, an error message
  */
 router.post('/:grub/order', function(req, res) {
+  if (req.grub.time_ordered) {
+    return res.redirect('/grubs/' + req.grub._id);
+  }
   var location_id, cc_id, tip;
   var order = [];
   req.grub.subGrubs.forEach(function(subgrub) {
@@ -86,10 +89,10 @@ router.post('/:grub/order', function(req, res) {
       order.push(item);
     });
   });
-  Delivery.createCart(req.grub.restaurantID, order, req.user.token, function(err, response, body) {
+  Delivery.createCart(req.grub.restaurantID, order, req.user.token, function(err, body) {
     if (err) {
-      console.log(err);
       req.flash('errors', err);
+      res.redirect('/grubs/' + req.grub._id + '/checkout');
       return;
     }
     location_id = req.body._location_id;
@@ -103,13 +106,14 @@ router.post('/:grub/order', function(req, res) {
     // return;  // ******** UNCOMMENT THIS TO AVOID PLACING ORDER WHEN TESTING ********
     Delivery.placeOrder(req.grub.restaurantID, location_id, cc_id, tip, req.user.token, function(error, body) {
       if (error) {
-        console.log(error);
+        req.flash('errors', error);
+        res.redirect('/grubs/' + req.grub._id + '/checkout');
+        return;
       } else {
-        console.log(body);
         Grub.completeGrub(req.grub._id, subtotal, tax, tip, delivery_fee, discount, total, function(err) {
           if (err) {
-            console.log(err);
             req.flash('errors', err);
+            res.redirect('/grubs/' + req.grub._id + '/checkout');
             return;
           }
           res.redirect('/grubs/' + req.grub._id);
@@ -120,22 +124,19 @@ router.post('/:grub/order', function(req, res) {
 });
 
 router.get('/:grub/checkout', function(req, res) {
+  if (req.grub.time_ordered) {
+    return res.redirect('/grubs/' + req.grub._id);
+  }
   var locations, paymentOptions;
 
   Delivery.getAddresses(req.user.token, function(error, addresses) {
     if (error) {
-      console.log(error);
-      res.flash('errors', {
-        msg: error
-      });
+      req.flash('errors', error);
     } else {
       locations = addresses;
       Delivery.getPaymentMethods(req.user.token, function(error, creditCards) {
         if (error) {
-          console.log(error);
-          req.flash('errors', {
-            msg: error
-          });
+          req.flash('errors', error);
         } else {
           paymentOptions = creditCards;
           res.render('checkout', {
@@ -151,6 +152,9 @@ router.get('/:grub/checkout', function(req, res) {
 });
 
 router.post('/:grub/checkout', function(req, res) {
+  if (req.grub.time_ordered) {
+    return res.redirect('/grubs/' + req.grub._id);
+  }
   Delivery.addAddress(req.body, req.user.token, function(error, location_id) {
     if (error) {
       req.flash('errors', error);
@@ -162,9 +166,7 @@ router.post('/:grub/checkout', function(req, res) {
 router.delete('/:grub', function(req, res) {
   Grub.deleteGrub(req.params.grub, function(err) {
     if (err) {
-      req.flash('errors', {
-        msg: err.msg
-      });
+      req.flash('errors', err);
     } else {
       res.redirect('/');
     }

@@ -1,8 +1,9 @@
 var request = require('request');
 
 /**
- * Library for retrieving data from Delivery.com's API by
- *   parsing information from responses
+ * Library for retrieving data from Delivery.com's API
+ *
+ *   https://developers.delivery.com/overview/
  *
  * Author: mattmik
  */
@@ -11,7 +12,7 @@ var Delivery = function() {
 
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
-  var REDIRECT_URI = 'https://localhost:3000/auth';
+  var REDIRECT_URI = 'https://grubsplit.herokuapp.com/auth';
   var DELIVERY_URL = 'https://api.delivery.com';
 
   /**
@@ -77,6 +78,22 @@ var Delivery = function() {
     });
   };
 
+  /**
+   * Search for restaurants near a given address
+   * @param  {String}   address  Address to search from
+   * @param  {Function} callback {error, [restaurants]}
+   *  address format:
+   *      '123 Main Street Cambridge MA 02139'
+   *  restaurant format:
+   *      name
+   *      id
+   *      phone
+   *      merchant_logo
+   *      street
+   *      city
+   *      state
+   *      zip_code
+   */
   that.searchNearbyRestaurants = function(address, callback) {
     var url = DELIVERY_URL + '/merchant/search/delivery?';
     url += 'client_id=' + CLIENT_ID;
@@ -112,9 +129,7 @@ var Delivery = function() {
   /**
    * Get menu info and parse response
    * @param  {int} restaurantId    Id for restaurant
-   * @return {JSON}                Menu info
-   *   attributes in response:
-   *     menuItems
+   * @return {Function} callback   {error, menu}
    */
   var getMenu = function(restaurantId, callback) {
     var url = DELIVERY_URL + '/merchant/' + restaurantId + '/menu?';
@@ -245,8 +260,13 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        var location = body.location;
-        callback(null, location.location_id);
+        if (body.location === undefined) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          var location = body.location;
+          callback(null, location.location_id);
+        }
       }
     });
   };
@@ -271,14 +291,18 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        var locations = body.locations;
-        callback(null, locations);
+        if (body.locations === undefined) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body.locations);
+        }
       }
     });
   };
 
   /**
-   * Get cusotmer's cart at a restaurant
+   * Get customer's cart at a restaurant
    * @param  {Int}   restaurantId    Id for restaurant
    * @param  {String}   token        customer's access_token from authorization
    * @param  {Function} callback     {error, body}
@@ -298,7 +322,12 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        callback(null, body);
+        if (body.cart === undefined) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
@@ -327,14 +356,13 @@ var Delivery = function() {
    * @param  {int}   restaurantId    Id for restaurant
    * @param  {[Object]}   items      Items to order
    * @param  {String}   token        Customer's access_token from authorization
-   * @param  {Function} callback     {error, response, body}
+   * @param  {Function} callback     {error, body}
    */
   that.createCart = function(restaurantId, items, token, callback) {
     var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
     url += 'client_id=' + CLIENT_ID;
     url += '&order_type=' + 'delivery';
     items = formatOrder(items);
-    console.log(items);
     var options = {
       url: url,
       body: {
@@ -349,7 +377,12 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        callback(null, response, body);
+        if (body.message.length > 0) {
+          // var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(body.message);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
@@ -358,7 +391,7 @@ var Delivery = function() {
    * Delete all items in customer's cart
    * @param  {int}   restaurantId    Id for restaurant
    * @param  {String}   token        Customer's access_token from authorization
-   * @param  {Function} callback     {error, response}
+   * @param  {Function} callback     {error, body}
    */
   that.deleteCart = function(restaurantId, token, callback) {
     var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
@@ -373,7 +406,13 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        callback(null, response);
+        body = JSON.parse(body);
+        if (body.message.length > 0) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
@@ -383,7 +422,7 @@ var Delivery = function() {
    * @param  {int}   restaurantId    Id for restaurant
    * @param  {[type]}   index        Index of item to delete from cart
    * @param  {String}   token        Customer's access_token from authorization
-   * @param  {Function} callback     {error, response}
+   * @param  {Function} callback     {error, body}
    */
   that.removeItem = function(restaurantId, index, token, callback) {
     var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
@@ -399,13 +438,19 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        callback(null, body);
+        body = JSON.parse(body);
+        if (body.message.length > 0) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
 
   /**
-   * [updateCart description]
+   * Update a user's cart
    * @param  {[type]}   restaurantId [description]
    * @param  {[type]}   item         [description]
    * @param  {[type]}   token        [description]
@@ -413,9 +458,19 @@ var Delivery = function() {
    * @return {[type]}                [description]
    */
   that.updateCart = function(restaurantId, item, token, callback) {
-
+      //TODO: Implement
   };
 
+  /**
+   * Retrieve a user's payment methods (credit cards)
+   * @param  {String}   token    access_token from user authorization
+   * @param  {Function} callback {error, [credit_card]}
+   *   credit_card format:
+   *     cc_id
+   *     type
+   *     exp_month
+   *     exp_year
+   */
   that.getPaymentMethods = function(token, callback) {
     var url = DELIVERY_URL + '/customer/cc';
     var options = {
@@ -429,11 +484,20 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        callback(null, body.cards);
+        if (body.cards === undefined) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body.cards);
+        }
       }
     });
   };
 
+  /**
+   * URL for adding payment methods, used for redirect
+   * @param {String} state GrubSplit endpoint to return to after redirect
+   */
   that.addPaymentMethodURL = function(state) {
     var url;
     state = state;
@@ -446,6 +510,15 @@ var Delivery = function() {
     return url;
   };
 
+  /**
+   * Submit an order for delivery
+   * @param  {String}   restaurantId Id for restaurant
+   * @param  {String}   location_id  Id for delivery address
+   * @param  {String}   cc_id        Id for payment method
+   * @param  {String}   tip          Tip amount in dollars
+   * @param  {String}   token        access_token from user authorization
+   * @param  {Function} callback     {error, body}
+   */
   that.placeOrder = function(restaurantId, location_id, cc_id, tip, token, callback) {
     var url;
     url = DELIVERY_URL + '/customer/cart/' + restaurantId + '/checkout?';
@@ -469,7 +542,12 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        callback(null, body);
+        if (body.message.length > 0) {
+          // var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(body.message);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
