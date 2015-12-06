@@ -98,6 +98,8 @@ var Delivery = function() {
     var url = DELIVERY_URL + '/merchant/search/delivery?';
     url += 'client_id=' + CLIENT_ID;
     url += '&address=' + address;
+    url += '&merchant_type=R';
+
     var restaurants = [];
     request(url, function(error, response, body) {
       body = JSON.parse(body);
