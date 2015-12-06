@@ -74,7 +74,6 @@ author: jorrieb
 
 	// Submit SubGrub to Grub
 	$(document).on('click', '#submitSubGrub', function(evt) {
-		console.log(cartArray);
 		if (cartArray.length === 0) {
 			alert('Cart is empty! Add some items to the cart first.');
 			return;
