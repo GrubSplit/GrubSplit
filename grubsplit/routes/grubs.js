@@ -93,7 +93,10 @@ router.post('/:grub/order', function(req, res) {
       req.flash('errors', err);
       return;
     }
-    console.log(body);
+    // console.log(body.message[0][0]);
+    // if (body.message && body.message[0] && body.message[0][0] && body.message[0][0][0]) {
+    //   console.log('MESSAGE: ' + JSON.stringify(body.message[0][0][0]));
+    // }
     Grub.completeGrub(req.grub._id, function(err) {
       if (err) {
         console.log(err);
@@ -127,7 +130,8 @@ router.get('/:grub/checkout', function(req, res) {
           res.render('checkout', {
             locations: locations,
             paymentOptions: paymentOptions,
-            token: req.user.token
+            token: req.user.token,
+            grubId: req.grub._id
           });
         }
       });

@@ -5,7 +5,7 @@
 
 (function() {
   $(document).on('click', '#submitOrder', function(event) {
-    alert('Hello!');
+    // alert('Hello!');
     // location.href = '/';
   });
 })();
