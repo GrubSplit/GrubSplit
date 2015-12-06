@@ -21,8 +21,8 @@ block content
         button.col-sm-3.btn.btn-primary(type='addAddress', action='/auth/addAddress') Submit
   h1 Add Payment Option
   div
-    form.form-hotizontal(method='GET')
+    form.form-horizontal(method='GET')
       button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
   div
-    button.btn.btn-primary(type='submitOrder', id='submitOrder') Submit Order
-    //- form.form-horizontal(method='POST')
+    form.form-horizontal(method='POST', action='/grubs/' + grubId + '/order')
+      button.btn.btn-primary(type='submitOrder', id='submitOrder', grubId=grubId) Submit Order

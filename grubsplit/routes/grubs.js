@@ -127,7 +127,8 @@ router.get('/:grub/checkout', function(req, res) {
           res.render('checkout', {
             locations: locations,
             paymentOptions: paymentOptions,
-            token: req.user.token
+            token: req.user.token,
+            grubId: req.grub._id
           });
         }
       });
