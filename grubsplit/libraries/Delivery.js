@@ -375,12 +375,11 @@ var Delivery = function() {
     };
     request.post(options, function(error, response, body) {
       if (error) {
-        console.log('ERROR IN CREATE CART');
         callback(error);
       } else {
         if (body.message.length > 0) {
-          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
-          callback(errors);
+          // var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(body.message);
         } else {
           callback(null, body);
         }
@@ -540,13 +539,12 @@ var Delivery = function() {
     };
     request.post(options, function(error, response, body) {
       if (error) {
-        console.log('ERROR IN PLACE ORDER');
         callback(error);
       } else {
         body = JSON.parse(body);
         if (body.message.length > 0) {
-          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
-          callback(errors);
+          // var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(body.message);
         } else {
           callback(null, body);
         }
