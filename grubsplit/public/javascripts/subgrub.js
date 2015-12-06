@@ -21,7 +21,6 @@ author: jorrieb
 
 		$.get('/subgrubs/menu/' + subgrubid, function(response){
 			menu = Menu(response);
-			console.log(menu);
 		});
 	});
 
@@ -44,7 +43,7 @@ author: jorrieb
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price + '<br>Quantity: ' + cartArray[item].quantity 
+			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity 
 			items.appendChild(displayedItem)
 		}
 
@@ -99,11 +98,6 @@ author: jorrieb
 		});
 	});
 
-	$(document).on('click','#overlay', function(evt){
-		// evt.preventDefault();
-
-	});
-
 	// User selects a menu item
 	// Displays alert with:
 	//	-options
@@ -118,7 +112,6 @@ author: jorrieb
 	});
 
 	var presentModal = function(item_id,id_type){
-		console.log('menu is',menu);
 		//generic things
 		var overlay = document.createElement('div');
 		overlay.setAttribute('id','overlay');
@@ -217,7 +210,6 @@ author: jorrieb
 			}
 			content.appendChild(form);
 		}
-
 	};
 
 	$(document).on('click', '#closeModal', function(evt) {
@@ -226,9 +218,8 @@ author: jorrieb
 
 	$(document).on('click', '#submitButton', function(evt){
 		item = menu.getItem(evt.currentTarget.getAttribute('item_id'));
-		console.log(item);
 		options = {};
-		price = 0;
+		price = item.price;
 		for (optionGroupIndex in item.children){
 			if (item.children[optionGroupIndex].type == "price group"){
 				var checked = document.querySelector('input[name='+item.children[optionGroupIndex].id+']:checked');
@@ -243,7 +234,6 @@ author: jorrieb
 				var checked = document.querySelectorAll('input[name='+item.children[optionGroupIndex].id+']:checked');
 				Array.prototype.map.call(checked, function(obj) {
 					options[obj.value] = 1;
-					console.log(obj.getAttribute('price'));
 					price += parseFloat(obj.getAttribute('price'));
 				});
 			}
@@ -263,9 +253,9 @@ author: jorrieb
 			instructions: document.getElementById('instructionsBox').value,
 			option_qty: options
 		}
+
 		cartArray.push(cartObject);
 		redisplayCart();
-
 		closeModal();
 
 	});
@@ -274,29 +264,6 @@ author: jorrieb
 		var overlay = document.getElementById('overlay');
 		overlay.parentNode.removeChild(overlay);
 	};
-
-	// $(document).on('click', '.item', function(evt) {
-	// 	var item = evt.currentTarget
-	// 	var exists = false;
-	// 	for (var index in cartArray) {
-	// 		var cartObject = cartArray[index]
-	// 		if (cartObject.id === item.getAttribute('itemid')) {
-	// 			cartObject.quantity += 1;
-	// 			exists = true;
-	// 			break;
-	// 		}
-	// 	}
-	// 	if (!exists) {
-			// var cartObject = {
-			// 	id: item.getAttribute('itemid'),
-			// 	name: item.getAttribute('name'),
-			// 	price: item.getAttribute('price'),
-			// 	quantity: 1
-			// }
-			// cartArray.push(cartObject)
-	// 	}
-	// 	redisplayCart()
-	// });
 
 	// Remove item from cart
 	$(document).on('click', '.removeItem', function(evt) {
@@ -307,13 +274,6 @@ author: jorrieb
 	// Edit item in cart
 	$(document).on('click', '.editItem', function(evt) {
 		//get item info
-		//displayMenuItem(item,additional info)
-	});
-
-	// Cancel subgrub
-	$(document).on('click', '#cancelSubGrub', function(evt) {
-		//remove subgrub from the db
-		//navigate to the 
 		//displayMenuItem(item,additional info)
 	});
 
