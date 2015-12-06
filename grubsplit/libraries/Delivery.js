@@ -19,7 +19,7 @@ var Delivery = function() {
    * @return {String} URL
    */
   that.createAccountURL = function() {
-    var url = 'https://api.delivery.com/third_party/account/create?';
+    var url = DELIVERY_URL + '/third_party/account/create?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
     url += '&response_type=' + 'code';
@@ -33,7 +33,7 @@ var Delivery = function() {
    * @return {String} URL
    */
   that.authorizeAccountURL = function() {
-    var url = 'https://api.delivery.com/third_party/authorize?';
+    var url = DELIVERY_URL + '/third_party/authorize?';
     url += 'client_id=' + CLIENT_ID;
     url += '&redirect_uri=' + REDIRECT_URI;
     url += '&response_type=' + 'code';
@@ -49,7 +49,7 @@ var Delivery = function() {
    * @return {[type]}            [description]
    */
   that.requestTokenURL = function(code, callback) {
-    var url = 'https://api.delivery.com/third_party/access_token?';
+    var url = DELIVERY_URL + '/third_party/access_token?';
     url += 'client_id=' + CLIENT_ID;
     url += '&client_secret=' + CLIENT_SECRET;
     url += '&redirect_uri=' + REDIRECT_URI;
@@ -78,7 +78,7 @@ var Delivery = function() {
   };
 
   that.searchNearbyRestaurants = function(address, callback) {
-    var url = 'https://api.delivery.com/merchant/search/delivery?';
+    var url = DELIVERY_URL + '/merchant/search/delivery?';
     url += 'client_id=' + CLIENT_ID;
     url += '&address=' + address;
     var restaurants = [];
@@ -86,9 +86,9 @@ var Delivery = function() {
       body = JSON.parse(body);
       console.log(body);
       if (body.message && body.message[0] && body.message[0].code) {
-        if (body.message[0].code === 'bad_address') {
+        if (body.message[0].code === 'invalid_address') {
           callback({
-            message: 'Bad Address'
+            msg: "We couldn't find that address. Please try again!"
           });
         }
       } else {
@@ -123,7 +123,7 @@ var Delivery = function() {
    *     menuItems
    */
   var getMenu = function(restaurantId, callback) {
-    var url = 'https://api.delivery.com/merchant/' + restaurantId + '/menu?';
+    var url = DELIVERY_URL + '/merchant/' + restaurantId + '/menu?';
     url += 'client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
       if (error || response.statusCode != 200) {
@@ -156,7 +156,7 @@ var Delivery = function() {
    *     menu
    */
   that.getRestaurant = function(restaurantId, callback) {
-    var url = 'https://api.delivery.com/merchant/' + restaurantId;
+    var url = DELIVERY_URL + '/merchant/' + restaurantId;
     url += '?client_id=' + CLIENT_ID;
     request(url, function(error, response, body) {
       if (error || response.statusCode != 200) {
@@ -198,7 +198,7 @@ var Delivery = function() {
    * @param {Function} callback {error, location_id} used to checkout
    */
   that.addAddress = function(address, token, callback) {
-    var url = 'https://api.delivery.com/customer/location?';
+    var url = DELIVERY_URL + '/customer/location?';
     url += 'client_id=' + CLIENT_ID;
     var options = {
       url: url,
@@ -232,7 +232,7 @@ var Delivery = function() {
    * @param  {Function} callback   {error, location_id}
    */
   that.updateAddress = function(locationId, update, token, callback) {
-    var url = 'https://api.delivery.com/customer/location/' + locationId + '?';
+    var url = DELIVERY_URL + '/customer/location/' + locationId + '?';
     url += 'client_id=' + CLIENT_ID;
     var options = {
       url: url,
@@ -259,7 +259,7 @@ var Delivery = function() {
    *   list of locations returned
    */
   that.getAddresses = function(token, callback) {
-    var url = 'https://api.delivery.com/customer/location?';
+    var url = DELIVERY_URL + '/customer/location?';
     url += 'client_id=' + CLIENT_ID;
     var options = {
       url: url,
@@ -285,7 +285,7 @@ var Delivery = function() {
    * @param  {Function} callback     {error, body}
    */
   that.getCart = function(restaurantId, token, callback) {
-    var url = 'https://api.delivery.com/customer/cart/' + restaurantId + '?';
+    var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
     url += 'client_id=' + CLIENT_ID;
     url += '&order_type=' + 'delivery';
     var options = {
@@ -400,7 +400,7 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        callback(null, response);
+        callback(null, body);
       }
     });
   };
@@ -417,14 +417,40 @@ var Delivery = function() {
 
   };
 
-  /**
-   * Place an order
-   * @param  {[type]} order [description]
-   * @return {[type]}       [description]
-   */
-  that.placeOrder = function(order, callback) {
-    // TODO: replace with real implementation
-    callback(null);
+  that.getPaymentMethods = function(token, callback) {
+    var url = DELIVERY_URL + '/customer/cc';
+    var options = {
+      url: url,
+      headers: {
+        'Authorization': token
+      }
+    };
+    request(options, function(error, response, body) {
+      if (error) {
+        callback(error);
+      } else {
+        body = JSON.parse(body);
+        callback(null, body.cards);
+      }
+    });
+  };
+
+  that.addPaymentMethodURL = function(state) {
+    var url;
+    state = state;
+    url = DELIVERY_URL + '/third_party/credit_card/add?';
+    url += 'client_id=' + CLIENT_ID;
+    url += '&redirect_uri=' + REDIRECT_URI;
+    url += '&response_type=code';
+    url += '&scope=global';
+    url += '&state=' + state;
+    return url;
+  };
+
+  that.placeOrder = function(restaurantId, tip, location_id, cc_id, callback) {
+    var url;
+    url += DELIVERY_URL + '/customer/cart/' + restaurantId + 'checkout?';
+    url += 'client_id=' + CLIENT_ID;
   };
 
   Object.freeze(that);

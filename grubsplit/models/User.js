@@ -12,8 +12,7 @@ var userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true, required: true },
   name: { type: String, required: true },
   token: { type: String },
-  refresh_token: { type: String},
-  grub_invites: { type: [ObjectID], default: []}
+  refresh_token: { type: String}
 });
 
 userSchema.plugin(passportLocalMongoose, {

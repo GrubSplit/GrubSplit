@@ -1,0 +1,28 @@
+extends layout
+
+append head
+  script(src='/javascripts/checkout.js')
+
+block content
+  .page-header
+  if locations
+    +addresses(locations)
+  if paymentOptions
+    +paymentOptions(paymentOptions)
+  h1 Add New Address
+  div
+    form.form-horizontal(method='POST')
+      +textInputGroup('street', '123 Main Street')
+      +textInputGroup('city', 'Cambridge')
+      +textInputGroup('state', 'MA')
+      +textInputGroup('zip_code', '02139')
+      +textInputGroup('phone', '555-555-5555')
+      .form-group.col-sm.col-sm-7
+        button.col-sm-3.btn.btn-primary(type='addAddress', action='/auth/addAddress') Submit
+  h1 Add Payment Option
+  div
+    form.form-hotizontal(method='GET')
+      button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
+  div
+    button.btn.btn-primary(type='submitOrder', id='submitOrder') Submit Order
+    //- form.form-horizontal(method='POST')
