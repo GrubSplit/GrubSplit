@@ -20,8 +20,7 @@
   name: String,
  	price: Number,
  	quantity: {type: Number, default: 1},
- 	instructions: {type: String, default: ''},
-  option_qty: {type: Object}
+ 	instructions: {type: String, default: ''}
  });
 
  var subGrubSchema = new mongoose.Schema({
