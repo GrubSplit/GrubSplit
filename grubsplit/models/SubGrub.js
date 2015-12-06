@@ -153,7 +153,7 @@ subGrubSchema.statics.findUserGrubs = function(userID, callback) {
          .select('-_id grubID')
          .exec(function (err, grubIDs) {
     if (err) {
-      return callback(err);
+      return callback({msg: 'could not find grubs for user'});
     }
     grubIDs = grubIDs.map(function(elm) {return elm.grubID;});
     Grub.find({})
