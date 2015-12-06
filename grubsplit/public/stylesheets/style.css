@@ -42,8 +42,10 @@ a {
   padding:5px;
 }
 
-.item{
+.cartitem{
   border-bottom: 1px dashed lightgray;
+  cursor: pointer;
+  
 }
 
 /*modal codal*/

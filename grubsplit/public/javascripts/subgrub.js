@@ -9,7 +9,7 @@ author: jorrieb
 (function() {
 	var cartArray = []
 	var menu = {}
-
+	var cartid = 1
 	$(function() {
 		var subgrubButton = document.getElementById('submitSubGrub')
 		var subgrubid = subgrubButton.getAttribute('subgrubid')
@@ -47,8 +47,12 @@ author: jorrieb
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity;
-			displayedItem.setAttribute('class','item');
+			displayedItem.innerHTML = '<a><i class="glyphicon glyphicon-remove removeItem" cartid="'+cartArray[item].cartid+'"></i></a>' + '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity;
+			displayedItem.setAttribute('class','cartitem');
+			displayedItem.setAttribute('itemid',cartArray[item].id);
+			displayedItem.setAttribute('cartid',cartArray[item].cartid);
+			var itemPanel = document.createElement('div');
+			itemPanel.appendChild(displayedItem);
 			items.appendChild(displayedItem)
 		}
 
@@ -110,11 +114,24 @@ author: jorrieb
 	$(document).on('click', '.item', function(evt) {
 		var item = evt.currentTarget
 		//create modal with item data
-		presentModal(item.getAttribute('itemid'),'menuitem');
+		presentModal(item.getAttribute('itemid'));
 
 	});
 
-	var presentModal = function(item_id,id_type){
+	$(document).on('click', '.cartitem', function(evt) {
+		var item = evt.currentTarget;
+		var cartitem = $.grep(cartArray, function(e){console.log(e); return e.cartid == item.getAttribute('cartid'); });
+
+		//create modal with item data
+		presentModal(item.getAttribute('itemid'),cartitem[0]);
+
+	});
+
+	//Presents modal where user can select options, give instruction, and determine quantity
+	//@param item_id, id of the item being displayed
+	//@param cartItem, optional, if it's a cart item, a cart array item will be passed to fill
+	//out options
+	var presentModal = function(item_id,cartItem){
 		//generic things
 		var overlay = document.createElement('div');
 		overlay.setAttribute('id','overlay');
@@ -228,6 +245,10 @@ author: jorrieb
 			}
 			content.appendChild(form);
 		}
+
+		if (cartItem){
+			console.log('item selected from cart');
+		}
 	};
 
 	$(document).on('click', '#closeModal', function(evt) {
@@ -275,8 +296,10 @@ author: jorrieb
 			price: price,
 			quantity: quantity,
 			instructions: document.getElementById('instructionsBox').value,
-			option_qty: options
+			option_qty: options,
+			cartid: cartid
 		}
+		cartid += 1;
 
 		cartArray.push(cartObject);
 		redisplayCart();
@@ -291,14 +314,20 @@ author: jorrieb
 
 	// Remove item from cart
 	$(document).on('click', '.removeItem', function(evt) {
+		evt.stopPropagation();
+		console.log('1');
+		var item = evt.currentTarget;
+		$.grep(cartArray, function(e){
+			console.log('cartid of e is:' + e.cartid);
+			console.log('cart id of item is:' + item.getAttribute('cartid'));
+			if (e.cartid == item.getAttribute('cartid') ){
+				var index = cartArray.indexOf(e);
+				cartArray.splice(index, 1);
+			}
+		});
+		redisplayCart();
 		//get item id
 		//put to subgrub cart
-	});
-
-	// Edit item in cart
-	$(document).on('click', '.editItem', function(evt) {
-		//get item info
-		//displayMenuItem(item,additional info)
 	});
 
 })();
