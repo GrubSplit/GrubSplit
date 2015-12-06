@@ -107,12 +107,11 @@ subGrubSchema.statics.getSubGrub = function(subGrubID, callback) {
  /*
   RemoveSubGrub doc, remove it from SubGrub collection and 
   remove reference from parent Grub
-  @param: subgrub
+  @param: subgrubID = id of subgrub
+  @param: grubID = id of grub 
   @param: callback(err)
 */
-subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
-	var subgrubID = subgrub._id
-	var grubID = subgrub.grubID;
+subGrubSchema.statics.deleteSubGrub = function(subgrubID, grubID, callback) {
 	SubGrub.remove({_id: subgrubID}, function(err) {
 		if (err) {
 			callback({msg: 'could not delete subgrub'});

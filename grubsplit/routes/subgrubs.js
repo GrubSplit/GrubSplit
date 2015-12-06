@@ -66,7 +66,7 @@ router.get('/items/:subgrub', function(req, res) {
  * POST /subgrubs/:id
  * SubGrub page.
   Request body:
-  	- grubID: id of the current grub
+    - subgrub: subgrub to be deleted
     - items: the items to be added
     - totalCost: the total cost of all items
   Response:
@@ -89,7 +89,7 @@ router.post('/:subgrub', function(req, res) {
  * POST /subgrubs/payment/:id
  * SubGrub page.
   Request body:
-    - grubID: id of the current grub
+    - subgrub: subgrub to be deleted
     - markAsPaid: boolean of if we are marking as paid or unpaid
   Response:
     - success: true if the server succeeded adding item to subgrub
@@ -110,13 +110,13 @@ router.post('/payment/:subgrub', function(req, res) {
  * DELETE /subgrubs/:id
  * SubGrub page.
   Request body:
-    - grubID: id of the current grub
+    - subgrub: subgrub to be deleted
   Response:
     - success: true if the server succeeded in deleting subgrub
     - err: on failure, an error message
  */
  router.delete('/:subgrub', function(req, res) {
-  SubGrub.deleteSubGrub(req.subgrub, function (err) {
+  SubGrub.deleteSubGrub(req.subgrub._id, req.subgrub.grubID._id, function (err) {
     if (err) {
       req.flash('errors', err);
     }
