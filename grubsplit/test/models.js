@@ -182,7 +182,6 @@ describe('Grub', function() {
       }, function(err, user) {
         Grub.createNewGrub(user._id, 70706, 'Cafe 472', function(err, grub) {
           grub_id = grub._id;
-          console.log(grub)
           done();
         });
       });  
@@ -191,7 +190,6 @@ describe('Grub', function() {
     it('should successfully complete a grub, if the given id exists', function(done) {
       Grub.completeGrub(grub_id, function(err, completed_grub) {
         assert.equal(err, null);
-        console.log(completed_grub)
         assert.notEqual(completed_grub.time_ordered, null);
         // TODO: add things for tip, tax, delivery fee
         done();
