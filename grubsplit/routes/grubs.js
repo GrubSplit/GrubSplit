@@ -89,6 +89,7 @@ router.post('/:grub/order', function(req, res) {
       order.push(item);
     });
   });
+  console.log(order);
   Delivery.createCart(req.grub.restaurantID, order, req.user.token, function(err, body) {
     if (err) {
       req.flash('errors', err);
