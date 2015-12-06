@@ -245,8 +245,13 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        var location = body.location;
-        callback(null, location.location_id);
+        if (body.location === undefined) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          var location = body.location;
+          callback(null, location.location_id);
+        }
       }
     });
   };
@@ -271,14 +276,18 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        var locations = body.locations;
-        callback(null, locations);
+        if (body.locations === undefined) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body.locations);
+        }
       }
     });
   };
 
   /**
-   * Get cusotmer's cart at a restaurant
+   * Get customer's cart at a restaurant
    * @param  {Int}   restaurantId    Id for restaurant
    * @param  {String}   token        customer's access_token from authorization
    * @param  {Function} callback     {error, body}
@@ -298,7 +307,12 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        callback(null, body);
+        if (body.cart === undefined) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
@@ -327,14 +341,13 @@ var Delivery = function() {
    * @param  {int}   restaurantId    Id for restaurant
    * @param  {[Object]}   items      Items to order
    * @param  {String}   token        Customer's access_token from authorization
-   * @param  {Function} callback     {error, response, body}
+   * @param  {Function} callback     {error, body}
    */
   that.createCart = function(restaurantId, items, token, callback) {
     var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
     url += 'client_id=' + CLIENT_ID;
     url += '&order_type=' + 'delivery';
     items = formatOrder(items);
-    console.log(items);
     var options = {
       url: url,
       body: {
@@ -349,7 +362,12 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        callback(null, response, body);
+        if (body.message.length > 0) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
@@ -358,7 +376,7 @@ var Delivery = function() {
    * Delete all items in customer's cart
    * @param  {int}   restaurantId    Id for restaurant
    * @param  {String}   token        Customer's access_token from authorization
-   * @param  {Function} callback     {error, response}
+   * @param  {Function} callback     {error, body}
    */
   that.deleteCart = function(restaurantId, token, callback) {
     var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
@@ -373,7 +391,13 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        callback(null, response);
+        body = JSON.parse(body);
+        if (body.message.length > 0) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
@@ -383,7 +407,7 @@ var Delivery = function() {
    * @param  {int}   restaurantId    Id for restaurant
    * @param  {[type]}   index        Index of item to delete from cart
    * @param  {String}   token        Customer's access_token from authorization
-   * @param  {Function} callback     {error, response}
+   * @param  {Function} callback     {error, body}
    */
   that.removeItem = function(restaurantId, index, token, callback) {
     var url = DELIVERY_URL + '/customer/cart/' + restaurantId + '?';
@@ -399,7 +423,13 @@ var Delivery = function() {
       if (error) {
         callback(error);
       } else {
-        callback(null, body);
+        body = JSON.parse(body);
+        if (body.message.length > 0) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
@@ -429,7 +459,12 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        callback(null, body.cards);
+        if (body.cards === undefined) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body.cards);
+        }
       }
     });
   };
@@ -469,7 +504,12 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        callback(null, body);
+        if (body.message.length > 0) {
+          var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
+          callback(errors);
+        } else {
+          callback(null, body);
+        }
       }
     });
   };
