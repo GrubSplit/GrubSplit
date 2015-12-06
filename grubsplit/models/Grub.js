@@ -85,7 +85,7 @@ grubSchema.statics.getGrub = function(grubID, callback) {
   @param: callback(err)
 */
 grubSchema.statics.deleteGrub = function(grubID, callback) {
-  Grub.remove({_id: grubID}, function(err, grub) {
+  Grub.remove({_id: grubID}, function(err) {
     if (err) {
       callback({msg: 'could not delete grub'});
     } else {
