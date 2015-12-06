@@ -5,6 +5,7 @@
 
 (function() {
   $(document).on('click', '#submitOrder', function(event) {
+<<<<<<< HEAD
     var location_id, cc_id, tip, href;
     console.log($('#tip').val());
     tip = $('#tip').val();
@@ -20,11 +21,6 @@
       $('#_location_id').val(location_id);
       $('#_cc_id').val(cc_id);
       $('#target').submit();
-      // href = '/grubs/' + $(this).attr('grubId') + '/order?';
-      // href += 'tip=' + tip;
-      // href += '&location_id=' + location_id;
-      // href += '&cc_id=' + cc_id;
-      // location.href = href;
     }
   });
 })();

@@ -5,12 +5,20 @@ append head
 
 block content
   .page-header
+    .row
+      .col-md-10
+        h1 Checkout
+      .col-md-2
+        form(method='POST', action='/grubs/' + grubId + '/order')
+          button.btn.btn-primary(type='submitOrder', id='submitOrder', grubId=grubId) Submit Order
   if locations
-    +addresses(locations)
+    div
+      +addresses(locations)
   if paymentOptions
-    +paymentOptions(paymentOptions)
-  h1 Add New Address
+    div
+      +paymentOptions(paymentOptions)
   div
+    h1 Add New Address
     form.form-horizontal(method='POST')
       +textInputGroup('street', '123 Main Street')
       +textInputGroup('city', 'Cambridge')
@@ -19,7 +27,6 @@ block content
       +textInputGroup('phone', '555-555-5555')
       .form-group.col-sm.col-sm-7
         button.col-sm-3.btn.btn-primary(type='addAddress', action='/auth/addAddress') Submit
-  h1 Add Payment Option
   div
     form.form-horizontal(method='GET')
       button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
@@ -31,3 +38,4 @@ block content
     +textInputGroup('_tip', '', 'display: none')
     +textInputGroup('_location_id', '', 'display: none')
     +textInputGroup('_cc_id', '', 'display: none')
+
