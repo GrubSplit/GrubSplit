@@ -43,7 +43,7 @@ author: jorrieb
 
 		for (var item in cartArray){
 			var displayedItem = document.createElement('p')
-			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price + '<br>Quantity: ' + cartArray[item].quantity 
+			displayedItem.innerHTML = '<b>' + cartArray[item].name + '</b> - $' + cartArray[item].price.toFixed(2).toString() + '<br>Quantity: ' + cartArray[item].quantity 
 			items.appendChild(displayedItem)
 		}
 
@@ -74,6 +74,7 @@ author: jorrieb
 
 	// Submit SubGrub to Grub
 	$(document).on('click', '#submitSubGrub', function(evt) {
+		console.log(cartArray);
 		if (cartArray.length === 0) {
 			alert('Cart is empty! Add some items to the cart first.');
 			return;
@@ -212,7 +213,7 @@ author: jorrieb
 	$(document).on('click', '#submitButton', function(evt){
 		item = menu.getItem(evt.currentTarget.getAttribute('item_id'));
 		options = {};
-		price = 0;
+		price = item.price;
 		for (optionGroupIndex in item.children){
 			if (item.children[optionGroupIndex].type == "price group"){
 				var checked = document.querySelector('input[name='+item.children[optionGroupIndex].id+']:checked');
