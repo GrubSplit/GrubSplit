@@ -1,6 +1,6 @@
 mixin addresses(locations)
   div
-    h1 Addresses
+    h2 Addresses
     if locations.length > 0
       for location in locations
         +address(location)
@@ -10,14 +10,13 @@ mixin addresses(locations)
 mixin address(address)
   div
     input(type="radio", name="address", checked=false, id=address.location_id)
-    |  #{address.location_id}
     |  #{address.phone}
     |  #{address.street}
     |  #{address.city} #{address.state} #{address.zip_code}
 
 mixin paymentOptions(creditCards)
   div
-    h1 Payment Options
+    h2 Payment Options
     if creditCards.length > 0
       for creditCard in creditCards
         +paymentOption(creditCard)
@@ -27,7 +26,6 @@ mixin paymentOptions(creditCards)
 mixin paymentOption(creditCard)
   div
     input(type="radio", name="payment", checked=false, id=creditCard.cc_id)
-    | #{creditCard.cc_id}
     | #{creditCard.type} #{creditCard.last_four}
     | Expires #{creditCard.exp_month}/#{creditCard.exp_year}
 
@@ -37,6 +35,6 @@ mixin addAddress
 
 mixin textInputGroup(type, placeholder, style)
   .form-group
-      label.col-sm-3.control-label(for=type)
+      label.control-label(for=type)
         input.form-control(type=type, name=type, id=type, placeholder=placeholder, style=style)
 
