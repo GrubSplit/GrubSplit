@@ -23,7 +23,18 @@ block content
       p <i>No restaurants nearby :(</i>
     - else
       p <i>#{restaurants.length} restaurants found! :D</i>
-      for restaurant in restaurants
-          div.img-thumbnail.square(style={ 'background-image': "url("+restaurant.merchant_logo+")" })
-            a(href="/restaurant/" + restaurant.id)
-              p #{restaurant.name}
+      table.table.table-hover
+        thead
+          tr
+            th Logo
+            th Name
+            th Phone
+            th Address
+        tbody
+          for restaurant in restaurants
+              tr.clickable-row(onclick="window.document.location='/restaurant/' + #{restaurant.id};" style='cursor: pointer')
+                th
+                  div.img-thumbnail.square(style={ 'background-image': "url("+restaurant.merchant_logo+")" })
+                td #{restaurant.name}
+                td #{restaurant.phone}
+                td #{restaurant.street} #{restaurant.city}, #{restaurant.state} #{restaurant.zip_code}
