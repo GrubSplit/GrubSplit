@@ -5,12 +5,7 @@ append head
 
 block content
   .page-header
-    .row
-      .col-md-10
-        h1 Checkout
-      .col-md-2
-        form(method='POST', action='/grubs/' + grubId + '/order')
-          button.btn.btn-primary(type='submitOrder', id='submitOrder', grubId=grubId) Submit Order
+    h1 Checkout
   if locations
     div
       +addresses(locations)
@@ -28,7 +23,7 @@ block content
       .form-group.col-sm.col-sm-7
         button.col-sm-3.btn.btn-primary(type='addAddress', action='/auth/addAddress') Submit
   div
-    form.form-horizontal(method='GET')
+    form.form-horizontal(method='GET', action='/auth/addPayment')
       button.btn.btn-primary(type='addPayment', id='addPayment') Add Payment
   div
     +textInputGroup('tip', '2.00')
