@@ -188,16 +188,21 @@ describe('Grub', function() {
     });
 
     it('should successfully complete a grub, if the given id exists', function(done) {
-      Grub.completeGrub(grub_id, function(err, completed_grub) {
+      Grub.completeGrub(grub_id, 10, 0.25, 2, 3.25, 0, 15.50, function(err, grub) {
         assert.equal(err, null);
-        assert.notEqual(completed_grub.time_ordered, null);
-        // TODO: add things for tip, tax, delivery fee
+        assert.notEqual(grub.time_ordered, null);
+        assert.equal(grub.subtotal, 10);
+        assert.equal(grub.tax, 0.25);
+        assert.equal(grub.tip, 2);
+        assert.equal(grub.delivery_fee, 3.25);
+        assert.equal(grub.discount, 0);
+        assert.equal(grub.total, 15.50);
         done();
       }); 
     });
 
     it('should return error if grub with given id does not exist', function (done) {
-      Grub.completeGrub('', function(err, grub) {
+      Grub.completeGrub('', 0, 0, 0, 0, 0, 0, function(err, grub) {
         assert.equal(grub, null);
         assert.notEqual(err, null);
         assert.equal(err.msg, 'could not mark grub as completed');

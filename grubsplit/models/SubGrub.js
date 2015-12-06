@@ -47,29 +47,31 @@
   @param: callback(err, subGrub)
 */
 subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
-  if (err) {
-    callback({msg: 'could not find Grub'});
-  } else {
-    var grubOwnerID = grub.owner._id;
-    SubGrub.create({
-        owner: userID,
-        grubID: grubID,
-        paid: grubOwnerID.equals(userID)
-    }, function(err, subGrub) {
-      if (err) {
-        callback({msg: 'could not create subgrub'});
-      } else {
-        grub.subGrubs.push(subGrub._id);
-        grub.save(function(err) {
-          if (err) {
-            callback({msg: 'could not add subgrub id to grub'});
-          } else {
-            callback(null, subGrub);
-          }
-        });
-      }
-    });
-  }
+  Grub.findOne({_id: grubID}).populate(['owner']).exec(function(err, grub) {
+    if (err) {
+      callback({msg: 'could not find Grub'});
+    } else {
+      var grubOwnerID = grub.owner._id;
+      SubGrub.create({
+          owner: userID,
+          grubID: grubID,
+          paid: grubOwnerID.equals(userID)
+      }, function(err, subGrub) {
+        if (err) {
+          callback({msg: 'could not create subgrub'});
+        } else {
+          grub.subGrubs.push(subGrub._id);
+          grub.save(function(err) {
+            if (err) {
+              callback({msg: 'could not add subgrub id to grub'});
+            } else {
+              callback(null, subGrub);
+            }
+          });
+        }
+      });
+    }
+  });
 }
 
 /*

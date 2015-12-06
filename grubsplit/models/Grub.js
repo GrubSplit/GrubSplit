@@ -113,7 +113,7 @@ grubSchema.statics.completeGrub = function(grubID, subtotal, tax, tip, delivery_
     'discount': discount,
     'total': total
   }
-  Grub.findOneAndUpdate({_id: grubID }, {$set: update}, {new: true}, function(err) {
+  Grub.findOneAndUpdate({_id: grubID }, {$set: update}, {new: true}, function(err, grub) {
     if (err) {
       callback({msg: 'could not mark grub as completed'});
     } else {
