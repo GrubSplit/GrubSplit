@@ -12,7 +12,7 @@ var Delivery = function() {
 
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
-  var REDIRECT_URI = 'https://localhost:3000/auth';
+  var REDIRECT_URI = 'https://grubsplit.herokuapp.com/auth';
   var DELIVERY_URL = 'https://api.delivery.com';
 
   /**
@@ -375,6 +375,7 @@ var Delivery = function() {
     };
     request.post(options, function(error, response, body) {
       if (error) {
+        console.log('ERROR IN CREATE CART');
         callback(error);
       } else {
         if (body.message.length > 0) {
@@ -539,6 +540,7 @@ var Delivery = function() {
     };
     request.post(options, function(error, response, body) {
       if (error) {
+        console.log('ERROR IN PLACE ORDER');
         callback(error);
       } else {
         body = JSON.parse(body);
