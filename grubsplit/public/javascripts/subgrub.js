@@ -247,7 +247,14 @@ author: jorrieb
 		}
 
 		if (cartItem){
-			console.log('item selected from cart');
+			var options = Object.keys(cartItem.option_qty);
+			for (selectedIndex in options){
+				var checkbox = document.querySelector('input[value="'+options[selectedIndex]+'"]');
+				console.log(checkbox);
+				checkbox.setAttribute('checked',true);
+			}
+			quantInput.value = cartItem.quantity;
+			instructions.value = cartItem.instructions;
 		}
 	};
 
@@ -315,7 +322,6 @@ author: jorrieb
 	// Remove item from cart
 	$(document).on('click', '.removeItem', function(evt) {
 		evt.stopPropagation();
-		console.log('1');
 		var item = evt.currentTarget;
 		$.grep(cartArray, function(e){
 			console.log('cartid of e is:' + e.cartid);
