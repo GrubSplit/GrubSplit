@@ -144,12 +144,11 @@ subGrubSchema.statics.togglePayment = function(subgrubID, paidStatus, callback) 
 }
 
 /*
-  Find all Grubs where User is invited, is ordering, or has ordered in.
+  Find all Grubs where User is ordering, or has ordered in.
   @param: userID = ObjectId of current user 
-  @param: grub_invites = ObjectIds of Grub docs that current user is invited to
-  @param: callback(err, invites, open_grubs, past_grubs)
+  @param: callback(err, open_grubs, past_grubs)
 */
-subGrubSchema.statics.findUserGrubs = function(userID, grub_invites, callback) {
+subGrubSchema.statics.findUserGrubs = function(userID, callback) {
   SubGrub.find({ owner: userID })
          .select('-_id grubID')
          .exec(function (err, grubIDs) {
@@ -162,27 +161,20 @@ subGrubSchema.statics.findUserGrubs = function(userID, grub_invites, callback) {
         .populate('owner')
         .select('restaurant_name owner time_ordered')
         .exec(function (err, grubs) {
-      if (err) {
-        return callback(err);
-      }
-      var open_grubs = [];
-      var past_grubs = [];
-      grubs.forEach(function (grub) {
-        if (grub.time_ordered) {
-          past_grubs.push(grub);
-        } else {
-          open_grubs.push(grub);
-        }
-      });
-      Grub.find({ _id: {$in: grub_invites } })
-          .select('-subGrubs')
-          .exec(function (err, invites) {
-        if (err) {
-          return callback(err);
-        }
-        return callback(null, invites, open_grubs, past_grubs);
-      });
-    });
+          if (err) {
+            return callback(err);
+          }
+          var open_grubs = [];
+          var past_grubs = [];
+          grubs.forEach(function (grub) {
+            if (grub.time_ordered) {
+              past_grubs.push(grub);
+            } else {
+              open_grubs.push(grub);
+            }
+          });
+          return callback(null, open_grubs, past_grubs);
+        });
   });
 }
 

@@ -2,19 +2,22 @@
 // Requirement:
 //      menu = menu entity from delivery.com API
 
-mixin menu(menu)
-    div=menu.name
+mixin menu(menu, isSubGrub)
+    b #{menu.name}
         if menu.children
             for child in menu.children
                 if (child.type === 'menu')
-                    +menu(child)
+                    +menu(child, isSubGrub)
                 if (child.type === 'item')
-                    +menuItem(child)
+                    +menuItem(child, isSubGrub)
 
-mixin menuItem(item)
+mixin menuItem(item, isSubGrub)
     div.row
         div.col-md-6
-            a(itemid=item.id).item
+            if isSubGrub
+                a(itemid=item.id).item
+                    p #{item.name}
+            else
                 p #{item.name}
         div.col-md-6
             p #{item.price}

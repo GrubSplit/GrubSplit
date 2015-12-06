@@ -4,16 +4,6 @@ block content
   .page-header
     h1 Welcome, #{user.name}
   div
-    h3 Invitations
-    if (grub_invites.length != 0)
-      for grub in grub_invites
-        div
-          p #{grub.owner.name} invited you to order from #{grub.restaurant_name}
-          a Accept
-          a Decline
-    else
-      p <i>No current invitations!</i>
-  div
     h3 Open Grubs
     if (open_grubs.length != 0)
       for grub in open_grubs
