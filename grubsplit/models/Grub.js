@@ -100,11 +100,11 @@ grubSchema.statics.deleteGrub = function(grubID, callback) {
   @param: callback(err)
 */
 grubSchema.statics.completeGrub = function(grubID, callback) {
-  Grub.findOneAndUpdate({_id: grubID }, {$set: {time_ordered: new Date()}}, {new: true}, function(err) {
+  Grub.findOneAndUpdate({_id: grubID }, {$set: {time_ordered: new Date()}}, {new: true}, function(err, grub) {
     if (err) {
       callback({msg: 'could not mark grub as completed'});
     } else {
-      callback(null);
+      callback(null, grub);
     }
   });
 }
