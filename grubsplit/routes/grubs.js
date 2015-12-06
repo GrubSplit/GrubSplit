@@ -92,6 +92,7 @@ router.post('/:grub/order', function(req, res) {
   Delivery.createCart(req.grub.restaurantID, order, req.user.token, function(err, body) {
     if (err) {
       req.flash('errors', err);
+      res.redirect('/grubs/' + req.grub._id + '/checkout');
       return;
     }
     location_id = req.body._location_id;
@@ -106,11 +107,13 @@ router.post('/:grub/order', function(req, res) {
     Delivery.placeOrder(req.grub.restaurantID, location_id, cc_id, tip, req.user.token, function(error, body) {
       if (error) {
         req.flash('errors', error);
+        res.redirect('/grubs/' + req.grub._id + '/checkout');
         return;
       } else {
         Grub.completeGrub(req.grub._id, subtotal, tax, tip, delivery_fee, discount, total, function(err) {
           if (err) {
             req.flash('errors', err);
+            res.redirect('/grubs/' + req.grub._id + '/checkout');
             return;
           }
           res.redirect('/grubs/' + req.grub._id);
