@@ -90,7 +90,7 @@ subGrubSchema.statics.createNewSubGrub = function(userID, grubID, callback) {
       });
     }
   });
-}
+};
 
 /*
   Add items to subgrub with given id
@@ -113,10 +113,10 @@ subGrubSchema.statics.addItems = function(subgrubID, newItems, totalCost, callba
         msg: 'could not update subgrub with given items'
       });
     } else {
-      callback(null, subGrub)
+      callback(null, subGrub);
     }
   });
-}
+};
 
 /*
   given a subGrubID, return the subGrub, with the user and grub populated
@@ -135,16 +135,17 @@ subGrubSchema.statics.getSubGrub = function(subGrubID, callback) {
       });
     }
   });
-}
+};
 
 /*
-  RemoveSubGrub doc, remove it from SubGrub collection and 
+  RemoveSubGrub doc, remove it from SubGrub collection and
   remove reference from parent Grub
-  @param: subgrub
+  @param: subgrubID = id of subgrub
+  @param: grubID = id of grub
   @param: callback(err)
 */
 subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
-  var subgrubID = subgrub._id
+  var subgrubID = subgrub._id;
   var grubID = subgrub.grubID;
   SubGrub.remove({
     _id: subgrubID
@@ -171,7 +172,7 @@ subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
       });
     }
   });
-}
+};
 
 /*
   Changes payment status of subgrub
@@ -197,11 +198,11 @@ subGrubSchema.statics.togglePayment = function(subgrubID, paidStatus, callback) 
       });
     }
   });
-}
+};
 
 /*
   Find all Grubs where User is ordering, or has ordered in.
-  @param: userID = ObjectId of current user 
+  @param: userID = ObjectId of current user
   @param: callback(err, open_grubs, past_grubs)
 */
 subGrubSchema.statics.findUserGrubs = function(userID, callback) {
@@ -242,7 +243,7 @@ subGrubSchema.statics.findUserGrubs = function(userID, callback) {
           return callback(null, open_grubs, past_grubs);
         });
     });
-}
+};
 
 var SubGrub = mongoose.model('SubGrub', subGrubSchema);
 module.exports = mongoose.model('SubGrub', subGrubSchema);
