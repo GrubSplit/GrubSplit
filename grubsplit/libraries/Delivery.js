@@ -231,7 +231,7 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        if (body.location === undefined) {
+        if (body.message && body.message.length > 0) {
           var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
           callback(errors);
         } else {
@@ -264,7 +264,7 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        if (body.location === undefined) {
+        if (body.message && body.message.length > 0) {
           var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
           callback(errors);
         } else {
@@ -326,7 +326,7 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        if (body.cart === undefined) {
+        if (body.message && body.message.length > 0) {
           var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
           callback(errors);
         } else {
@@ -385,7 +385,7 @@ var Delivery = function() {
         callback(error);
       } else {
         // body = JSON.parse(body);
-        if (body.message.length > 0) {
+        if (body.message && body.message.length > 0) {
           var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
           callback(errors);
         } else {
@@ -415,7 +415,7 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        if (body.message.length > 0) {
+        if (body.message && body.message.length > 0) {
           var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
           callback(errors);
         } else {
@@ -447,7 +447,7 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        if (body.message.length > 0) {
+        if (body.message && body.message.length > 0) {
           var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
           callback(errors);
         } else {
@@ -492,7 +492,7 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        if (body.cards === undefined) {
+        if (body.message && body.message.length > 0) {
           var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
           callback(errors);
         } else {
