@@ -56,7 +56,6 @@ describe('User', function() {
         email: "test@test.com",
         name: 'Tester'
       }, function(err, user) {
-        console.log(user);
         user_id = user._id;
         done();
       });
