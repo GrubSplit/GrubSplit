@@ -13,8 +13,10 @@ var utils = require('../utils/utils');
   request path (any routes defined with :subgrub as a paramter).
 */
 router.param('subgrub', function(req, res, next, subGrubIdStr) {
+  console.log(subGrubIdStr);
   if (subGrubIdStr.indexOf('payment/') === 0) {
     subGrubIdStr = subGrubIdStr.substring(8);
+    console.log(subGrubIdStr);
   }
   SubGrub.getSubGrub(subGrubIdStr, function(err, subgrub) {
     if (subgrub && subgrub.owner._id.equals(req.user._id)) {
