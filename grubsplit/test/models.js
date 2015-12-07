@@ -8,7 +8,7 @@ var Grub = require('../models/Grub.js');
 var SubGrub = require('../models/SubGrub.js');
 var assert = require('assert');
 
-before(function (done) {
+before(function(done) {
   // console.log('1');
   // console.log(mongoose.connection.db.databaseName);
   // if (mongoose.connection.db.databaseName) {
@@ -19,8 +19,9 @@ before(function (done) {
   //   mongoose.connect('mongodb://localhost/grubsplit_test');
   // }
   // mongoose.connection.db.dropDatabase();
-  // Connect to test database and clear it out for testing 
-    done();
+  // Connect to test database and clear it out for testing
+  if (mongoose.connection.db) return done();
+  mongoose.createConnection('mongodb://localhost/grubsplit', done);
 });
 
 after(function(done) {
@@ -32,21 +33,22 @@ after(function(done) {
 describe('User', function() {
 
   before(function(done) {
-    if (mongoose.connection.db) {
-      mongoose.connection.close();
-      mongoose.connect('mongodb://localhost/grubsplit_test');
-    }
+    // if (mongoose.connection.db) {
+    //   mongoose.connection.close();
+    //   mongoose.createConnection('mongodb://localhost/grubsplit_test', done);
+    // }
     mongoose.connection.db.dropDatabase();
-    console.log(mongoose.connection.db)
-    done();
-  });  
-  
-  after(function(done){
+    // console.log(mongoose.connection.db)
+    // done();
+    return done();
+  });
+
+  after(function(done) {
     mongoose.connection.close();
     done();
-  });  
+  });
 
-  describe('#setTokens()', function () {
+  describe('#setTokens()', function() {
     var user_id;
     before(function(done) {
       User.create({
@@ -58,7 +60,7 @@ describe('User', function() {
       });
     });
 
-    it('should return error if User with given id does not exist', function (done) {
+    it('should return error if User with given id does not exist', function(done) {
       User.setTokens('', '', '', function(err, user) {
         assert.equal(user, null);
         assert.notEqual(err, null);
@@ -67,8 +69,8 @@ describe('User', function() {
       });
     });
 
-    it('should set token and refresh_token fields for given User if User exists', function (done) {
-      User.setTokens(user_id, 'access', 'refresh',function(err, user) {
+    it('should set token and refresh_token fields for given User if User exists', function(done) {
+      User.setTokens(user_id, 'access', 'refresh', function(err, user) {
         assert.equal(err);
         assert.equal(user.token, 'access');
         assert.equal(user.refresh_token, 'refresh');
@@ -78,17 +80,17 @@ describe('User', function() {
 
   });
 
-  describe('#deleteTokens()', function () {
+  describe('#deleteTokens()', function() {
 
-    it('should return error if User with given id does not exist', function (done) {
+    it('should return error if User with given id does not exist', function(done) {
       User.setTokens('', function(err) {
         assert.notEqual(err, null);
-        assert.equal(err, 'could not delete tokens');
+        assert.equal(err.msg, 'could not delete tokens');
         done();
       });
     });
 
-    it('should set token and refresh_token fields to null for given User if User exists', function (done) {
+    it('should set token and refresh_token fields to null for given User if User exists', function(done) {
       done();
     });
 
@@ -102,20 +104,20 @@ describe('Grub', function() {
   before(function(done) {
     if (mongoose.connection.db) {
       mongoose.connection.close();
-      mongoose.connect('mongodb://localhost/grubsplit_test');
+      mongoose.connect('mongodb://localhost/grubsplit_test', done);
     }
     mongoose.connection.db.dropDatabase();
     done();
-  });  
-  
-  after(function(done){
+  });
+
+  after(function(done) {
     mongoose.connection.close();
     done();
-  });  
+  });
 
-  describe('#createNewGrub()', function () {
+  describe('#createNewGrub()', function() {
 
-    it('should successfully create a grub, indicating that it is an open grub', function (done) {
+    it('should successfully create a grub, indicating that it is an open grub', function(done) {
       var user_id;
       User.create({
         email: "test@test.com",
@@ -132,27 +134,27 @@ describe('Grub', function() {
 
   });
 
-  describe('#getGrub()', function () {
+  describe('#getGrub()', function() {
     var tester_id;
     var hungry_id;
 
-    before(function(done){
+    before(function(done) {
       User.create({
-        email : 'test@test.com', 
-        name : 'Tester', 
+        email: 'test@test.com',
+        name: 'Tester',
       }, function(err, user) {
         tester_id = user._id;
         User.create({
-          email : 'hungry@ta.com', 
-          name : 'Hungry', 
+          email: 'hungry@ta.com',
+          name: 'Hungry',
         }, function(err, user) {
           hungry_id = user._id;
           done();
         });
       });
-    });    
+    });
 
-    it('should return the grub, with owner and subgrubs populated, if the given id exists', function (done) {
+    it('should return the grub, with owner and subgrubs populated, if the given id exists', function(done) {
       var grub_id;
       Grub.createNewGrub(tester_id, 70706, 'Cafe 472', function(err, grub) {
         grub_id = grub._id;
@@ -169,7 +171,7 @@ describe('Grub', function() {
       });
     });
 
-    it('should return error if grub with given id does not exist', function (done) {
+    it('should return error if grub with given id does not exist', function(done) {
       Grub.getGrub('', function(err, grub) {
         assert.equal(grub, null);
         assert.notEqual(err, null);
@@ -178,9 +180,9 @@ describe('Grub', function() {
       });
     });
 
-  }); 
+  });
 
-  describe('#deleteGrub()', function () {
+  describe('#deleteGrub()', function() {
 
     it('should successfully delete a grub (if the grub id exists) and return no errors', function(done) {
       User.create({
@@ -190,26 +192,26 @@ describe('Grub', function() {
         Grub.createNewGrub(user._id, 70706, 'Cafe 472', function(err, grub) {
           assert.equal(err, null);
           assert.notEqual(grub, null);
-          
+
           Grub.deleteGrub(grub._id, function(err) {
             assert.equal(err, null);
             done();
           });
         });
-      });      
+      });
     });
 
-    it('should return error if grub with given id does not exist', function (done) {
+    it('should return error if grub with given id does not exist', function(done) {
       Grub.deleteGrub('', function(err) {
         assert.notEqual(err, null);
-        assert.equal(err, 'could not delete grub');
+        assert.equal(err.msg, 'could not delete grub');
         done();
       });
     });
 
   });
 
-  describe('#completeGrub()', function () {
+  describe('#completeGrub()', function() {
     var grub_id;
     before(function(done) {
       User.create({
@@ -220,7 +222,7 @@ describe('Grub', function() {
           grub_id = grub._id;
           done();
         });
-      });  
+      });
     });
 
     it('should successfully complete a grub, if the given id exists', function(done) {
@@ -234,10 +236,10 @@ describe('Grub', function() {
         assert.equal(grub.discount, 0);
         assert.equal(grub.total, 15.50);
         done();
-      }); 
+      });
     });
 
-    it('should return error if grub with given id does not exist', function (done) {
+    it('should return error if grub with given id does not exist', function(done) {
       Grub.completeGrub('', 0, 0, 0, 0, 0, 0, function(err, grub) {
         assert.equal(grub, null);
         assert.notEqual(err, null);
@@ -246,7 +248,7 @@ describe('Grub', function() {
       });
     });
 
-  }); 
+  });
 
 });
 
@@ -256,7 +258,7 @@ describe('SubGrub', function() {
   var tester_id;
   var hungry_id;
   var grub_id;
-  
+
   before(function(done) {
     if (mongoose.connection.db) {
       mongoose.connection.close();
@@ -279,15 +281,15 @@ describe('SubGrub', function() {
           done();
         });
       });
-    });  
-  });  
-  
-  after(function(done){
+    });
+  });
+
+  after(function(done) {
     mongoose.connection.close();
     done();
-  }); 
+  });
 
-  describe('#createNewSubGrub()', function () {
+  describe('#createNewSubGrub()', function() {
 
     it('should successfully create a new (paid) subgrub, given a grub ID and a user ID', function(done) {
       SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
@@ -295,7 +297,7 @@ describe('SubGrub', function() {
         assert.equal(subGrub.owner, tester_id);
         assert.equal(subGrub.grubID, grub_id);
         assert.equal(subGrub.paid, true);
-        
+
         Grub.getGrub(grub_id, function(err, grub) {
           assert(grub.subGrubs[0]._id.equals(subGrub._id));
           done();
@@ -309,7 +311,7 @@ describe('SubGrub', function() {
         assert.equal(subGrub.owner, hungry_id);
         assert.equal(subGrub.grubID, grub_id);
         assert.equal(subGrub.paid, false);
-        
+
         Grub.getGrub(grub_id, function(err, grub) {
           assert(grub.subGrubs[0]._id.equals(subGrub._id) || grub.subGrubs[1]._id.equals(subGrub._id));
           done();
@@ -317,8 +319,8 @@ describe('SubGrub', function() {
       });
     });
 
-    it('should return error if grub with given id does not exist', function (done) {
-      SubGrub.createNewSubGrub(tester_id, '', function(err, subGrub){
+    it('should return error if grub with given id does not exist', function(done) {
+      SubGrub.createNewSubGrub(tester_id, '', function(err, subGrub) {
         assert.notEqual(err, null);
         assert.equal(err.msg, 'could not find Grub');
         done();
@@ -327,11 +329,19 @@ describe('SubGrub', function() {
 
   });
 
-  describe('#addItems()', function () {
+  describe('#addItems()', function() {
     var subgrub_id;
     before(function(done) {
       SubGrub.remove({}, function(err) {
-        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+        Grub.findOneAndUpdate({
+          _id: grub_id
+        }, {
+          $set: {
+            subGrubs: []
+          }
+        }, {
+          new: true
+        }, function(err, grub) {
           SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
             subgrub_id = subGrub._id;
             done();
@@ -350,7 +360,7 @@ describe('SubGrub', function() {
       });
     });
 
-    it('should return error if subgrub with given id does not exist', function (done) {
+    it('should return error if subgrub with given id does not exist', function(done) {
       SubGrub.addItems('', [], 0, function(err, subGrub) {
         assert.equal(subGrub, null);
         assert.notEqual(err, null);
@@ -359,13 +369,21 @@ describe('SubGrub', function() {
       });
     });
 
-  }); 
+  });
 
-  describe('#getSubGrub()', function () {
+  describe('#getSubGrub()', function() {
     var subgrub_id;
     before(function(done) {
       SubGrub.remove({}, function(err) {
-        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+        Grub.findOneAndUpdate({
+          _id: grub_id
+        }, {
+          $set: {
+            subGrubs: []
+          }
+        }, {
+          new: true
+        }, function(err, grub) {
           SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
             subgrub_id = subGrub._id;
             done();
@@ -374,7 +392,7 @@ describe('SubGrub', function() {
       });
     });
 
-    it('should return populated subgrub, given a valid subgrub id', function (done) {
+    it('should return populated subgrub, given a valid subgrub id', function(done) {
       SubGrub.getSubGrub(subgrub_id, function(err, subgrub) {
         assert.equal(err, null);
         assert(subgrub.owner._id.equals(tester_id));
@@ -383,7 +401,7 @@ describe('SubGrub', function() {
       });
     });
 
-    it('should return error if subgrub with given id does not exist', function (done) {
+    it('should return error if subgrub with given id does not exist', function(done) {
       SubGrub.getSubGrub('', function(err, subgrub) {
         assert.equal(subgrub, null);
         assert.notEqual(err, null);
@@ -392,13 +410,21 @@ describe('SubGrub', function() {
       });
     });
 
-  }); 
+  });
 
-  describe('#deleteSubGrub()', function () {
+  describe('#deleteSubGrub()', function() {
     var subgrub_id;
     before(function(done) {
       SubGrub.remove({}, function(err) {
-        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+        Grub.findOneAndUpdate({
+          _id: grub_id
+        }, {
+          $set: {
+            subGrubs: []
+          }
+        }, {
+          new: true
+        }, function(err, grub) {
           SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
             subgrub_id = subGrub._id;
             done();
@@ -418,7 +444,7 @@ describe('SubGrub', function() {
     });
 
 
-    it('should return error if subgrub with given id does not exist', function (done) {
+    it('should return error if subgrub with given id does not exist', function(done) {
       SubGrub.deleteSubGrub('', '', function(err) {
         assert.notEqual(err, null);
         assert.equal(err.msg, 'could not delete subgrub');
@@ -428,11 +454,19 @@ describe('SubGrub', function() {
 
   });
 
-  describe('#togglePayment()', function () {
+  describe('#togglePayment()', function() {
     var subgrub_id;
     before(function(done) {
       SubGrub.remove({}, function(err) {
-        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+        Grub.findOneAndUpdate({
+          _id: grub_id
+        }, {
+          $set: {
+            subGrubs: []
+          }
+        }, {
+          new: true
+        }, function(err, grub) {
           SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
             subgrub_id = subGrub._id;
             done();
@@ -441,7 +475,7 @@ describe('SubGrub', function() {
       });
     });
 
-    it('should change payment status, given a valid subgrub id', function (done) {
+    it('should change payment status, given a valid subgrub id', function(done) {
       SubGrub.findOne(subgrub_id, function(err, subgrub) {
         assert.equal(subgrub.paid, true);
         SubGrub.togglePayment(subgrub_id, false, function(err, subgrub) {
@@ -452,7 +486,7 @@ describe('SubGrub', function() {
       });
     });
 
-    it('should return error if subgrub with given id does not exist', function (done) {
+    it('should return error if subgrub with given id does not exist', function(done) {
       SubGrub.togglePayment('', false, function(err, subgrub) {
         assert.equal(subgrub, null);
         assert.notEqual(err, null);
@@ -463,13 +497,21 @@ describe('SubGrub', function() {
 
   });
 
-  describe('#findUserGrubs()', function () {
+  describe('#findUserGrubs()', function() {
     var subgrub_id;
     var hungry_grub_id;
     before(function(done) {
       // we create two subgrubs for tester - putting one of them in a different grub that is completed
       SubGrub.remove({}, function(err) {
-        Grub.findOneAndUpdate({_id: grub_id }, {$set: {subGrubs: []}}, {new: true}, function(err, grub) {
+        Grub.findOneAndUpdate({
+          _id: grub_id
+        }, {
+          $set: {
+            subGrubs: []
+          }
+        }, {
+          new: true
+        }, function(err, grub) {
           SubGrub.createNewSubGrub(tester_id, grub_id, function(err, subGrub) {
             subgrub_id = subGrub._id;
             Grub.createNewGrub(hungry_id, 70706, 'Cafe 472', function(err, grub) {
@@ -485,7 +527,7 @@ describe('SubGrub', function() {
       });
     });
 
-    it('should find all grubs the user has participated in, given a valid user id', function (done) {
+    it('should find all grubs the user has participated in, given a valid user id', function(done) {
       SubGrub.findUserGrubs(tester_id, function(err, open_grubs, past_grubs) {
         assert.equal(err, null);
         assert.equal(open_grubs.length, 1);
@@ -496,7 +538,7 @@ describe('SubGrub', function() {
       });
     });
 
-    it('should return error if user with given id does not exist', function (done) {
+    it('should return error if user with given id does not exist', function(done) {
       SubGrub.findUserGrubs('', function(err, open_grubs, past_grubs) {
         assert.equal(open_grubs, null);
         assert.equal(past_grubs, null);
