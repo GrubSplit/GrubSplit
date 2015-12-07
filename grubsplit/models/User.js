@@ -30,7 +30,7 @@ userSchema.plugin(passportLocalMongoose, {
   @param: callback(err)
 */
 userSchema.statics.setTokens = function (userID, access_token, refresh_token, callback) {
-  User.update({
+  User.findOneAndUpdate({
     _id: userID
   }, {
     $set: {
