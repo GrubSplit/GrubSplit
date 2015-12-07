@@ -144,9 +144,7 @@ subGrubSchema.statics.getSubGrub = function(subGrubID, callback) {
   @param: grubID = id of grub
   @param: callback(err)
 */
-subGrubSchema.statics.deleteSubGrub = function(subgrub, callback) {
-  var subgrubID = subgrub._id;
-  var grubID = subgrub.grubID;
+subGrubSchema.statics.deleteSubGrub = function(subgrubID, grubID, callback) {
   SubGrub.remove({
     _id: subgrubID
   }, function(err) {
@@ -212,7 +210,7 @@ subGrubSchema.statics.findUserGrubs = function(userID, callback) {
     .select('-_id grubID')
     .exec(function(err, grubIDs) {
       if (err) {
-        return callback(err);
+        return callback({msg : 'could not find grubs for user'});
       }
       grubIDs = grubIDs.map(function(elm) {
         return elm.grubID;

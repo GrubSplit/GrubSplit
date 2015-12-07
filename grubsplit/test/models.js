@@ -8,16 +8,6 @@ var SubGrub = require('../models/SubGrub.js');
 var assert = require('assert');
 
 before(function(done) {
-  // console.log('1');
-  // console.log(mongoose.connection.db.databaseName);
-  // if (mongoose.connection.db.databaseName) {
-  //   console.log('2');
-  // mongoose.connection.close();
-  //   mongoose.disconnect();
-  //   console.log(mongoose.connection.db.databaseName);
-  //   mongoose.connect('mongodb://localhost/grubsplit_test');
-  // }
-  // mongoose.connection.db.dropDatabase();
   // Connect to test database and clear it out for testing
   if (mongoose.connection.db) return done();
   mongoose.createConnection('mongodb://localhost/grubsplit_test', done);
@@ -32,16 +22,8 @@ after(function(done) {
 describe('User', function() {
 
   before(function(done) {
-    // if (mongoose.connection.db) {
-    //   mongoose.connection.close();
-    //   mongoose.createConnection('mongodb://localhost/grubsplit_test', done);
-    // }
     if (mongoose.connection.db) return done();
     mongoose.connect('mongodb://localhost/grubsplit_test', done);
-    // mongoose.connection.db.dropDatabase();
-    // console.log(mongoose.connection.db)
-    // done();
-    // return done();
   });
 
   after(function(done) {
