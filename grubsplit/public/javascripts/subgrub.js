@@ -297,7 +297,7 @@ author: jorrieb
 					window.alert("Must select exactly one option");
 					return;
 				}
-				options[checked.value] = 1;
+				options[checked.value] = menu.getOption(checked.value).name;
 				price = parseFloat(checked.getAttribute('price'));
 			} else if (item.children[optionGroupIndex].type == "option group"){
 				var checked = document.querySelectorAll('input[name='+item.children[optionGroupIndex].id+']:checked');
@@ -309,7 +309,7 @@ author: jorrieb
 					return;
 				}
 				Array.prototype.map.call(checked, function(obj) {
-					options[obj.value] = 1;
+					options[obj.value] = menu.getOption(obj.value).name;
 					price += parseFloat(obj.getAttribute('price'));
 				});
 			}
