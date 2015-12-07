@@ -9,6 +9,16 @@ var SubGrub = require('../models/SubGrub.js');
 var assert = require('assert');
 
 before(function (done) {
+  // console.log('1');
+  // console.log(mongoose.connection.db.databaseName);
+  // if (mongoose.connection.db.databaseName) {
+  //   console.log('2');
+  // mongoose.connection.close();
+  //   mongoose.disconnect();
+  //   console.log(mongoose.connection.db.databaseName);
+  //   mongoose.connect('mongodb://localhost/grubsplit_test');
+  // }
+  // mongoose.connection.db.dropDatabase();
   // Connect to test database and clear it out for testing 
     done();
 });
@@ -21,24 +31,49 @@ after(function(done) {
 // Testing the User model
 describe('User', function() {
 
-  beforeEach(function(done){
-    // Insert some test User data
+  before(function(done) {
+    if (mongoose.connection.db) {
+      mongoose.connection.close();
+      mongoose.connect('mongodb://localhost/grubsplit_test');
+    }
+    mongoose.connection.db.dropDatabase();
+    console.log(mongoose.connection.db)
     done();
-  });    
+  });  
   
-  afterEach(function(done){
-    // Remove all User data
+  after(function(done){
+    mongoose.connection.close();
     done();
   });  
 
   describe('#setTokens()', function () {
+    var user_id;
+    before(function(done) {
+      User.create({
+        email: "test@test.com",
+        name: 'Tester'
+      }, function(err, user) {
+        user_id = user._id;
+        done();
+      });
+    });
 
     it('should return error if User with given id does not exist', function (done) {
-      done();
+      User.setTokens('', '', '', function(err, user) {
+        assert.equal(user, null);
+        assert.notEqual(err, null);
+        assert.equal(err, 'could not set tokens');
+        done();
+      });
     });
 
     it('should set token and refresh_token fields for given User if User exists', function (done) {
-      done();
+      User.setTokens(user_id, 'access', 'refresh',function(err, user) {
+        assert.equal(err);
+        assert.equal(user.token, 'access');
+        assert.equal(user.refresh_token, 'refresh');
+        done();
+      });
     });
 
   });
@@ -46,7 +81,11 @@ describe('User', function() {
   describe('#deleteTokens()', function () {
 
     it('should return error if User with given id does not exist', function (done) {
-      done();
+      User.setTokens('', function(err) {
+        assert.notEqual(err, null);
+        assert.equal(err, 'could not delete tokens');
+        done();
+      });
     });
 
     it('should set token and refresh_token fields to null for given User if User exists', function (done) {
@@ -63,8 +102,8 @@ describe('Grub', function() {
   before(function(done) {
     if (mongoose.connection.db) {
       mongoose.connection.close();
+      mongoose.connect('mongodb://localhost/grubsplit_test');
     }
-    mongoose.connect('mongodb://localhost/grubsplit_test');
     mongoose.connection.db.dropDatabase();
     done();
   });  
@@ -96,6 +135,7 @@ describe('Grub', function() {
   describe('#getGrub()', function () {
     var tester_id;
     var hungry_id;
+
     before(function(done){
       User.create({
         email : 'test@test.com', 
@@ -111,10 +151,6 @@ describe('Grub', function() {
         });
       });
     });    
-    
-    after(function(done){
-      done();
-    });
 
     it('should return the grub, with owner and subgrubs populated, if the given id exists', function (done) {
       var grub_id;
@@ -167,8 +203,8 @@ describe('Grub', function() {
       Grub.deleteGrub('', function(err) {
         assert.notEqual(err, null);
         assert.equal(err, 'could not delete grub');
+        done();
       });
-      done();
     });
 
   });
@@ -220,11 +256,12 @@ describe('SubGrub', function() {
   var tester_id;
   var hungry_id;
   var grub_id;
+  
   before(function(done) {
     if (mongoose.connection.db) {
       mongoose.connection.close();
+      mongoose.connect('mongodb://localhost/grubsplit_test');
     }
-    mongoose.connect('mongodb://localhost/grubsplit_test');
     mongoose.connection.db.dropDatabase();
 
     User.create({
