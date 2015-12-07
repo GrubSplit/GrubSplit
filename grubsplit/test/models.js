@@ -56,6 +56,7 @@ describe('User', function() {
         email: "test@test.com",
         name: 'Tester'
       }, function(err, user) {
+        console.log(user);
         user_id = user._id;
         done();
       });
@@ -72,8 +73,8 @@ describe('User', function() {
 
     it('should set token and refresh_token fields for given User if User exists', function(done) {
       User.setTokens(user_id, 'access', 'refresh', function(err, user) {
-        assert.equal(err, null);
         console.log(user);
+        assert.equal(err, null);
         assert.equal(user.token, 'access');
         assert.equal(user.refresh_token, 'refresh');
         done();
