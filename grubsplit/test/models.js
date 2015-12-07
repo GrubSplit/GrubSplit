@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/mocha_test');
 var ObjectID = mongoose.Types.ObjectId;
 var db = mongoose.connection;
 
@@ -21,7 +20,7 @@ before(function(done) {
   // mongoose.connection.db.dropDatabase();
   // Connect to test database and clear it out for testing
   if (mongoose.connection.db) return done();
-  mongoose.createConnection('mongodb://localhost/grubsplit', done);
+  mongoose.createConnection('mongodb://localhost/grubsplit_test', done);
 });
 
 after(function(done) {
@@ -37,10 +36,12 @@ describe('User', function() {
     //   mongoose.connection.close();
     //   mongoose.createConnection('mongodb://localhost/grubsplit_test', done);
     // }
-    mongoose.connection.db.dropDatabase();
+    if (mongoose.connection.db) return done();
+    mongoose.connect('mongodb://localhost/grubsplit_test', done);
+    // mongoose.connection.db.dropDatabase();
     // console.log(mongoose.connection.db)
     // done();
-    return done();
+    // return done();
   });
 
   after(function(done) {
@@ -64,14 +65,15 @@ describe('User', function() {
       User.setTokens('', '', '', function(err, user) {
         assert.equal(user, null);
         assert.notEqual(err, null);
-        assert.equal(err, 'could not set tokens');
+        assert.equal(err.msg, 'could not set tokens');
         done();
       });
     });
 
     it('should set token and refresh_token fields for given User if User exists', function(done) {
       User.setTokens(user_id, 'access', 'refresh', function(err, user) {
-        assert.equal(err);
+        assert.equal(err, null);
+        console.log(user);
         assert.equal(user.token, 'access');
         assert.equal(user.refresh_token, 'refresh');
         done();
