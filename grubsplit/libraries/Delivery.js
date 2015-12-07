@@ -345,7 +345,9 @@ var Delivery = function() {
       order.push({
         'item_id': item.id,
         'item_qty': item.quantity,
-        'option_qty': item.option_qty,
+        'option_qty': Object.keys(item.option_qty).map(function(option) {
+          item.option_qty[option] = 1;
+        }),
         'item_label': '',
         'instructions': item.instructions
       });
