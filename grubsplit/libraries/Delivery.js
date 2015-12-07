@@ -295,7 +295,7 @@ var Delivery = function() {
         callback(error);
       } else {
         body = JSON.parse(body);
-        if (body.locations === undefined) {
+        if (body.message && body.message.length > 0) {
           var errors = body.message.map(function(obj) {return {'msg': obj.user_msg};});
           callback(errors);
         } else {
