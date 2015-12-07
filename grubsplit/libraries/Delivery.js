@@ -12,7 +12,7 @@ var Delivery = function() {
 
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
-  var REDIRECT_URI = 'https://localhost:3000/auth';
+  var REDIRECT_URI = 'https://grubsplit.herokuapp.com/auth';
   var DELIVERY_URL = 'https://api.delivery.com';
 
   /**
@@ -341,7 +341,6 @@ var Delivery = function() {
    */
   var formatOrder = function(items) {
     var order = [];
-    console.log(items);
     items.forEach(function(item) {
       Object.keys(item.option_qty).map(function(option) {
           item.option_qty[option] = 1;
@@ -369,7 +368,6 @@ var Delivery = function() {
     url += 'client_id=' + CLIENT_ID;
     url += '&order_type=' + 'delivery';
     items = formatOrder(items);
-    console.log(items);
     var options = {
       url: url,
       body: {
