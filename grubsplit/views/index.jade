@@ -28,13 +28,17 @@ block content
           tr
             th Logo
             th Name
+            th Cuisines
+            th Overall Rating / Number of Ratings
             th Phone
             th Address
         tbody
           for restaurant in restaurants
               tr.clickable-row(onclick="window.document.location='/restaurant/' + #{restaurant.id};" style='cursor: pointer')
                 th
-                  div.img-thumbnail.square(style={ 'background-image': "url("+restaurant.merchant_logo+")" })
-                td #{restaurant.name}
-                td #{restaurant.phone}
-                td #{restaurant.street} #{restaurant.city}, #{restaurant.state} #{restaurant.zip_code}
+                  img.img-responsive.square(style={ 'background-image': "url("+restaurant.merchant_logo+")" })
+                td(style='text-align: left') #{restaurant.name}
+                td(style='text-align: left') #{restaurant.cuisines}
+                td(style='text-align: left') #{restaurant.overall_rating} / #{restaurant.num_ratings}
+                td(style='text-align: left') #{restaurant.phone}
+                td(style='text-align: left') #{restaurant.street} #{restaurant.city}, #{restaurant.state} #{restaurant.zip_code}
