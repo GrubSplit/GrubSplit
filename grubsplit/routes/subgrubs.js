@@ -14,7 +14,7 @@ var utils = require('../utils/utils');
 */
 router.param('subgrub', function(req, res, next, subGrubIdStr) {
   SubGrub.getSubGrub(subGrubIdStr, function(err, subgrub) {
-    if ((subgrub && subgrub.owner._id.equals(req.user._id)) || subgrub.grubID.owner._id.equals(req.user._id)) {
+    if (subgrub && (subgrub.owner._id.equals(req.user._id) || subgrub.grubIDowner._id.equals(req.user._id))) {
       req.subgrub = subgrub;
       next();
     } else {
