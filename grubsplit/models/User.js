@@ -1,18 +1,30 @@
 /**
-* Represents the User, also deals with authentication
-*
-* Author: marcosp
-*/
+ * Represents the User, also deals with authentication
+ *
+ * Author: marcosp
+ */
 
 var mongoose = require('mongoose');
 var ObjectID = mongoose.Schema.Types.ObjectId;
 var passportLocalMongoose = require('passport-local-mongoose');
 
 var userSchema = new mongoose.Schema({
-  email: { type: String, unique: true, lowercase: true, required: true },
-  name: { type: String, required: true },
-  token: { type: String },
-  refresh_token: { type: String}
+  email: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  token: {
+    type: String
+  },
+  refresh_token: {
+    type: String
+  }
 });
 
 userSchema.plugin(passportLocalMongoose, {
@@ -29,7 +41,7 @@ userSchema.plugin(passportLocalMongoose, {
   @param: refresh_token
   @param: callback(err)
 */
-userSchema.statics.setTokens = function (userID, access_token, refresh_token, callback) {
+userSchema.statics.setTokens = function(userID, access_token, refresh_token, callback) {
   User.findOneAndUpdate({
     _id: userID
   }, {
@@ -37,13 +49,17 @@ userSchema.statics.setTokens = function (userID, access_token, refresh_token, ca
       token: access_token,
       refresh_token: refresh_token
     },
+  }, {
+    'new': true
   }, function(err, user) {
     if (err) {
-      return callback({msg : 'could not set tokens'});
+      return callback({
+        msg: 'could not set tokens'
+      });
     }
     callback(null, user);
   });
-}
+};
 
 /*
   Delete delivery.com access/refresh tokens for given user
@@ -52,7 +68,7 @@ userSchema.statics.setTokens = function (userID, access_token, refresh_token, ca
   @param: refresh_token
   @param: callback(err)
 */
-userSchema.statics.deleteTokens = function (userID, callback) {
+userSchema.statics.deleteTokens = function(userID, callback) {
   User.update({
     _id: userID
   }, {
@@ -62,11 +78,13 @@ userSchema.statics.deleteTokens = function (userID, callback) {
     },
   }, function(err) {
     if (err) {
-    	return callback({msg : 'could not delete tokens'});
+      return callback({
+        msg: 'could not delete tokens'
+      });
     }
     return callback(null);
   });
-}
+};
 
 var User = mongoose.model('User', userSchema);
 module.exports = mongoose.model('User', userSchema);

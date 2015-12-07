@@ -85,7 +85,7 @@ describe('User', function() {
   describe('#deleteTokens()', function() {
 
     it('should return error if User with given id does not exist', function(done) {
-      User.setTokens('', function(err) {
+      User.deleteTokens('', function(err) {
         assert.notEqual(err, null);
         assert.equal(err.msg, 'could not delete tokens');
         done();
@@ -106,7 +106,7 @@ describe('Grub', function() {
   before(function(done) {
     if (mongoose.connection.db) {
       mongoose.connection.close();
-      mongoose.connect('mongodb://localhost/grubsplit_test', done);
+      return mongoose.connect('mongodb://localhost/grubsplit_test', done);
     }
     mongoose.connection.db.dropDatabase();
     done();
