@@ -56,6 +56,11 @@ mixin receiptItem(item)
     h4= item.name
     h4.rightAlign $#{item.price}
   p Quantity: #{item.quantity}
+  ul.receiptOptions
+    for key in item.option_qty
+      li= key
+    if item.instructions != ""
+      li Instructions: "#{item.instructions}"
 
 
 

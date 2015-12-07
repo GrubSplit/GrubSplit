@@ -5,8 +5,13 @@ mixin subgrubItems(type, items)
         for item in items  
             +listItem
                 +listHeading #{item.name}
-                    +listText Price: #{item.price}
+                    +listText Price: $#{item.price}
                     +listText Quantity: #{item.quantity}
+                    ul.subgrubDisplayOptions
+                        for key in item.option_qty
+                            li= key
+                        if item.instructions != ""
+                            li Instructions: "#{item.instructions}"
                     
 mixin listGroup(type)
     - groupType = type

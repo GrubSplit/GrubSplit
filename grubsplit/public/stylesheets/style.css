@@ -82,6 +82,15 @@ a {
   margin:5px;
 }
 
+.subgrubDisplayOptions{
+  font-size: 12px;
+  color: gray;
+}
+
+.receiptOptions{
+  color: gray;
+}
+
 /*modal codal*/
 #overlay{
   top: 0px;
