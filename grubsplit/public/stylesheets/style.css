@@ -53,6 +53,35 @@ a {
   color:gray;
 }
 
+/*Receipt*/
+.receipt{
+  border-radius: 5px;
+  border: 2px solid black;
+  padding: 5px;
+}
+
+.subReceipt{
+  border-bottom: 1px dashed gray;
+  position: relative;
+}
+
+.receiptItemHead{
+  display: inline-flex;
+}
+
+.leftAlign,.rightAlign{
+  position: absolute;
+  /*display: inline;*/
+}
+
+.rightAlign{
+  right:0px;
+}
+
+.submitOrder{
+  margin:5px;
+}
+
 /*modal codal*/
 #overlay{
   top: 0px;

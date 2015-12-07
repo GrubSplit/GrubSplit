@@ -38,3 +38,27 @@ mixin textInputGroup(type, placeholder, style)
       label.control-label(for=type)
         input.form-control(type=type, name=type, id=type, placeholder=placeholder, style=style)
 
+mixin receipt(grub)
+  -var price = 0
+  h2 Receipt
+  for subGrub in grub.subGrubs
+    -price += subGrub.totalAmount
+    +subReceipt(subGrub.items)
+  h4 Subtotal: $#{price}
+
+mixin subReceipt(subGrub)
+  for item in subGrub
+    div.subReceipt
+      +receiptItem(item)
+
+mixin receiptItem(item)
+  div.receiptItemHead
+    h4= item.name
+    h4.rightAlign $#{item.price}
+  p Quantity: #{item.quantity}
+
+
+
+
+
+
