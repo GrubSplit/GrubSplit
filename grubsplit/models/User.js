@@ -37,11 +37,11 @@ userSchema.statics.setTokens = function (userID, access_token, refresh_token, ca
       token: access_token,
       refresh_token: refresh_token
     },
-  }, function(err) {
+  }, function(err, user) {
     if (err) {
       return callback({msg : 'could not set tokens'});
     }
-    callback(null);
+    callback(null, user);
   });
 }
 
