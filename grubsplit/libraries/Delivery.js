@@ -120,7 +120,9 @@ var Delivery = function() {
             'city': restaurant.location.city,
             'state': restaurant.location.state,
             'zip_code': restaurant.location.zip,
-            // 'menu': menu
+            'overall_rating': restaurant.summary.overall_rating,
+            'num_ratings': restaurant.summary.num_ratings,
+            'cuisines': restaurant.summary.cuisines
           });
         });
         callback(null, restaurants);
