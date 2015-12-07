@@ -324,7 +324,7 @@ author: jorrieb
 		var cartObject = {
 			id: item.id,
 			name: item.name,
-			price: price,
+			price: parseFloat(price.toFixed()),
 			quantity: quantity,
 			instructions: document.getElementById('instructionsBox').value,
 			option_qty: options,

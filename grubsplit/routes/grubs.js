@@ -139,11 +139,13 @@ router.get('/:grub/checkout', function(req, res) {
           req.flash('errors', error);
         } else {
           paymentOptions = creditCards;
+          console.log(req.grub);
           res.render('checkout', {
             locations: locations,
             paymentOptions: paymentOptions,
             token: req.user.token,
-            grubId: req.grub._id
+            grubId: req.grub._id,
+            grub: req.grub
           });
         }
       });
