@@ -342,6 +342,9 @@ var Delivery = function() {
   var formatOrder = function(items) {
     var order = [];
     items.forEach(function(item) {
+      Object.keys(item.option_qty).map(function(option) {
+          item.option_qty[option] = 1;
+        });
       order.push({
         'item_id': item.id,
         'item_qty': item.quantity,
