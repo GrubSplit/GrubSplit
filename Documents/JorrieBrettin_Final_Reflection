@@ -1,0 +1,28 @@
+#Grubsplit
+Final Reflection  
+By: Jorrie Brettin
+
+
+###Peer Reviews
+To preface, I thought everyone did a great job. Everyone worked dilligently independently, and when they didn't have anything to work on and had time to do so, we communicated via Slack to discuss what could be done. Everyone was also completely reliable in terms of showing up to meetings, both with and without our TAs.    
+
+10/10 for all team members, would recommend.
+
+####Marcos
+Marcos did a great job, especially during the MVP, by being able to step up and do whatever we needed. 
+
+####Matt
+Matt quickly became the API expert and created a solid interface for us to interact with Delivery.com. 
+
+####Amanda
+Amanda made the effort to be wherever we were so we could be together to work. Working in person is ultimately the best way to keep clear communication open, so her effort directly helped our cohesion and success.
+
+###Evaluation
+I think we did a great job creating a functional app which addressed the key features we wanted to streamline in the group ordering process. The product doesn't look great, but at this point it functions as promised and it's obvious that, with a little more work integrating Venmo and UI, will be a very useful app. When we finally used it to actually order food, the process was effortless - exactly as we had hoped.
+
+The only thing we didn't do well was making the features intuitive, or at least including instruction on how to use it. Specfically, inviting people to join Grubs is far from obvious - something we didn't address at all.
+
+###Lessons Learned
+1) Test Early. We had tested using the app to order food well before the last day, but we failed to test all the features, which lead to some crunch time problems.  
+2) Communicate. I'm convinced that our success was due to clear communication by all members of the group. When some members had tests or interviews or problems, we simply worked around the issues.  
+3) User test. Although it wasn't really an issue in our current iteration, I think we would have realized our app had some unintuitive portions.  
