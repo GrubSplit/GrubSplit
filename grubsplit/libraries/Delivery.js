@@ -13,6 +13,7 @@ var Delivery = function() {
   var CLIENT_ID = 'MzNkNjI5MjhkODk4N2ZhNjgyYWE4MTBiYjIwZmJmMTQ5';
   var CLIENT_SECRET = 'xDfc7r6f5kCid33xIE6NrFeeROdgTW5E2064JV7Q';
   var REDIRECT_URI = 'https://grubsplit.herokuapp.com/auth';
+  //var REDIRECT_URI = 'https://localhost:3000/auth';
   var DELIVERY_URL = 'https://api.delivery.com';
 
   /**
@@ -79,11 +80,14 @@ var Delivery = function() {
   };
 
   /**
-   * Search for restaurants near a given address
+   * Search for restaurants near a given address or coordinates (only need one)
    * @param  {String}   address  Address to search from
+   * @param  {Object}   coordinates Coordinates to search from
    * @param  {Function} callback {error, [restaurants]}
    *  address format:
    *      '123 Main Street Cambridge MA 02139'
+   *  coordinates format:
+   *      {'latitude': 40.73771, 'longitude': -73.987949}
    *  restaurant format:
    *      name
    *      id
@@ -94,21 +98,23 @@ var Delivery = function() {
    *      state
    *      zip_code
    */
-  that.searchNearbyRestaurants = function(address, callback) {
+  that.searchNearbyRestaurants = function(address, coordinates, callback) {
     var url = DELIVERY_URL + '/merchant/search/delivery?';
     url += 'client_id=' + CLIENT_ID;
-    url += '&address=' + address;
+    if (coordinates.latitude && coordinates.longitude) {
+      url += '&latitude=' + coordinates.latitude + '&longitude=' + coordinates.longitude;
+    } else {
+      url += '&address=' + address;
+    }
     url += '&merchant_type=R';
 
     var restaurants = [];
     request(url, function(error, response, body) {
       body = JSON.parse(body);
       if (body.message && body.message[0] && body.message[0].code) {
-        if (body.message[0].code === 'invalid_address') {
-          callback({
-            msg: "We couldn't find that address. Please try again!"
-          });
-        }
+        callback({
+          msg: body.message[0].user_msg
+        });
       } else {
         body.merchants.forEach(function(restaurant) {
           restaurants.push({

@@ -21,7 +21,17 @@ router.post('/', function(req, res, next) {
     return res.redirect('/');
   }
 
-  Delivery.searchNearbyRestaurants(req.body.address, function(err, restaurants) {
+  var coords;
+  try {
+    coords = JSON.parse(req.body.address);
+    if (!coords.latitude || !coords.longitude) {
+      coords = {};
+    }
+  } catch (e) {
+    coords = {};
+  }
+
+  Delivery.searchNearbyRestaurants(req.body.address, coords, function(err, restaurants) {
     if (err) {
       req.flash('errors', err);
       return res.redirect('/');
